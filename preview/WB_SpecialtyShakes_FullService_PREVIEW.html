@@ -560,7 +560,11 @@ var MASTERY = 90;
 var MIXIN_OZ = 1;
 var MIX = (MIXIN_OZ === 1) ? "1 oz" : (MIXIN_OZ + " oz");
 
-var BASE_IC = "10 oz", BASE_MILK = "2 oz";
+/* Ice cream & milk scale with the vessel (per the official LTO spec cards):
+   12 oz classic glass = 10 oz ice cream + 3 oz milk
+   16 oz logoed cup    = 12 oz ice cream + 4 oz milk */
+function icOz(glass){ return glass ? "10 oz" : "12 oz"; }
+function milkOz(glass){ return glass ? "3 oz" : "4 oz"; }
 
 function mkVariant(o){
   var glass = (o.fmt === "12");
@@ -574,13 +578,13 @@ function mkVariant(o){
     desc:o.desc,
     flavor:o.flavorNote,
     reveals:[
-      {ic:"🍨",t:"Vanilla Ice Cream",b:BASE_IC+" for every build."},
-      {ic:"🥛",t:"Whole Milk",b:BASE_MILK+", blended with the ice cream until smooth and creamy."},
+      {ic:"🍨",t:"Vanilla Ice Cream",b:icOz(glass)+" blended as the shake base."},
+      {ic:"🥛",t:"Whole Milk",b:milkOz(glass)+", blended with the ice cream until smooth and creamy."},
       {ic:o.mixIc,t:o.mixName,b:MIX+" crushed, folded and blended into the shake."},
       {ic:"🌀",t:"Whipped Cream",b:"Top it off — approximately 2 oz."},
       {ic:o.mixIc,t:o.mixName+" (garnish)",b: glass
-        ? "Rolled rim + a finish over the top of the whipped cream."
-        : "Over the top of the whipped cream. No rim treatment on the cup."},
+        ? "About ½ oz rolled into the frosted rim + ½ oz over the top of the whipped cream."
+        : "About 1 oz over the top of the whipped cream. No rim treatment on the cup."},
       {ic:"💬",t:"Server Talking Point",b:o.script},
       {ic:"⚠️",t:"Allergen Note",b:"Contains DAIRY (ice cream, milk, whipped cream)"+o.allerg+" Always check the official Wahlburgers allergen guide or your manager before answering a guest allergen question."}
     ],
@@ -693,12 +697,12 @@ var SCENARIOS = [
 ];
 
 var FINAL_POOL = [
-  {type:"mc",stem:"How much vanilla ice cream goes into a specialty shake?",
-   opts:["8 oz","10 oz","12 oz"],a:1,
-   fb:"10 oz of vanilla ice cream for every specialty shake build."},
-  {type:"mc",stem:"How much whole milk goes into the blend?",
-   opts:["2 oz","3 oz","4 oz"],a:0,
-   fb:"2 oz of whole milk, blended with the ice cream until smooth and creamy."},
+  {type:"mc",stem:IS_COUNTER?"How much vanilla ice cream goes into the 16 oz takeout shake?":"How much vanilla ice cream goes into the 12 oz dine-in shake?",
+   opts:["8 oz","10 oz","12 oz"],a:IS_COUNTER?2:1,
+   fb:IS_COUNTER?"12 oz of vanilla ice cream for the 16 oz takeout cup.":"10 oz for the 12 oz classic glass. (The 16 oz takeout cup steps up to 12 oz.)"},
+  {type:"mc",stem:IS_COUNTER?"How much whole milk goes into the 16 oz takeout blend?":"How much whole milk goes into the 12 oz dine-in blend?",
+   opts:["2 oz","3 oz","4 oz"],a:IS_COUNTER?2:1,
+   fb:IS_COUNTER?"4 oz of whole milk for the 16 oz takeout cup.":"3 oz of whole milk for the 12 oz classic glass. (The 16 oz cup uses 4 oz.)"},
   {type:"mc",stem:"How much crushed mix-in is blended into the shake?",
    opts:[MIX,"3 oz","A full cup"],a:0,
    fb:MIX+" of crushed Fruity Pebbles or Kit Kat, folded and blended in."},
@@ -721,8 +725,8 @@ var FINAL_POOL = [
   {type:"mc",stem:"What's the correct blend standard?",
    opts:["Blend until fully liquid","Blend smooth and creamy, pulsing the mix-in to keep some texture","Barely mix it"],a:1,
    fb:"Smooth and creamy, with the mix-in pulsed just enough to keep a little texture."},
-  {type:"tf",stem:"Both flavors use the same ice cream and milk amounts.",
-   a:0,fb:"True — 10 oz ice cream and 2 oz milk for every specialty shake. Only the mix-in and finish change."},
+  {type:"tf",stem:"Fruity Pebbles and Kit Kat use the same ice cream and milk amounts as each other.",
+   a:0,fb:"True — the two flavors are built identically; only the mix-in and finish differ. Amounts scale with the vessel: 10 oz ice cream + 3 oz milk for the 12 oz glass, 12 oz + 4 oz for the 16 oz cup."},
   {type:"scenario",stem:"How should you suggest a specialty shake?",
    opts:["Wait to be asked","Offer it on every check and takeout order, naming the flavor","Only mention it at dinner"],a:1,
    fb:"Suggest it every time and name the flavor — specialty shakes are a high-margin add-on."},
@@ -806,7 +810,7 @@ addScreen(1,"Why It Matters",false,function(root,ctx){
   var tiles=[
     {ic:"🌈",bg:"var(--fp)",t:"Fruity Pebbles",p:"Creamy vanilla blended with Fruity Pebbles for a sweet, fruity crunch. Nostalgic and colorful."},
     {ic:"🍫",bg:"var(--kk)",t:"Kit Kat",p:"Creamy vanilla blended with real crushed Kit Kat for a rich, wafer-crunch shake."},
-    {ic:"🥛",bg:"var(--teal)",t:"One Base Recipe",p:"Both flavors: 10 oz vanilla ice cream, 2 oz whole milk, and "+MIX+" crushed mix-in blended in."},
+    {ic:"🥛",bg:"var(--teal)",t:"One Method, Sized to the Cup",p:IS_COUNTER?"Vanilla ice cream, whole milk and "+MIX+" crushed mix-in, blended smooth — 12 oz ice cream + 4 oz milk for the 16 oz takeout cup.":"Vanilla ice cream, whole milk and "+MIX+" crushed mix-in, blended smooth. Amounts scale with the vessel: 10 oz + 3 oz for the 12 oz glass, 12 oz + 4 oz for the 16 oz cup."},
     {ic:"📅",bg:"var(--green-d)",t:"The Window",p:"System-wide launch July 28, 2026. A limited-time offer — build it right from day one."}
   ];
   root.appendChild(h("div",{class:"card"},[
@@ -1443,11 +1447,11 @@ var PHOTO_CFG=(function(){
       steps.push({t:"Roll the rim in "+mixName, em:mixEm, c:accent, img:P("rim"), target:"glass",
                   asset:null, note:"Press and roll the frosted rim into the crushed mix-in on a flat plate until evenly coated."});
     }
-    steps.push({t:"Add 10 oz vanilla ice cream", em:"🍨", c:"#3AA0E8", img:IMG.pb_ic, target:"blender",
+    steps.push({t:"Add "+icOz(glass)+" vanilla ice cream", em:"🍨", c:"#3AA0E8", img:IMG.pb_ic, target:"blender",
                 asset:IMG.drag_ic||null, pre:IMG.pb_empty, preCap:"Start at the blender.",
-                note:"Measure 10 oz of vanilla ice cream into the blender."});
-    steps.push({t:"Add 2 oz whole milk", em:"🥛", c:"#16B9A9", img:IMG.pb_icmilk, target:"blender",
-                asset:IMG.drag_milk||null, note:"Specialty shakes use 2 oz of whole milk."});
+                note:"Measure "+icOz(glass)+" of vanilla ice cream into the blender."});
+    steps.push({t:"Add "+milkOz(glass)+" whole milk", em:"🥛", c:"#16B9A9", img:IMG.pb_icmilk, target:"blender",
+                asset:IMG.drag_milk||null, note:"This build uses "+milkOz(glass)+" of whole milk."});
     steps.push({t:"Add "+MIX+" "+mixName, em:mixEm, c:accent, img:P("mix"), target:"blender",
                 asset:null, note:"Crushed mix-in goes into the blender before you blend."});
     steps.push({t:"Blend smooth & creamy", em:"🌀", c:"#008252", img:P("blend"), target:"blender",
