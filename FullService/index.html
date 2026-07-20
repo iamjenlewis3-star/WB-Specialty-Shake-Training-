@@ -1301,7 +1301,7 @@ var PHOTO_CFG=(function(){
     steps.push({t:"Blend smooth & creamy", em:"🌀", c:"#008252", img:P("blend"), target:"blender",
                 fx:"shake", asset:null, note:"Blend until smooth, pulsing the mix-in to keep a little texture."});
     steps.push({t:"Pour into the "+(glass?"12 oz glass":"16 oz logoed cup"), em:"🫗", c:"#008252", img:P("pour"),
-                target:(glass?"glass":"cup"), fx:"pour", asset:IMG.pour_pitcher||null,
+                target:(glass?"glass":"cup"), fx:"pour", asset:(IMG["pour_pitcher_"+fk]||IMG.pour_pitcher)||null,
                 pre:(glass?null:IMG.pb_cup_empty), preCap:(glass?null:"Start with a clean 16 oz logoed cup."),
                 note:"Fill to the top."});
     steps.push({t:"Top with whipped cream", em:"🍦", c:"#6B4E8A", img:P("whip"), target:(glass?"glass":"cup"),
@@ -1383,7 +1383,7 @@ function photoBuild(card, cfg, onComplete){
     if(st.fx==="shake"){ busy=true; hint.textContent="Blending…"; stage.classList.remove("pbflash"); stage.classList.add("pbshake");
       setTimeout(function(){ stage.classList.remove("pbshake"); reveal(); }, 950); }
     else if(st.fx==="pour"){ busy=true; hint.textContent="Pouring…";
-      var jar=h("img",{class:"pbjar",src:IMG.pour_pitcher,alt:""});
+      var jar=h("img",{class:"pbjar",src:(st.asset||IMG.pour_pitcher),alt:""});
       stageWrap.appendChild(jar); void jar.offsetWidth; jar.classList.add("go");
       setTimeout(function(){ setStage(st.img,(i+1)+". "+st.t); }, 780);     // filled glass appears mid-pour
       setTimeout(function(){ if(jar.parentNode) jar.parentNode.removeChild(jar);
