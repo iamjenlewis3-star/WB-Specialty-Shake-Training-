@@ -47,7 +47,11 @@ Used by **both** Full Service and Counter Service.
 | `ph_fp16_pour` | Shows the blender pitcher rather than the cup being filled. Works, but a cup shot would read cleaner. |
 | `hero`, `fs`, `cup`, `adult` | Off-brand leftover "Star-Spangled Shake" (July 4th) fallback photos. Not shown in the normal flow, but present. |
 
-## Remaining to fully finish: 5 cup "result frame" photos
-These are the filled-cup / whipped / finished shots for the 16 oz takeout builds.
-- Takeout Fruity Pebbles (16 oz cup): 2 — `ph_fp16_whip`, `ph_fp16_fin`
-- Takeout Kit Kat (16 oz cup): 3 — `ph_kk16_pour`, `ph_kk16_whip`, `ph_kk16_fin`
+## ✅ Takeout · Fruity Pebbles — 16 oz cup (`fp16`) — DONE
+All result frames real: `ph_fp16_pour` (filled cup, replaced the old blender-pitcher
+shot), `ph_fp16_whip`, `ph_fp16_fin` (dome lid & green straw), and a refreshed
+`ph_fp16` hero.
+
+## Remaining to fully finish: 3 Kit Kat cup "result frame" photos
+- Takeout Kit Kat (16 oz cup): `ph_kk16_pour` (filled cup, no whip),
+  `ph_kk16_whip` (+ whipped cream), `ph_kk16_fin` (+ Kit Kat crown, dome lid & straw)
