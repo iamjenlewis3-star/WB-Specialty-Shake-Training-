@@ -1,4 +1,4 @@
-<!-- PREVIEW BUILD: self-contained single file for proofing only. Module: Full Service -->
+<!-- PREVIEW BUILD: Full Service -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1462,7 +1462,7 @@ var PHOTO_CFG=(function(){
                 asset:null, note: glass
                   ? "Garnish over the whipped cream — the glass is now rimmed AND topped."
                   : "Garnish over the whipped cream, then cap with the dome lid and green straw."});
-    return {start:(glass?IMG.pb_empty:IMG.pb_empty),
+    return {start:(glass?IMG.pb_glass:IMG.pb_empty),
             startCap:"Mise en place — let's build it.",
             vessel:(glass?"glass":"cup"), finish:P("fin"), steps:steps};
   }
