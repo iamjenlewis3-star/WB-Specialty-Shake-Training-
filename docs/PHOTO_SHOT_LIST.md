@@ -52,6 +52,10 @@ All result frames real: `ph_fp16_pour` (filled cup, replaced the old blender-pit
 shot), `ph_fp16_whip`, `ph_fp16_fin` (dome lid & green straw), and a refreshed
 `ph_fp16` hero.
 
-## Remaining to fully finish: 3 Kit Kat cup "result frame" photos
-- Takeout Kit Kat (16 oz cup): `ph_kk16_pour` (filled cup, no whip),
-  `ph_kk16_whip` (+ whipped cream), `ph_kk16_fin` (+ Kit Kat crown, dome lid & straw)
+## ✅ Takeout · Kit Kat — 16 oz cup (`kk16`) — DONE
+All result frames real: `ph_kk16_pour` (filled pour vessel), `ph_kk16_whip`,
+`ph_kk16_fin` (dome lid & green straw), plus the `ph_kk16` finished-cup hero.
+
+## 🎉 ALL PLACEHOLDERS CLEARED
+Every guided-build photo, hero, blender stage and pour pitcher across all four
+variants (fp12, fp16, kk12, kk16) in both editions is now real photography.
