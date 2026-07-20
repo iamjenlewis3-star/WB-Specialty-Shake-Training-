@@ -12,14 +12,9 @@ Legend — slot names are the internal image keys used by the module.
 ## ✅ Full Service · Fruity Pebbles — 12 oz glass (`fp12`) — DONE
 All real photography in place (delivered set).
 
-## ❌ Full Service · Kit Kat — 12 oz glass (`kk12`) — needs 4 photos
-| Slot | Shot |
-|------|------|
-| `ph_kk12_rim`  | Empty 12 oz classic shake glass, frosted rim rolled in **crushed Kit Kat** |
-| `ph_kk12_pour` | Same glass filled with the blended Kit Kat shake, **no whipped cream yet** |
-| `ph_kk12_whip` | Add a tall **whipped-cream** swirl on top |
-| `ph_kk12_fin`  | Finished — whipped cream + **crushed Kit Kat crown** on top |
-| `ph_kk12` (hero, optional) | Clean finished glass for the menu detail screen (can reuse `ph_kk12_fin`) |
+## ✅ Full Service · Kit Kat — 12 oz glass (`kk12`) — DONE
+All 4 build stages replaced (`ph_kk12_rim/pour/whip/fin`); the finished shot also
+now serves as the `ph_kk12` hero (replaced the old dim wood-bar photo).
 
 ## ❌ Takeout · Fruity Pebbles — 16 oz logoed cup (`fp16`) — needs 2 photos
 Used by **both** Full Service and Counter Service.
@@ -36,14 +31,19 @@ Used by **both** Full Service and Counter Service.
 | `ph_kk16_whip` | Same cup topped with a **whipped-cream** swirl |
 | `ph_kk16_fin`  | Finished cup — whipped cream + **crushed Kit Kat crown**, dome lid & green straw |
 
+## Pour pitcher (pour animation)
+| Slot | Status |
+|------|--------|
+| `pour_pitcher_fp` | ✅ Fruity Pebbles pour pitcher delivered; used by both fp builds. |
+| `pour_pitcher` (Kit Kat) | ❌ Still the generic pitcher. Send a Kit Kat pour pitcher and it will auto-apply to both kk builds (add as `pour_pitcher_kk`). |
+
 ## Minor / optional polish
 | Slot | Note |
 |------|------|
-| `ph_kk12` (hero) | Currently a dim, wood-bar shot — inconsistent with the new clean white-bg style. |
 | `ph_fp16_pour` | Shows the blender pitcher rather than the cup being filled. Works, but a cup shot would read cleaner. |
 | `hero`, `fs`, `cup`, `adult` | Off-brand leftover "Star-Spangled Shake" (July 4th) fallback photos. Not shown in the normal flow, but present. |
 
-## Total to fully finish: 9 photos
-- Full Service Kit Kat (glass): 4
-- Takeout Fruity Pebbles (cup): 2
-- Takeout Kit Kat (cup): 3
+## Remaining to fully finish: 5 build photos + 1 pitcher
+- Takeout Fruity Pebbles (16 oz cup): 2 — `ph_fp16_whip`, `ph_fp16_fin`
+- Takeout Kit Kat (16 oz cup): 3 — `ph_kk16_pour`, `ph_kk16_whip`, `ph_kk16_fin`
+- Kit Kat pour pitcher: 1 — `pour_pitcher_kk`
