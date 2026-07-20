@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="WB_SPECIALTY_SHAKES_COUNTER_2026_MANIFEST" version="1.0"
+          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                              http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                              http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+
+  <organizations default="WB_SPEC_ORG">
+    <organization identifier="WB_SPEC_ORG">
+      <title>Wahlburgers Specialty Shakes — Fruity Pebbles &amp; Kit Kat (Counter Service)</title>
+      <item identifier="ITEM_SPEC" identifierref="RES_SPEC" isvisible="true">
+        <title>Wahlburgers Specialty Shakes — Fruity Pebbles &amp; Kit Kat (Counter Service)</title>
+        <adlcp:masteryscore>90</adlcp:masteryscore>
+      </item>
+    </organization>
+  </organizations>
+
+  <resources>
+    <resource identifier="RES_SPEC" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <file href="scorm.js"/>
+      <file href="assets/images.js"/>
+    </resource>
+  </resources>
+
+</manifest>
