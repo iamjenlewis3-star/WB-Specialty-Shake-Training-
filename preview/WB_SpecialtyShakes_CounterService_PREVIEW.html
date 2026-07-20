@@ -1,4 +1,4 @@
-<!-- PREVIEW BUILD: self-contained single file for proofing only. Import the SCORM zip from dist/, not this file. Module: Counter Service -->
+<!-- PREVIEW BUILD: self-contained single file for proofing only. Module: Counter Service -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1624,7 +1624,7 @@ function photoBuild(card, cfg, onComplete){
     hint.textContent=""; tray.textContent="";
     tray.appendChild(h("div",{class:"feedback good show"},[
       h("b",{},"Brand-standard build! 🎉"),
-      document.createTextNode(cfg.finish)
+      document.createTextNode(" Every step matched the spec — build it this way every time and serve it picture-ready.")
     ]));
     onComplete(true);
   }
