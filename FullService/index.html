@@ -377,7 +377,7 @@ h2.scr{font-family:var(--serif);font-size:21px;line-height:1.15;margin:0 0 6px;c
   <div class="topbar">
     <div class="tb-row">
       <div class="wmark"><img id="brandLogo" alt="Wahlburgers"></div>
-      <div class="tb-title">Specialty Shakes<span>Fruity Pebbles &amp; Kit Kat · LTO Training</span></div>
+      <div class="tb-title">Specialty Shakes<span>Fruity Pebbles &amp; Kit Kat · Menu Training</span></div>
       <div class="pts"><span class="star">★</span><b id="ptsVal">0</b></div>
     </div>
     <div class="progress"><div class="bar" id="bar"></div></div>
@@ -393,7 +393,7 @@ h2.scr{font-family:var(--serif);font-size:21px;line-height:1.15;margin:0 0 6px;c
 <script>
 "use strict";
 /* ============================================================
-   DATA — sourced verbatim from the official LTO Rollout Guide
+   DATA — sourced verbatim from the official Rollout Guide
    ============================================================ */
 var IMG = window.WB_IMAGES || {};
 var MASTERY = 90;
@@ -404,7 +404,7 @@ var MASTERY = 90;
 var MIXIN_OZ = 1;
 var MIX = (MIXIN_OZ === 1) ? "1 oz" : (MIXIN_OZ + " oz");
 
-/* Ice cream & milk scale with the vessel (per the official LTO spec cards):
+/* Ice cream & milk scale with the vessel (per the official spec cards):
    12 oz classic glass = 10 oz ice cream + 3 oz milk
    16 oz logoed cup    = 12 oz ice cream + 4 oz milk */
 function icOz(glass){ return glass ? "10 oz" : "12 oz"; }
@@ -462,7 +462,7 @@ var VARIANTS = {
     mixIc:"🌈", accent:"#E23B7A", accent2:"#F5C518",
     desc:"A colorful, nostalgic shake — creamy vanilla ice cream blended with Fruity Pebbles for a sweet, fruity crunch in every sip. Served in the 12 oz classic shake glass with a frosted, cereal-rolled rim and a Fruity Pebbles crown. Full-service dine-in only.",
     flavorNote:"Sweet, fruity and creamy with a light cereal crunch. Nostalgic and colorful — a photo-ready dessert.",
-    script:"\u201CHave you tried our Fruity Pebbles Shake? Creamy vanilla blended with the cereal you grew up on — here for a limited time.\u201D",
+    script:"\u201CHave you tried our Fruity Pebbles Shake? Creamy vanilla blended with the cereal you grew up on — now on our menu.\u201D",
     allerg:". Cereal and shared equipment — verify wheat and gluten declarations against the supplier spec.",
     quiz:[
       {type:"mc",stem:"How is the dine-in Fruity Pebbles Shake finished?",
@@ -494,7 +494,7 @@ var VARIANTS = {
     mixIc:"🍫", accent:"#D3122A", accent2:"#5A3A22",
     desc:"Creamy vanilla ice cream blended with real crushed Kit Kat for a rich, wafer-crunch shake. Served in the 12 oz classic shake glass with a frosted rim rolled in crushed Kit Kat and a Kit Kat finish on top. Full-service dine-in only.",
     flavorNote:"Rich, chocolatey and creamy with a crisp wafer crunch. Indulgent without being heavy.",
-    script:"\u201CHave you seen our Kit Kat Shake? Real crushed Kit Kat blended right in — rich, creamy, and only here for a limited time.\u201D",
+    script:"\u201CHave you seen our Kit Kat Shake? Real crushed Kit Kat blended right in — rich, creamy, and now on our menu.\u201D",
     allerg:", and contains WHEAT, SOY and may contain nuts from the confection.",
     quiz:[
       {type:"mc",stem:"What goes into the Kit Kat Shake blend?",
@@ -635,7 +635,7 @@ addScreen(1,"Welcome",false,function(root,ctx){
   ctx.unlock();
   root.appendChild(h("div",{class:"card center"},[
     h("img",{class:"welcome-logo",src:IMG.logo,alt:"Wahlburgers"}),
-    h("span",{class:"kicker",text:"Limited-Time Offer · Specialty Shakes"}),
+    h("span",{class:"kicker",text:"Indulgent Specialty Shakes"}),
     h("div",{class:"heroframe"},[ h("img",{class:"hero-img",src:(IMG.poster||(IS_COUNTER?IMG.ph_fp16:IMG.ph_fp12)||IMG.hero),alt:"Throwback Cravings — Specialty Shakes"}) ]),
     h("h1",{class:"scr",style:"margin-top:16px",text:"Two Flavors, One Brand Standard"}),
     h("p",{class:"lede",text:IS_COUNTER?"Welcome to your go-live training for the Specialty Shakes program — the Fruity Pebbles Shake and the Kit Kat Shake. In the next few minutes you'll learn to build both flavors in the 16 oz takeout format, sell them, and serve them to brand standard.":"Welcome to your go-live training for the Specialty Shakes program — the Fruity Pebbles Shake and the Kit Kat Shake. In the next few minutes you'll learn to build both flavors in both service formats, sell them, and serve them to brand standard."}),
@@ -655,12 +655,12 @@ addScreen(1,"Why It Matters",false,function(root,ctx){
     {ic:"🌈",bg:"var(--fp)",t:"Fruity Pebbles",p:"Creamy vanilla blended with Fruity Pebbles for a sweet, fruity crunch. Nostalgic and colorful."},
     {ic:"🍫",bg:"var(--kk)",t:"Kit Kat",p:"Creamy vanilla blended with real crushed Kit Kat for a rich, wafer-crunch shake."},
     {ic:"🥛",bg:"var(--teal)",t:"One Method, Sized to the Cup",p:IS_COUNTER?"Vanilla ice cream, whole milk and "+MIX+" crushed mix-in, blended smooth — 12 oz ice cream + 4 oz milk for the 16 oz takeout cup.":"Vanilla ice cream, whole milk and "+MIX+" crushed mix-in, blended smooth. Amounts scale with the vessel: 10 oz + 3 oz for the 12 oz glass, 12 oz + 4 oz for the 16 oz cup."},
-    {ic:"📅",bg:"var(--green-d)",t:"The Window",p:"System-wide launch July 28, 2026. A limited-time offer — build it right from day one."}
+    {ic:"📅",bg:"var(--green-d)",t:"The Launch",p:"System-wide launch July 28, 2026. Now part of the core menu — build it right from day one."}
   ];
   root.appendChild(h("div",{class:"card"},[
     h("p",{class:"eyebrow",text:"The Promotion"}),
     h("h1",{class:"scr",text:"Why this promotion matters"}),
-    h("p",{class:"lede",text:"This isn't just a dessert add-on — it's a high-visibility, high-margin LTO that guests will come in for. Knowing the builds and the story helps you sell it."}),
+    h("p",{class:"lede",text:"This isn't just a dessert add-on — it's a high-visibility, high-margin menu item that guests will come in for. Knowing the builds and the story helps you sell it."}),
     h("div",{class:"igrid"},tiles.map(function(t){
       return h("div",{class:"itile"},[
         h("div",{class:"ic",style:"background:"+t.bg},t.ic),
@@ -788,7 +788,7 @@ addScreen(4,"Prep & Readiness",false,function(root,ctx){
   root.appendChild(h("div",{class:"card"},[
     h("p",{class:"eyebrow",text:"Prep & Readiness"}),
     h("h1",{class:"scr",text:"Build it the same, every time"}),
-    h("p",{class:"lede",text:IS_COUNTER?"Consistency sells the LTO. Every shake should look like the photo — a tall whipped-cream swirl, a generous mix-in crown, and a clean dome lid.":"Consistency sells the LTO. Every shake should look like the photo — a clean rolled rim on the glass, a tall whipped-cream swirl, and a generous mix-in crown."}),
+    h("p",{class:"lede",text:IS_COUNTER?"Consistency sells these shakes. Every shake should look like the photo — a tall whipped-cream swirl, a generous mix-in crown, and a clean dome lid.":"Consistency sells these shakes. Every shake should look like the photo — a clean rolled rim on the glass, a tall whipped-cream swirl, and a generous mix-in crown."}),
     h("div",{class:"igrid"},[
       ["❄️","var(--navy)","Blend Smooth","Thick, creamy, no lumps — spoonable but pourable."],
       (IS_COUNTER?["🧢","var(--fp)","Dome Lid & Straw","Seat the dome lid clean and add the green straw — every cup, every time."]:["⭐","var(--fp)","Rolled Rim (glass only)","Frost the rim, then roll it in the crushed mix-in all the way around."]),
@@ -879,11 +879,11 @@ addScreen(4,"Build It Fast",true,function(root,ctx){
 addScreen(5,"Sell the Shake",true,function(root,ctx){
   var revealed={};
   var scripts=[
-    {ic:"🌈",t:"Fruity Pebbles Pitch",b:"\u201CHave you tried our Fruity Pebbles Shake? Creamy vanilla blended with the cereal you grew up on — here for a limited time.\u201D"},
-    {ic:"🍫",t:"Kit Kat Pitch",b:"\u201COur Kit Kat Shake has real crushed Kit Kat blended right in — rich, creamy, and only here for a limited time.\u201D"},
+    {ic:"🌈",t:"Fruity Pebbles Pitch",b:"\u201CHave you tried our Fruity Pebbles Shake? Creamy vanilla blended with the cereal you grew up on — now on our menu.\u201D"},
+    {ic:"🍫",t:"Kit Kat Pitch",b:"\u201COur Kit Kat Shake has real crushed Kit Kat blended right in — rich, creamy, and now on our menu.\u201D"},
     {ic:"🥤",t:"Make It To-Go",b:"\u201CWant me to make that to go? It travels great — sealed cup, dome lid, and a straw.\u201D"},
     {ic:"⚠️",t:"Allergen Honesty",b:"Both shakes contain dairy. Kit Kat also contains wheat and soy. Never guess — check the allergen guide."},
-    {ic:"📣",t:"Talking Points",b:"Limited time only · two flavors · suggest on every check and takeout order · high-margin dessert add-on."},
+    {ic:"📣",t:"Talking Points",b:"Two flavors · suggest on every check and takeout order · high-margin dessert add-on."},
     {ic:"⭐",t:"Suggestive Selling",b:"Name the flavor when you offer it. \u201CFruity Pebbles or Kit Kat?\u201D converts better than \u201Cany dessert today?\u201D"}
   ];
   var card=h("div",{class:"card"},[
@@ -1678,8 +1678,8 @@ function showCertificate(root){
     var cert=h("div",{class:"cert"},[
       h("img",{class:"wm",src:IMG.logo,alt:"Wahlburgers"}),
       h("div",{class:"sub",text:"Wahlburgers · Certificate of Completion"}),
-      h("div",{class:"ttl",text:"Specialty Shakes · Fruity Pebbles & Kit Kat"}),
-      h("div",{class:"sub",style:"color:var(--navy);font-weight:700",text:"LTO Rollout Training"}),
+      h("div",{class:"ttl",text:"Indulgent Specialty Shakes · Fruity Pebbles & Kit Kat"}),
+      h("div",{class:"sub",style:"color:var(--navy);font-weight:700",text:"Menu Training"}),
       h("p",{style:"margin:14px 0 0;font-size:13px;color:var(--muted)",text:"This certifies that"}),
       h("div",{class:"name",text:name||"Team Member"}),
       h("p",{style:"margin:8px 0 0;font-size:13px;color:var(--muted)",text:"has successfully completed the training with a score of"}),
