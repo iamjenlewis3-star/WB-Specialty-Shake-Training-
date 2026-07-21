@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Wahlburgers Specialty Shakes — Counter Service — Fruity Pebbles &amp; Kit Kat</title>
+<style>
+:root{
+  --slate:#314D56; --slate-d:#1F343B; --slate-l:#456672;
+  --green:#44B549; --green-d:#008252; --lime:#CDF002; --teal:#16B9A9;
+  --navy:#314D56; --navy-d:#1F343B; --navy-l:#456672;
+  --gold:#C9A24A; --gold-l:#E4CD8E;
+  --fp:#E23B7A; --fp2:#F5C518; --fp3:#3AA0E8;
+  --kk:#D3122A; --kk2:#5A3A22;
+  --red:#D3122A; --blue:#3AA0E8;
+  --cream:#F4F1EA; --paper:#FFFFFF;
+  --ink:#1E2B34; --muted:#6E7E8A; --line:#DFE3E0;
+  --ok:#008252; --bad:#C23A43;
+  --serif:Georgia,'Times New Roman',serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --shadow:0 6px 22px rgba(31,52,59,.12);
+  --shadow-lg:0 14px 40px rgba(31,52,59,.22);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--sans); color:var(--ink); background:var(--navy-d);
+  background-image:radial-gradient(circle at 20% -10%,rgba(46,90,172,.25),transparent 45%),
+                   radial-gradient(circle at 95% 0%,rgba(176,48,58,.18),transparent 40%);
+  min-height:100vh; -webkit-font-smoothing:antialiased;
+}
+.app{max-width:680px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;
+  background:var(--cream);box-shadow:0 0 60px rgba(0,0,0,.35);position:relative}
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:40;background:var(--navy);color:#fff;
+  padding:10px 14px 12px;box-shadow:0 2px 14px rgba(0,0,0,.25)}
+.tb-row{display:flex;align-items:center;gap:10px}
+.wmark{width:32px;height:32px;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+.wmark img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+.welcome-logo{width:66px;height:66px;display:block;margin:0 auto 12px}
+.tb-title{font-size:12.5px;font-weight:700;letter-spacing:.04em;line-height:1.15;flex:1 1 auto}
+.tb-title span{display:block;font-weight:400;font-size:10px;color:var(--gold-l);letter-spacing:.16em;text-transform:uppercase}
+.pts{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);
+  border:1px solid rgba(224,193,147,.4);border-radius:999px;padding:4px 10px;font-weight:800;
+  font-size:13px;flex:0 0 auto}
+.pts b{color:var(--gold-l)}
+.star{color:var(--gold-l);font-size:13px}
+.progress{height:6px;background:rgba(255,255,255,.15);border-radius:999px;margin-top:10px;overflow:hidden}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--green));
+  border-radius:999px;transition:width .45s cubic-bezier(.4,0,.2,1)}
+.seclabel{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-l);
+  margin-top:7px;font-weight:700}
+/* ---------- stage ---------- */
+.stage{flex:1 1 auto;padding:18px 16px 26px;animation:fade .4s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border-radius:18px;box-shadow:var(--shadow);padding:20px;
+  border:1px solid var(--line)}
+h1.scr{font-family:var(--serif);font-size:26px;line-height:1.1;margin:0 0 6px;color:var(--navy)}
+h2.scr{font-family:var(--serif);font-size:21px;line-height:1.15;margin:0 0 6px;color:var(--navy)}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+  font-weight:800;margin:0 0 8px}
+.lede{font-size:15px;line-height:1.5;color:var(--ink);margin:0 0 14px}
+.muted{color:var(--muted)}
+.center{text-align:center}
+/* ---------- buttons / nav ---------- */
+.navbar{position:sticky;bottom:0;z-index:30;background:linear-gradient(0deg,var(--cream) 70%,rgba(243,238,227,0));
+  padding:12px 16px 16px;display:flex;gap:10px}
+.btn{appearance:none;border:0;border-radius:12px;font-family:var(--sans);font-weight:800;
+  font-size:15px;padding:14px 18px;cursor:pointer;transition:transform .1s,box-shadow .2s,background .2s;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--green);color:#fff;flex:1;box-shadow:0 4px 0 var(--green-d)}
+.btn-primary:active{box-shadow:0 1px 0 var(--green-d)}
+.btn-primary:disabled{background:#B6C2BE;box-shadow:0 4px 0 #9AA8A3;color:#fff;opacity:.7;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--navy);border:2px solid var(--line)}
+.btn-gold{background:var(--gold);color:#fff;box-shadow:0 4px 0 #9C7338}
+.btn-sm{padding:9px 14px;font-size:13px;border-radius:10px}
+.hint{font-size:12.5px;color:var(--muted);text-align:center;margin-top:8px}
+/* ---------- hero / welcome ---------- */
+.hero-img{width:100%;border-radius:14px;display:block;box-shadow:var(--shadow)}
+.heroframe{background:var(--navy);border-radius:16px;padding:10px;box-shadow:var(--shadow-lg)}
+.kicker{display:inline-block;background:var(--red);color:#fff;font-size:11px;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;padding:5px 11px;border-radius:999px;margin-bottom:12px}
+.pricepills{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}
+.pricepill{flex:1;min-width:130px;background:var(--cream);border:1px solid var(--line);border-radius:12px;
+  padding:10px 12px;text-align:center}
+.pricepill .p{font-family:var(--serif);font-size:22px;color:var(--navy);font-weight:700}
+.pricepill .l{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+/* ---------- info grid (why it matters) ---------- */
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.itile{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:14px}
+.itile .ic{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:17px;margin-bottom:8px}
+.itile h3{margin:0 0 4px;font-size:14px;color:var(--navy)}
+.itile p{margin:0;font-size:12.5px;line-height:1.4;color:var(--ink)}
+/* ---------- menu board ---------- */
+.menu-grid{display:flex;flex-direction:column;gap:12px}
+.menu-item{display:flex;gap:14px;background:var(--paper);border:1px solid var(--line);border-radius:16px;
+  padding:12px;cursor:pointer;align-items:center;transition:transform .12s,box-shadow .2s,border-color .2s;
+  position:relative;overflow:hidden}
+.menu-item:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--gold-l)}
+.menu-item .thumb{width:74px;height:96px;flex:0 0 auto;border-radius:10px;background:#fff;
+  object-fit:contain;border:1px solid var(--line)}
+.menu-item h3{margin:0 0 3px;font-size:16px;color:var(--navy);font-family:var(--serif)}
+.menu-item .tag{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.menu-item .price{font-weight:800;color:var(--green-d);font-size:14px;margin-top:5px}
+.menu-item .seen{position:absolute;top:8px;right:8px;background:var(--green);color:#fff;font-size:10px;
+  font-weight:800;padding:3px 8px;border-radius:999px;opacity:0;transition:opacity .3s}
+.menu-item.opened .seen{opacity:1}
+.adult-badge{display:inline-block;background:var(--red);color:#fff;font-size:9px;font-weight:800;
+  padding:2px 6px;border-radius:5px;margin-left:6px;vertical-align:middle;letter-spacing:.05em}
+/* ---------- overlay (item detail) ---------- */
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(20,40,54,.6);backdrop-filter:blur(3px);
+  display:flex;align-items:flex-end;justify-content:center;animation:fade .25s ease}
+.sheet{background:var(--cream);width:100%;max-width:680px;max-height:92vh;border-radius:22px 22px 0 0;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;animation:slideup .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes slideup{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}
+.sheet-head{position:sticky;top:0;background:var(--navy);color:#fff;padding:14px 16px;display:flex;
+  align-items:center;gap:10px;z-index:2}
+.sheet-head h3{margin:0;font-family:var(--serif);font-size:18px;flex:1}
+.x{margin-left:auto;background:rgba(255,255,255,.15);border:0;color:#fff;width:32px;height:32px;
+  border-radius:50%;font-size:18px;cursor:pointer;flex:0 0 auto}
+.sheet-body{padding:16px}
+.detail-photo{width:160px;margin:0 auto 6px;display:block;background:#fff;border-radius:12px;border:1px solid var(--line)}
+/* ---------- click to reveal ---------- */
+.reveal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.reveal{background:var(--navy);color:#fff;border-radius:14px;padding:14px;cursor:pointer;min-height:74px;
+  position:relative;transition:transform .12s,background .25s;overflow:hidden;border:1px solid transparent}
+.reveal:active{transform:scale(.98)}
+.reveal .face{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13.5px}
+.reveal .face .ic{width:26px;height:26px;border-radius:50%;background:rgba(224,193,147,.25);
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto}
+.reveal .back{font-size:12.5px;line-height:1.4;margin-top:8px;color:var(--cream);display:none}
+.reveal.open{background:var(--paper);color:var(--ink);border-color:var(--gold-l)}
+.reveal.open .face{color:var(--navy)}
+.reveal.open .face .ic{background:var(--green);color:#fff}
+.reveal.open .back{display:block;color:var(--ink)}
+.reveal .tap{position:absolute;bottom:8px;right:10px;font-size:10px;color:var(--gold-l);font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em}
+.reveal.open .tap{display:none}
+.reveal.allergen{background:var(--red)}
+.reveal.allergen.open{background:#fff;border-color:var(--red)}
+/* ---------- drag/tap build ---------- */
+.build-wrap{margin-top:6px}
+.slots{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.slot{display:flex;align-items:center;gap:10px;background:var(--paper);border:2px dashed var(--gold-l);
+  border-radius:12px;padding:0;min-height:50px;transition:border-color .2s,background .2s;overflow:hidden}
+.slot .num{width:42px;align-self:stretch;flex:0 0 auto;background:var(--cream);display:flex;align-items:center;
+  justify-content:center;font-weight:800;color:var(--gold);font-size:15px;border-right:1px dashed var(--gold-l)}
+.slot .content{flex:1;padding:13px 12px;font-weight:700;font-size:14px;color:var(--muted)}
+.slot.filled{border-style:solid;border-color:var(--navy-l);cursor:pointer}
+.slot.filled .content{color:var(--ink)}
+.slot.filled .num{background:var(--navy);color:#fff;border-right-color:var(--navy)}
+.slot.dragover{border-color:var(--green);background:#F0FAF0}
+.slot.active{border-color:var(--green);background:#F4FBF4}
+.slot.active .num{background:var(--green);color:#fff;border-right-color:var(--green)}
+.slot.ok{border-color:var(--ok);background:#F0FAF0}.slot.ok .num{background:var(--ok)}
+.slot.err{border-color:var(--bad);background:#FCF0F0}.slot.err .num{background:var(--bad)}
+.tray{display:flex;flex-wrap:wrap;gap:8px;min-height:10px}
+.chip{background:var(--navy);color:#fff;border-radius:11px;padding:11px 13px;font-weight:700;font-size:13.5px;
+  cursor:grab;box-shadow:0 3px 0 rgba(0,0,0,.24);transition:transform .1s,opacity .2s;border:0;touch-action:manipulation;
+  display:inline-flex;align-items:center;gap:9px;text-align:left;line-height:1.22}
+.chip .cem{font-size:19px;line-height:1;flex:0 0 auto;filter:drop-shadow(0 1px 0 rgba(0,0,0,.25))}
+.chip:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(0,0,0,.24)}
+.chip.used{opacity:0;pointer-events:none;width:0;padding:0;margin:0;border:0;gap:0}
+.slot .content .sem{margin-right:7px}
+/* real-photo guided build (full-service) */
+.pbstage{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.pbimg{width:100%;max-width:300px;height:296px;object-fit:contain;display:block;margin:0 auto}
+.pbcap{font-size:12.5px;color:var(--muted);font-weight:700;margin-top:6px;min-height:1.2em}
+.pbdots{display:flex;gap:6px;justify-content:center;margin:13px 0}
+.pbdot{width:9px;height:9px;border-radius:50%;background:var(--line);transition:background .2s}
+.pbdot.on{background:var(--green)}
+.pbaction{width:100%;border:0;border-radius:14px;color:#fff;padding:14px 15px;display:flex;align-items:center;gap:13px;text-align:left;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.22);transition:transform .1s,box-shadow .1s}
+.pbaction:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.22)}
+.pbae{font-size:30px;line-height:1;flex:0 0 auto;filter:drop-shadow(0 1px 0 rgba(0,0,0,.25))}
+.pbatx{flex:1 1 auto;min-width:0}
+.pbatx b{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;opacity:.85;font-weight:800}
+.pbal{font-size:16px;font-weight:800;line-height:1.2;margin:2px 0}
+.pban{font-size:12px;opacity:.93;font-weight:500;line-height:1.32}
+.pbgo{font-weight:800;font-size:13px;flex:0 0 auto;opacity:.92}
+.pbcheck{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.pbrow{display:flex;align-items:center;gap:9px;padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:12.5px;font-weight:600;opacity:.5;transition:opacity .2s,border-color .2s,background .2s}
+.pbrow.done{opacity:1;border-color:var(--green);background:#F4FBF4}
+.pbrn{width:21px;height:21px;border-radius:50%;background:var(--navy);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-weight:800}
+.pbrow.done .pbrn{background:var(--green)}
+.pbct{flex:1 1 auto;display:flex;align-items:center;gap:7px;min-width:0}
+.pbce{font-size:15px;flex:0 0 auto}
+.pbtick{color:var(--green);font-weight:900;opacity:0;flex:0 0 auto}
+.pbrow.done .pbtick{opacity:1}
+.pbstage{position:relative}
+.pbdrop{outline:2px dashed transparent;transition:outline-color .15s,background .15s}
+.pbdrop.over{outline-color:var(--green);background:#F4FBF4}
+.pbhint{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-size:12px;font-weight:800;color:var(--green);pointer-events:none}
+.pbtray{margin:12px 0 4px}
+.pbchip{width:100%;border:0;border-radius:14px;color:#fff;padding:13px 15px;display:flex;align-items:center;gap:13px;text-align:left;cursor:grab;box-shadow:0 4px 0 rgba(0,0,0,.22);touch-action:manipulation;transition:transform .1s,box-shadow .1s,opacity .15s}
+.pbchip:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.22)}
+.pbchip.dragging{opacity:.5}
+.pbce2{font-size:30px;line-height:1;flex:0 0 auto;filter:drop-shadow(0 1px 0 rgba(0,0,0,.25))}
+.pbai{width:42px;height:42px;object-fit:contain;flex:0 0 auto;background:#fff;border-radius:9px;padding:2px;box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.pbtx2{flex:1 1 auto;min-width:0}
+.pbal2{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;opacity:.85;font-weight:800}
+.pbnm{font-size:16px;font-weight:800;line-height:1.2;margin-top:2px}
+.pbnote{font-size:12px;color:var(--muted);font-weight:600;margin-top:7px;text-align:center}
+@keyframes pbshake{0%,100%{transform:translate(0,0) rotate(0)}15%{transform:translate(-4px,0) rotate(-2deg)}30%{transform:translate(4px,0) rotate(2deg)}45%{transform:translate(-4px,0) rotate(-2deg)}60%{transform:translate(3px,0) rotate(1.5deg)}75%{transform:translate(-2px,0) rotate(-1deg)}}
+.pbimg.pbshake{animation:pbshake .42s linear 2}
+@keyframes pbpour{0%{transform:translateY(0);opacity:1}45%{transform:translateY(7px);opacity:.35}65%{opacity:0}100%{transform:translateY(0);opacity:1}}
+.pbpour{animation:pbpour .82s ease}
+@keyframes pbflash{0%{transform:scale(.985);opacity:.55}100%{transform:scale(1);opacity:1}}
+.pbflash{animation:pbflash .3s ease}
+.pbjar{position:absolute;width:54%;right:5%;top:-4%;transform-origin:58% 88%;pointer-events:none;z-index:4;filter:drop-shadow(0 5px 7px rgba(0,0,0,.28));opacity:0}
+.pbjar.go{animation:pbjarpour 1.3s ease forwards}
+@keyframes pbjarpour{
+ 0%{opacity:0;transform:translate(46px,-26px) rotate(8deg)}
+ 16%{opacity:1;transform:translate(0,0) rotate(8deg)}
+ 44%{opacity:1;transform:translate(-24%,0) rotate(-48deg)}
+ 72%{opacity:1;transform:translate(-24%,0) rotate(-48deg)}
+ 100%{opacity:0;transform:translate(-8%,-6%) rotate(-22deg)}
+}
+.build-actions{display:flex;gap:8px;margin-top:14px}
+/* ---------- hotspot ---------- */
+.hs-wrap{position:relative;width:100%;max-width:340px;margin:6px auto 0;border-radius:14px;overflow:hidden;
+  background:#fff;border:1px solid var(--line)}
+.hs-wrap img{width:100%;display:block}
+.spot{position:absolute;border:3px solid rgba(255,255,255,.0);border-radius:50%;cursor:pointer;
+  transform:translate(-50%,-50%);transition:all .2s}
+.spot .dot{position:absolute;inset:0;border-radius:50%;border:3px solid var(--gold);
+  box-shadow:0 0 0 4px rgba(194,145,79,.35);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(194,145,79,.5)}70%{box-shadow:0 0 0 10px rgba(194,145,79,0)}100%{box-shadow:0 0 0 0 rgba(194,145,79,0)}}
+.spot.found .dot{border-color:var(--green);background:rgba(68,181,73,.25);box-shadow:none;animation:none}
+.spot.found .lab{display:block}
+.spot .lab{display:none;position:absolute;left:50%;top:-8px;transform:translate(-50%,-100%);
+  background:var(--navy);color:#fff;font-size:11px;font-weight:700;padding:4px 8px;border-radius:7px;white-space:nowrap}
+.hs-list{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.hs-tag{font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;background:var(--paper);
+  border:1px solid var(--line);color:var(--muted)}
+.hs-tag.got{background:var(--green);color:#fff;border-color:var(--green)}
+/* ---------- quiz ---------- */
+.qstem{font-size:16px;font-weight:700;color:var(--navy);line-height:1.35;margin:4px 0 14px}
+.qimg{width:130px;display:block;margin:0 auto 12px;background:#fff;border-radius:12px;border:1px solid var(--line)}
+.opt{display:block;width:100%;text-align:left;background:var(--paper);border:2px solid var(--line);
+  border-radius:13px;padding:14px 14px;margin-bottom:9px;font-size:14.5px;font-weight:600;color:var(--ink);
+  cursor:pointer;transition:border-color .15s,background .15s;line-height:1.35}
+.opt:hover{border-color:var(--gold-l)}
+.opt.sel-ok{border-color:var(--ok);background:#F0FAF0}
+.opt.sel-bad{border-color:var(--bad);background:#FCF0F0}
+.opt.reveal-ok{border-color:var(--ok);background:#F0FAF0}
+.opt:disabled{cursor:default}
+.feedback{border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.45;margin-top:4px;display:none}
+.feedback.show{display:block;animation:fade .3s}
+.feedback.good{background:#EAF7EA;border:1px solid var(--green);color:#1F5B22}
+.feedback.bad{background:#FBEDEE;border:1px solid var(--red);color:#7C2128}
+.feedback b{display:block;margin-bottom:2px}
+.qcount{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+/* ---------- checklist ---------- */
+.check-list{list-style:none;padding:0;margin:6px 0 0}
+.check-list li{display:flex;align-items:center;gap:11px;background:var(--paper);border:1px solid var(--line);
+  border-radius:12px;padding:13px 14px;margin-bottom:8px;cursor:pointer;font-size:14px;font-weight:600;transition:background .2s}
+.check-list .box{width:24px;height:24px;border-radius:7px;border:2px solid var(--gold-l);flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;transition:all .2s}
+.check-list li.done{background:#F0FAF0}
+.check-list li.done .box{background:var(--green);border-color:var(--green)}
+.check-list li.done .txt{color:var(--green-d);text-decoration:line-through;text-decoration-color:rgba(47,143,56,.5)}
+/* ---------- timeline ---------- */
+.tl{position:relative;padding-left:4px}
+.tl-item{display:flex;gap:12px;padding-bottom:14px;position:relative}
+.tl-item:not(:last-child)::before{content:"";position:absolute;left:17px;top:30px;bottom:-4px;width:2px;background:var(--line)}
+.tl-dot{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;flex:0 0 auto;display:flex;
+  align-items:center;justify-content:center;font-size:10px;font-weight:800;line-height:1;text-align:center;z-index:1}
+.tl-dot.go{background:var(--red)}.tl-dot.peak{background:var(--gold)}
+.tl-item h4{margin:0 0 2px;font-size:14px;color:var(--navy)}
+.tl-item p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.35}
+/* ---------- timed build ---------- */
+.timer-ring{font-size:30px;font-weight:800;font-family:var(--serif);color:var(--navy);text-align:center}
+.timer-ring.warn{color:var(--red)}
+.timerbar{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin:8px 0 16px}
+.timerbar i{display:block;height:100%;background:var(--green);width:100%;transition:width 1s linear}
+.timerbar i.warn{background:var(--red)}
+/* ---------- blender simulation ---------- */
+.sim{margin-top:8px}
+.sim-prompt{background:var(--navy);color:#fff;border-radius:13px;padding:12px 14px;font-weight:700;font-size:14px;
+  line-height:1.4;display:flex;gap:10px;align-items:center;min-height:50px}
+.sim-prompt .stepno{flex:0 0 auto;background:var(--gold);color:#fff;font-size:10.5px;font-weight:800;border-radius:999px;
+  padding:4px 9px;white-space:nowrap;letter-spacing:.04em}
+.scene-wrap{position:relative;width:100%;max-width:360px;margin:14px auto 0}
+.scene-wrap svg{width:100%;display:block;overflow:visible}
+.zone-hi{position:absolute;border:2.5px dashed var(--green);border-radius:16px;pointer-events:none;
+  opacity:0;transition:opacity .25s;background:rgba(68,181,73,.06)}
+.zone-hi.on{opacity:1;animation:zonepulse 1.4s infinite}
+@keyframes zonepulse{0%,100%{box-shadow:0 0 0 0 rgba(68,181,73,.35)}50%{box-shadow:0 0 0 9px rgba(68,181,73,0)}}
+.sim-tray{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:16px;min-height:8px}
+.ing{display:flex;align-items:center;gap:8px;background:var(--paper);border:2px solid var(--gold-l);border-radius:13px;
+  padding:10px 13px;font-weight:700;font-size:13px;color:var(--navy);cursor:grab;box-shadow:var(--shadow);
+  user-select:none;-webkit-user-select:none;touch-action:none;transition:transform .1s,opacity .2s}
+.ing .em{font-size:20px;line-height:1}
+.ing:active{transform:scale(.96)}
+.ing.used{display:none}
+.sim-action{display:flex;justify-content:center;margin-top:16px;min-height:8px}
+.btn-blend{background:var(--green);color:#fff;border:0;border-radius:14px;font-weight:800;font-size:16px;
+  padding:15px 32px;cursor:pointer;box-shadow:0 5px 0 var(--green-d);letter-spacing:.03em}
+.btn-blend.go{animation:bp 1.1s infinite}
+.btn-blend.pour{background:var(--gold);box-shadow:0 5px 0 #9C7338}
+.btn-blend:active{transform:translateY(2px);box-shadow:0 3px 0 var(--green-d)}
+@keyframes bp{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+.sim-steps{display:flex;gap:6px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.sim-steps i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block;transition:all .3s}
+.sim-steps i.done{background:var(--green)}
+.sim-steps i.cur{background:var(--gold);transform:scale(1.35)}
+#jarSpin{transform-box:fill-box;transform-origin:center}
+#jarSpin.spinning{animation:jarsh .12s linear 9}
+@keyframes jarsh{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-2.5px) rotate(-1deg)}75%{transform:translateX(2.5px) rotate(1deg)}}
+.garnish{opacity:0;transition:opacity .45s ease,transform .45s cubic-bezier(.2,1.5,.4,1);
+  transform-box:fill-box;transform-origin:center;transform:scale(.55)}
+.garnish.show{opacity:1;transform:scale(1)}
+#pourStream{transition:opacity .25s}
+.simdone{background:#EAF7EA;border:1px solid var(--green);border-radius:13px;padding:12px 14px;margin-top:16px;
+  display:flex;gap:13px;align-items:center;animation:fade .4s}
+.simdone img{width:52px;flex:0 0 auto;border-radius:9px;border:1px solid var(--line);background:#fff}
+.simdone div{font-size:13px;color:#1F5B22;font-weight:700;line-height:1.4}
+
+/* ---------- toast / badge ---------- */
+.toasts{position:fixed;left:0;right:0;top:70px;z-index:80;display:flex;flex-direction:column;align-items:center;
+  gap:8px;pointer-events:none;padding:0 12px}
+.toast{background:var(--navy);color:#fff;border-radius:13px;padding:11px 16px;font-weight:700;font-size:13.5px;
+  box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:9px;animation:pop .3s cubic-bezier(.2,1.4,.4,1);
+  border:1px solid rgba(224,193,147,.4);max-width:480px}
+@keyframes pop{from{transform:translateY(-14px) scale(.9);opacity:0}to{transform:none;opacity:1}}
+.toast .em{font-size:19px}
+.toast.badge{background:linear-gradient(135deg,var(--gold),#A87B3C)}
+.toast.pts{background:var(--green-d)}
+/* ---------- badge tray ---------- */
+.badgetray{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px}
+.bdg{width:78px;text-align:center;opacity:.32;transition:opacity .3s,transform .3s;filter:grayscale(1)}
+.bdg.earned{opacity:1;filter:none;transform:scale(1.02)}
+.bdg .disc{width:54px;height:54px;border-radius:50%;margin:0 auto 5px;background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:var(--shadow);border:2px solid var(--gold-l)}
+.bdg.earned .disc{background:linear-gradient(135deg,var(--gold),#9C7338)}
+.bdg span{font-size:10px;font-weight:700;line-height:1.15;color:var(--navy);display:block}
+/* ---------- certificate ---------- */
+.cert{background:#fff;border:3px double var(--gold);border-radius:14px;padding:26px 22px;text-align:center;
+  box-shadow:var(--shadow-lg);position:relative}
+.cert .wm{width:54px;height:54px;margin:0 auto 8px;display:block;object-fit:contain}
+.cert .ttl{font-family:var(--serif);font-size:23px;color:var(--navy);margin:4px 0}
+.cert .sub{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:800}
+.cert .name{font-family:var(--serif);font-size:26px;color:var(--navy);border-bottom:2px solid var(--line);
+  padding:10px 4px 6px;margin:16px 0 6px;display:inline-block;min-width:60%}
+.cert .meta{font-size:12.5px;color:var(--muted);margin-top:8px}
+.cert .scorebig{font-size:34px;font-weight:800;color:var(--green-d);font-family:var(--serif)}
+.nameinput{width:100%;padding:12px;border:2px solid var(--line);border-radius:11px;font-size:16px;
+  font-family:var(--serif);text-align:center;margin-top:6px}
+/* ---------- misc ---------- */
+.callout{background:#FBF3EA;border:1px solid var(--gold-l);border-radius:12px;padding:13px 14px;
+  font-size:13px;line-height:1.45;margin-top:12px;display:flex;gap:10px}
+.callout .ic{font-size:18px;flex:0 0 auto}
+.callout.red{background:#FBEDEE;border-color:#E3A3A8}
+.callout.red b{color:var(--red)}
+.spec-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.spec-row:last-child{border-bottom:0}
+.spec-row .v{font-weight:800;color:var(--navy)}
+.pillrow{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.pill{font-size:11px;font-weight:800;padding:5px 11px;border-radius:999px;background:var(--navy);color:#fff;letter-spacing:.03em}
+.pill.gold{background:var(--gold)}.pill.red{background:var(--red)}.pill.green{background:var(--green)}.pill.blue{background:var(--blue)}
+.scoredial{width:120px;height:120px;border-radius:50%;margin:6px auto 10px;display:flex;align-items:center;
+  justify-content:center;font-family:var(--serif);font-size:30px;font-weight:800;color:#fff;position:relative}
+@media (max-width:420px){
+  .igrid,.reveal-grid{grid-template-columns:1fr}
+  h1.scr{font-size:23px}
+}
+@media print{
+  body{background:#fff}.app{box-shadow:none}.topbar,.navbar,.toasts{display:none!important}
+  .stage{padding:0}.cert{border-color:#000}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="tb-row">
+      <div class="wmark"><img id="brandLogo" alt="Wahlburgers"></div>
+      <div class="tb-title">Specialty Shakes<span>Fruity Pebbles &amp; Kit Kat · Counter Service · Menu Training</span></div>
+      <div class="pts"><span class="star">★</span><b id="ptsVal">0</b></div>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="seclabel" id="secLabel">Welcome</div>
+  </div>
+  <div class="stage" id="stage"></div>
+  <div class="navbar" id="navbar"></div>
+</div>
+<div class="toasts" id="toasts"></div>
+
+<script src="scorm.js"></script>
+<script src="assets/images.js"></script>
+<script>
+"use strict";
+/* ============================================================
+   DATA — sourced verbatim from the official Rollout Guide
+   ============================================================ */
+var IMG = window.WB_IMAGES || {};
+var MASTERY = 90;
+
+/* ===== SPECIALTY SHAKES DATA =====
+   MIXIN_OZ drives every recipe line, build step, and quiz answer.
+   Recipe cards say 1 oz; the costing deck proposed 0.5 oz. CONFIRM, then change here only. */
+var MIXIN_OZ = 1;
+var MIX = (MIXIN_OZ === 1) ? "1 oz" : (MIXIN_OZ + " oz");
+
+/* Ice cream & milk scale with the vessel (per the official spec cards):
+   12 oz classic glass = 10 oz ice cream + 3 oz milk
+   16 oz logoed cup    = 12 oz ice cream + 4 oz milk */
+function icOz(glass){ return glass ? "10 oz" : "12 oz"; }
+function milkOz(glass){ return glass ? "3 oz" : "4 oz"; }
+
+function mkVariant(o){
+  var glass = (o.fmt === "12");
+  var vessel = glass ? "12 oz classic shake glass" : "16 oz logoed cup";
+  return {
+    key:o.key, name:o.name, sub: glass ? "Dine-In" : "Takeout",
+    img:o.hero, hsImg:o.hero, price:"", adult:false, flavorKey:o.flavorKey,
+    vessel:vessel,
+    spots:o.spots||[],
+    pills:[["N/A Beverage","navy"],[glass?"Dine-In":"Takeout","gold"],[glass?"Rolled Rim":"Dome Lid","blue"]],
+    desc:o.desc,
+    flavor:o.flavorNote,
+    reveals:[
+      {ic:"🍨",t:"Vanilla Ice Cream",b:icOz(glass)+" blended as the shake base."},
+      {ic:"🥛",t:"Whole Milk",b:milkOz(glass)+", blended with the ice cream until smooth and creamy."},
+      {ic:o.mixIc,t:o.mixName,b:MIX+" crushed, folded and blended into the shake."},
+      {ic:"🌀",t:"Whipped Cream",b:"Top it off — approximately 2 oz."},
+      {ic:o.mixIc,t:o.mixName+" (garnish)",b: glass
+        ? "About ½ oz rolled into the frosted rim + ½ oz over the top of the whipped cream."
+        : "About 1 oz over the top of the whipped cream. No rim treatment on the cup."},
+      {ic:"💬",t:"Server Talking Point",b:o.script},
+      {ic:"⚠️",t:"Allergen Note",b:"Contains DAIRY (ice cream, milk, whipped cream)"+o.allerg+" Always check the official Wahlburgers allergen guide or your manager before answering a guest allergen question."}
+    ],
+    build: glass ? [
+      {t:"Frost the rim of the glass",              em:"🧴", c:"#C9A24A"},
+      {t:"Roll the rim in "+o.mixShort,             em:o.mixIc, c:o.accent},
+      {t:"Add ice cream & milk to the blender",     em:"🍨", c:"#3AA0E8"},
+      {t:"Add "+MIX+" "+o.mixShort+" to the blender", em:o.mixIc, c:o.accent2},
+      {t:"Blend until smooth",                      em:"🌀", c:"#16B9A9"},
+      {t:"Pour into the 12 oz glass",               em:"🫗", c:"#008252"},
+      {t:"Top with whipped cream",                  em:"🍦", c:"#6B4E8A"},
+      {t:"Finish with "+o.mixShort+" on top",       em:o.mixIc, c:o.accent}
+    ] : [
+      {t:"Add ice cream & milk to the blender",     em:"🍨", c:"#3AA0E8"},
+      {t:"Add "+MIX+" "+o.mixShort+" to the blender", em:o.mixIc, c:o.accent2},
+      {t:"Blend until smooth",                      em:"🌀", c:"#16B9A9"},
+      {t:"Pour into the 16 oz logoed cup",          em:"🫗", c:"#008252"},
+      {t:"Top with whipped cream",                  em:"🍦", c:"#6B4E8A"},
+      {t:"Finish with "+o.mixShort+" on top",       em:o.mixIc, c:o.accent},
+      {t:"Cap with dome lid & green straw",         em:"🥤", c:"#314D56"}
+    ],
+    quiz:o.quiz
+  };
+}
+
+var VARIANTS = {
+  fp12: mkVariant({
+    key:"fp12", fmt:"12", flavorKey:"fp", name:"Fruity Pebbles Shake",
+    hero:(IMG.ph_fp12||IMG.fs), mixName:"Fruity Pebbles", mixShort:"Fruity Pebbles",
+    spots:[{x:46,y:12,r:7,lab:"Fruity Pebbles Crown"},{x:58,y:23,r:7,lab:"Whipped Cream"},{x:40,y:31,r:7,lab:"Cereal-Rolled Rim"},{x:48,y:55,r:7,lab:"Blended Shake"},{x:48,y:84,r:7,lab:"12 oz Glass"}],
+    mixIc:"🌈", accent:"#E23B7A", accent2:"#F5C518",
+    desc:"A colorful, nostalgic shake — creamy vanilla ice cream blended with Fruity Pebbles for a sweet, fruity crunch in every sip. Served in the 12 oz classic shake glass with a frosted, cereal-rolled rim and a Fruity Pebbles crown. A dine-in serving — a to-go order is built in the 16 oz takeout cup.",
+    flavorNote:"Sweet, fruity and creamy with a light cereal crunch. Nostalgic and colorful — a photo-ready dessert.",
+    script:"\u201CHave you tried our Fruity Pebbles Shake? Creamy vanilla blended with the cereal you grew up on — now on our menu.\u201D",
+    allerg:". Cereal and shared equipment — verify wheat and gluten declarations against the supplier spec.",
+    quiz:[
+      {type:"mc",stem:"How is the dine-in Fruity Pebbles Shake finished?",
+       opts:["Dome lid and straw","Frosted rim rolled in Fruity Pebbles, plus a cereal finish on top","Chocolate drizzle"],a:1,
+       fb:"The 12 oz glass gets the frosted, cereal-rolled rim AND a Fruity Pebbles finish on top."},
+      {type:"tf",stem:"The Fruity Pebbles cereal itself contains no major allergens, so the finished shake is allergen-free.",
+       a:1,fb:"False — and this is the trap. The finished shake contains DAIRY from the ice cream, milk, and whipped cream. Never call the shake allergen-free."}
+    ]}),
+  fp16: mkVariant({
+    key:"fp16", fmt:"16", flavorKey:"fp", name:"Fruity Pebbles Shake",
+    hero:(IMG.ph_fp16||IMG.cup), mixName:"Fruity Pebbles", mixShort:"Fruity Pebbles",
+    spots:[{x:50,y:13,r:7,lab:"Green Straw"},{x:43,y:28,r:7,lab:"Whip + Cereal Crown"},{x:66,y:24,r:7,lab:"Dome Lid"},{x:50,y:62,r:7,lab:"16 oz Logoed Cup"},{x:40,y:70,r:7,lab:"Blended Shake"}],
+    mixIc:"🌈", accent:"#E23B7A", accent2:"#F5C518",
+    desc:"The same nostalgic Fruity Pebbles shake, built for takeout in the 16 oz logoed cup — topped with whipped cream and a Fruity Pebbles crown, then capped with a dome lid and green straw.",
+    flavorNote:"Sweet, fruity and creamy with a light cereal crunch. Travels well and shows off through the dome.",
+    script:"\u201CWant to add a Fruity Pebbles Shake? Creamy vanilla blended with the cereal you grew up on — it travels great.\u201D",
+    allerg:". Cereal and shared equipment — verify wheat and gluten declarations against the supplier spec.",
+    quiz:[
+      {type:"mc",stem:"Does the 16 oz logoed cup get a rolled rim?",
+       opts:["Yes, same as the glass","No — top garnish only, then dome lid and straw","Only during peak hours"],a:1,
+       fb:"No rim treatment on the cup. Garnish the top, then cap with the dome lid and green straw."},
+      {type:"tf",stem:"The takeout build uses the same recipe as the dine-in build.",
+       a:0,fb:"Correct — same ice cream, milk, and blended mix-in. Only the vessel and finish differ."}
+    ]}),
+  kk12: mkVariant({
+    key:"kk12", fmt:"12", flavorKey:"kk", name:"Kit Kat Shake",
+    hero:(IMG.ph_kk12||IMG.fs), mixName:"Crushed Kit Kat", mixShort:"crushed Kit Kat",
+    spots:[{x:54,y:11,r:7,lab:"Crushed Kit Kat"},{x:40,y:19,r:7,lab:"Whipped Cream"},{x:45,y:31,r:7,lab:"Kit Kat-Rolled Rim"},{x:48,y:55,r:7,lab:"Blended Shake"},{x:48,y:84,r:7,lab:"12 oz Glass"}],
+    mixIc:"🍫", accent:"#D3122A", accent2:"#5A3A22",
+    desc:"Creamy vanilla ice cream blended with real crushed Kit Kat for a rich, wafer-crunch shake. Served in the 12 oz classic shake glass with a frosted rim rolled in crushed Kit Kat and a Kit Kat finish on top. A dine-in serving — a to-go order is built in the 16 oz takeout cup.",
+    flavorNote:"Rich, chocolatey and creamy with a crisp wafer crunch. Indulgent without being heavy.",
+    script:"\u201CHave you seen our Kit Kat Shake? Real crushed Kit Kat blended right in — rich, creamy, and now on our menu.\u201D",
+    allerg:", and contains WHEAT, SOY and may contain nuts from the confection.",
+    quiz:[
+      {type:"mc",stem:"What goes into the Kit Kat Shake blend?",
+       opts:["Chocolate sauce and syrup","Crushed Kit Kat only — no chocolate sauce","Two whole snack bars, unblended"],a:1,
+       fb:"Crushed Kit Kat blended in. There is NO chocolate sauce in this build — that was an earlier draft, not the standard."},
+      {type:"tf",stem:"The dine-in Kit Kat Shake rim is frosted and rolled in crushed Kit Kat.",
+       a:0,fb:"Correct — frost the rim, then roll it in crushed Kit Kat. Glass only, never the cup."}
+    ]}),
+  kk16: mkVariant({
+    key:"kk16", fmt:"16", flavorKey:"kk", name:"Kit Kat Shake",
+    hero:(IMG.ph_kk16||IMG.cup), mixName:"Crushed Kit Kat", mixShort:"crushed Kit Kat",
+    spots:[{x:51,y:11,r:7,lab:"Green Straw"},{x:70,y:30,r:7,lab:"Dome Lid"},{x:40,y:29,r:7,lab:"Whip + Kit Kat Crown"},{x:50,y:66,r:7,lab:"16 oz Logoed Cup"},{x:33,y:52,r:7,lab:"Blended Shake"}],
+    mixIc:"🍫", accent:"#D3122A", accent2:"#5A3A22",
+    desc:"The same rich Kit Kat shake, built for takeout in the 16 oz logoed cup — topped with whipped cream and crushed Kit Kat, then capped with a dome lid and green straw.",
+    flavorNote:"Rich, chocolatey and creamy with a crisp wafer crunch. Built to travel.",
+    script:"\u201CWant to add a Kit Kat Shake? Real crushed Kit Kat blended right in — it travels great.\u201D",
+    allerg:", and contains WHEAT, SOY and may contain nuts from the confection.",
+    quiz:[
+      {type:"mc",stem:"How is the takeout Kit Kat Shake finished?",
+       opts:["Rolled rim, then a lid","Whipped cream and crushed Kit Kat on top, then dome lid and green straw","Chocolate drizzle around the cup"],a:1,
+       fb:"Top garnish only on the cup — whipped cream, crushed Kit Kat, then the dome lid and green straw."},
+      {type:"tf",stem:"You should add chocolate sauce to the Kit Kat Shake if a guest asks for extra chocolate.",
+       a:1,fb:"False — the build has no chocolate sauce. Don't modify a spec build; offer it as-is or check with your manager."}
+    ]})
+};
+
+var ACTIVE = ["fp16","kk16"];
+var IS_COUNTER = true;
+var MODULE_MODE = "specialty";
+
+var SCENARIOS = [
+  {stem:"\uD83E\uDDD2 A guest asks if the Fruity Pebbles Shake is safe for their dairy allergy.",
+   opts:["\u201CYes, the cereal has no major allergens.\u201D","\u201CNo — it's made with ice cream, milk and whipped cream, so it contains dairy.\u201D","\u201CI think so.\u201D"],
+   a:1,fb:"The finished shake always contains dairy. The cereal's own allergen profile is irrelevant to the finished product — never guess on an allergen question."},
+  {stem:"\uD83C\uDF6B A guest wants the Kit Kat Shake with extra chocolate sauce.",
+   opts:["Add chocolate sauce","Explain it's built with crushed Kit Kat blended in, and offer it as specced","Refuse and walk away"],
+   a:1,fb:"The build has no chocolate sauce. Describe what makes it great as-specced; escalate special requests to a manager."},
+  {stem:"\uD83E\uDD64 A takeout order comes in for a Kit Kat Shake. What's the finish?",
+   opts:["Rolled rim, whipped cream, dome lid","Whipped cream, crushed Kit Kat, dome lid, green straw","Just a lid"],
+   a:1,fb:"Cup builds get top garnish only, then the dome lid and green straw. The rolled rim is glass-only."},
+  {stem:"\u23F1\uFE0F It's a rush and you're tempted to skip blending the mix-in fully.",
+   opts:["Serve it under-blended","Blend smooth, pulsing the mix-in just enough to keep some texture","Leave the mix-in out"],
+   a:1,fb:"Blend smooth and creamy, pulsing the mix-in to keep a little texture. Consistency is the standard guests judge you on."}
+];
+
+var FINAL_POOL = [
+  {type:"mc",stem:IS_COUNTER?"How much vanilla ice cream goes into the 16 oz takeout shake?":"How much vanilla ice cream goes into the 12 oz dine-in shake?",
+   opts:["8 oz","10 oz","12 oz"],a:IS_COUNTER?2:1,
+   fb:IS_COUNTER?"12 oz of vanilla ice cream for the 16 oz takeout cup.":"10 oz for the 12 oz classic glass. (The 16 oz takeout cup steps up to 12 oz.)"},
+  {type:"mc",stem:IS_COUNTER?"How much whole milk goes into the 16 oz takeout blend?":"How much whole milk goes into the 12 oz dine-in blend?",
+   opts:["2 oz","3 oz","4 oz"],a:IS_COUNTER?2:1,
+   fb:IS_COUNTER?"4 oz of whole milk for the 16 oz takeout cup.":"3 oz of whole milk for the 12 oz classic glass. (The 16 oz cup uses 4 oz.)"},
+  {type:"mc",stem:"How much crushed mix-in is blended into the shake?",
+   opts:[MIX,"3 oz","A full cup"],a:0,
+   fb:MIX+" of crushed Fruity Pebbles or Kit Kat, folded and blended in."},
+  {type:"tf",stem:"The Kit Kat Shake includes chocolate sauce in the blend.",
+   a:1,fb:"False — crushed Kit Kat only. No chocolate sauce anywhere in this build."},
+  {type:"mc",stem:"Which build gets the frosted, rolled rim?",
+   opts:["Both the glass and the cup","Only the 12 oz classic shake glass","Only the 16 oz cup"],a:1,
+   fb:"Rim treatment is dine-in only — the 12 oz glass. The 16 oz cup gets top garnish only."},
+  {type:"mc",stem:IS_COUNTER?"How does a counter-service location serve the specialty shake?":"When a full-service guest wants their shake to go, what's it served in?",
+   opts:["The 12 oz dine-in glass","The 16 oz takeout cup","It isn't offered to go"],a:1,
+   fb:IS_COUNTER?"Counter service builds the 16 oz takeout cup only — that's the one way it's served.":"Dine-in shakes come in the 12 oz glass; a to-go order is built in the 16 oz takeout cup."},
+  {type:"mc",stem:"How is the 16 oz takeout cup finished?",
+   opts:["Rolled rim and a straw","Whipped cream, mix-in on top, dome lid, green straw","Nothing on top"],a:1,
+   fb:"Top garnish, then the dome lid and green straw."},
+  {type:"tf",stem:"The finished Fruity Pebbles Shake contains dairy.",
+   a:0,fb:"True — ice cream, milk and whipped cream. Never describe the finished shake as allergen-free."},
+  {type:"scenario",stem:"A guest asks whether the Kit Kat Shake contains wheat.",
+   opts:["\u201CNo.\u201D","\u201CIt does contain wheat — let me confirm the full allergen list for you.\u201D","\u201CProbably not.\u201D"],a:1,
+   fb:"The confection contains wheat and soy. Confirm against the official allergen guide rather than answering from memory."},
+  {type:"mc",stem:"What's the correct blend standard?",
+   opts:["Blend until fully liquid","Blend smooth and creamy, pulsing the mix-in to keep some texture","Barely mix it"],a:1,
+   fb:"Smooth and creamy, with the mix-in pulsed just enough to keep a little texture."},
+  {type:"tf",stem:"Fruity Pebbles and Kit Kat use the same ice cream and milk amounts as each other.",
+   a:0,fb:"True — the two flavors are built identically; only the mix-in and finish differ. Amounts scale with the vessel: 10 oz ice cream + 3 oz milk for the 12 oz glass, 12 oz + 4 oz for the 16 oz cup."},
+  {type:"scenario",stem:"How should you suggest a specialty shake?",
+   opts:["Wait to be asked","Offer it on every check and takeout order, naming the flavor","Only mention it at dinner"],a:1,
+   fb:"Suggest it every time and name the flavor — specialty shakes are a high-margin add-on."},
+  {type:"mc",stem:"When do the Specialty Shakes go live?",
+   opts:["June 30, 2026","July 28, 2026","August 15, 2026"],a:1,
+   fb:"System-wide launch is July 28, 2026."}
+];
+if(IS_COUNTER){ FINAL_POOL = FINAL_POOL.filter(function(q){ return q.stem.indexOf("rolled rim")===-1; }); }
+
+var BADGES = {
+  start:{ic:"🚀",name:"First Sip"},
+  menu:{ic:"🧭",name:"Menu Explorer"},
+  build:{ic:"🥤",name:"Build Master"},
+  eagle:{ic:"🦅",name:"Eagle Eye"},
+  ambassador:{ic:"🎖️",name:"Brand Ambassador"},
+  speed:{ic:"⚡",name:"Speed Demon"},
+  certified:{ic:"⭐",name:"Specialty Shake Certified"}
+};
+
+/* ============================================================
+   STATE + ENGINE
+   ============================================================ */
+var S = {idx:0, points:0, badges:{}, opened:{}, builds:{}, hotspots:{}, name:"", bestScore:0, passed:false};
+
+function h(tag, attrs, kids){
+  var e=document.createElement(tag);
+  if(attrs) for(var k in attrs){
+    if(k==="class") e.className=attrs[k];
+    else if(k==="html") e.innerHTML=attrs[k];
+    else if(k==="text") e.textContent=attrs[k];
+    else if(k.slice(0,2)==="on") e.addEventListener(k.slice(2).toLowerCase(),attrs[k]);
+    else e.setAttribute(k,attrs[k]);
+  }
+  if(kids){ if(!Array.isArray(kids)) kids=[kids];
+    kids.forEach(function(c){ if(c==null) return; e.appendChild(typeof c==="string"?document.createTextNode(c):c); }); }
+  return e;
+}
+var $=function(id){return document.getElementById(id);};
+
+function toast(msg,emoji,cls){
+  var t=h("div",{class:"toast "+(cls||""),html:'<span class="em">'+(emoji||"★")+'</span>'+msg});
+  $("toasts").appendChild(t);
+  setTimeout(function(){t.style.transition="opacity .4s,transform .4s";t.style.opacity="0";t.style.transform="translateY(-10px)";
+    setTimeout(function(){t.remove();},400);},2200);
+}
+function addPoints(n,reason){
+  S.points+=n; $("ptsVal").textContent=S.points;
+  toast("+"+n+(reason?" · "+reason:""),"★","pts");
+  var p=$("ptsVal"); p.style.transform="scale(1.3)"; setTimeout(function(){p.style.transform="";},200);
+}
+function awardBadge(id){
+  if(S.badges[id]) return; S.badges[id]=true;
+  toast("Badge unlocked: "+BADGES[id].name,BADGES[id].ic,"badge");
+}
+
+/* ---- flow definition ---- */
+var FLOW=[];
+function addScreen(sec,label,gate,build){FLOW.push({sec:sec,label:label,gate:gate,build:build});}
+
+/* SECTION 1 — WELCOME */
+addScreen(1,"Welcome",false,function(root,ctx){
+  ctx.unlock();
+  root.appendChild(h("div",{class:"card center"},[
+    h("img",{class:"welcome-logo",src:IMG.logo,alt:"Wahlburgers"}),
+    h("span",{class:"kicker",text:"Indulgent Specialty Shakes"}),
+    h("div",{class:"heroframe"},[ h("img",{class:"hero-img",src:(IMG.poster||(IS_COUNTER?IMG.ph_fp16:IMG.ph_fp12)||IMG.hero),alt:"Throwback Cravings — Specialty Shakes"}) ]),
+    h("h1",{class:"scr",style:"margin-top:16px",text:"Two Flavors, One Brand Standard"}),
+    h("p",{class:"lede",text:IS_COUNTER?"Welcome to your go-live training for the Specialty Shakes program — the Fruity Pebbles Shake and the Kit Kat Shake. In the next few minutes you'll learn to build both flavors in the 16 oz takeout format, sell them, and serve them to brand standard.":"Welcome to your go-live training for the Specialty Shakes program — the Fruity Pebbles Shake and the Kit Kat Shake. In the next few minutes you'll learn to build both flavors in both service formats, sell them, and serve them to brand standard."}),
+    h("div",{class:"pricepills"},[
+      h("div",{class:"pricepill"},[h("div",{class:"p",text:"Two Flavors"}),h("div",{class:"l",text:"Fruity Pebbles · Kit Kat"})]),
+      IS_COUNTER?h("div",{class:"pricepill"},[h("div",{class:"p",text:"One Format"}),h("div",{class:"l",text:"16 oz To-Go Cup"})]):h("div",{class:"pricepill"},[h("div",{class:"p",text:"Two Formats"}),h("div",{class:"l",text:"12 oz Glass · 16 oz Cup"})])
+    ]),
+    h("p",{class:"hint",text:"Learn by doing — most screens are interactive. Tap, build, and answer to earn points and badges."})
+  ]));
+  if(!S.badges.start) awardBadge("start");
+});
+
+/* SECTION 1 — WHY IT MATTERS */
+addScreen(1,"Why It Matters",false,function(root,ctx){
+  ctx.unlock();
+  var tiles=[
+    {ic:"🌈",bg:"var(--fp)",t:"Fruity Pebbles",p:"Creamy vanilla blended with Fruity Pebbles for a sweet, fruity crunch. Nostalgic and colorful."},
+    {ic:"🍫",bg:"var(--kk)",t:"Kit Kat",p:"Creamy vanilla blended with real crushed Kit Kat for a rich, wafer-crunch shake."},
+    {ic:"🥛",bg:"var(--teal)",t:"One Method, Sized to the Cup",p:IS_COUNTER?"Vanilla ice cream, whole milk and "+MIX+" crushed mix-in, blended smooth — 12 oz ice cream + 4 oz milk for the 16 oz takeout cup.":"Vanilla ice cream, whole milk and "+MIX+" crushed mix-in, blended smooth. Amounts scale with the vessel: 10 oz + 3 oz for the 12 oz glass, 12 oz + 4 oz for the 16 oz cup."},
+    {ic:"📅",bg:"var(--green-d)",t:"The Launch",p:"System-wide launch July 28, 2026. Now part of the core menu — build it right from day one."}
+  ];
+  root.appendChild(h("div",{class:"card"},[
+    h("p",{class:"eyebrow",text:"The Promotion"}),
+    h("h1",{class:"scr",text:"Why this promotion matters"}),
+    h("p",{class:"lede",text:"This isn't just a dessert add-on — it's a high-visibility, high-margin menu item that guests will come in for. Knowing the builds and the story helps you sell it."}),
+    h("div",{class:"igrid"},tiles.map(function(t){
+      return h("div",{class:"itile"},[
+        h("div",{class:"ic",style:"background:"+t.bg},t.ic),
+        h("h3",{text:t.t}), h("p",{text:t.p})
+      ]);
+    }))
+  ]));
+});
+
+/* SECTION 2 — MEET THE MENU (must open all 3) */
+addScreen(2,"Meet the Menu",true,function(root,ctx){
+  var card=h("div",{class:"card"},[
+    h("p",{class:"eyebrow",text:"Meet the Menu"}),
+    h("h1",{class:"scr",text:IS_COUNTER?"How we serve it":"Two flavors, two ways to serve them"}),
+    h("p",{class:"lede",text:IS_COUNTER?"Tap each shake to explore its photo, ingredients, flavor and selling notes. Open both to continue.":"Tap each item to explore its photo, ingredients, flavor and selling notes. Open all four to continue."}),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"🏪"),h("div",{},[h("b",{},"Know your service model. "),document.createTextNode(IS_COUNTER?"Your counter-service location serves the 16 oz takeout cup only — that's the build you'll make.":"A full-service location builds both: the 12 oz specialty glass for dine-in, and the 16 oz logoed cup when a guest wants their shake to go.")])])
+  ]);
+  var grid=h("div",{class:"menu-grid"});
+  ACTIVE.forEach(function(k){
+    var v=VARIANTS[k];
+    var item=h("div",{class:"menu-item"+(S.opened[k]?" opened":""),onClick:function(){openDetail(k,function(){
+      item.classList.add("opened"); checkMenuDone();
+    });}},[
+      h("img",{class:"thumb",src:v.img,alt:v.name}),
+      h("div",{},[
+        h("h3",{},[document.createTextNode(v.name), v.adult?h("span",{class:"adult-badge",text:"21+"}):null]),
+        h("div",{class:"tag",text:v.sub})
+      ]),
+      h("div",{class:"seen",text:"✓ Explored"})
+    ]);
+    grid.appendChild(item);
+  });
+  card.appendChild(grid);
+  root.appendChild(card);
+  function checkMenuDone(){
+    if(ACTIVE.every(function(k){return S.opened[k];})){ awardBadge("menu"); ctx.unlock(); }
+  }
+  checkMenuDone();
+});
+
+/* SECTION 3 — per-variant: explore -> build -> hotspot -> check */
+ACTIVE.forEach(function(k){
+  var v=VARIANTS[k];
+  /* explore (click-to-reveal) */
+  addScreen(3,v.adult?"Adult Shake":(k==="fs"?"Full-Service Shake":(k.slice(2)==="12"?"Dine-In Shake":"Takeout Shake")),true,function(root,ctx){
+    var revealed={};
+    var card=h("div",{class:"card"},[
+      h("p",{class:"eyebrow",text:"Item Training · "+v.sub}),
+      h("h2",{class:"scr"},[document.createTextNode(v.name), v.adult?h("span",{class:"adult-badge",text:"21+"}):null]),
+      h("img",{class:"detail-photo",src:v.img,alt:v.name}),
+      h("p",{class:"lede",text:v.desc}),
+      h("div",{class:"callout"},[h("span",{class:"ic"},"😋"),h("div",{},[h("b",{},"Flavor profile: "),document.createTextNode(v.flavor)])]),
+      h("p",{class:"eyebrow",style:"margin-top:16px",text:"Tap each card to reveal"})
+    ]);
+    var grid=h("div",{class:"reveal-grid"});
+    v.reveals.forEach(function(r,i){
+      var isAll=/Allergen|Responsible/.test(r.t);
+      var tile=h("div",{class:"reveal"+(isAll?" allergen":""),onClick:function(){
+        if(tile.classList.contains("open")) return;
+        tile.classList.add("open"); revealed[i]=true; addPoints(5,"revealed");
+        if(Object.keys(revealed).length>=v.reveals.length){ ctx.unlock(); }
+      }},[
+        h("div",{class:"face"},[h("div",{class:"ic"},r.ic),h("span",{text:r.t})]),
+        h("div",{class:"back",text:r.b}),
+        h("div",{class:"tap",text:"Tap"})
+      ]);
+      grid.appendChild(tile);
+    });
+    card.appendChild(grid);
+    card.appendChild(h("p",{class:"hint",text:"Reveal every card to continue."}));
+    root.appendChild(card);
+  });
+  /* build — real photos for full-service, blender sim for cup/adult */
+  addScreen(3,(v.adult?"Adult":(k==="fs"?"Full-Service":(k.slice(2)==="12"?"Dine-In":"Takeout")))+" Build",true,function(root,ctx){
+    var isPhoto=!!(typeof PHOTO_CFG!=="undefined"&&PHOTO_CFG[k])||k==="fs"||k==="cup"||k==="adult";
+    var vesselWord=(k==="cup"||k.slice(2)==="16"?"cup":"glass"), descr=(k==="cup"||k.slice(2)==="16"?"takeout":(k==="adult"?"21+ adult":"dine-in"));
+    var card=h("div",{class:"card"},[
+      h("p",{class:"eyebrow",text:"Build Station · "+v.name}),
+      h("h2",{class:"scr",text:"Build it on the line"}),
+      h("p",{class:"lede",text: isPhoto
+        ? "Build the "+descr+" shake by dragging each real ingredient onto the blender or "+vesselWord+", in order. Each drag reveals the actual line photo of that step — blend shakes the blender, and you pour the shake into the "+vesselWord+"."
+        : "Drag each ingredient into the blender, press blend, pour into the "+vesselWord+", then add the garnishes. On a phone, you can also just tap each item."})
+    ]);
+    if(v.adult) card.appendChild(h("div",{class:"callout red"},[h("span",{class:"ic"},"\uD83E\uDEAA"),
+      h("div",{},[h("b",{},"21+ only. "),document.createTextNode("Before building an Adult shake, always confirm a valid ID. Full-service, alcohol-serving locations only.")])]));
+    root.appendChild(card);
+    var cb=function(firstTry){
+      S.builds[k]=true;
+      addPoints(firstTry?25:15, firstTry?"flawless build!":"build complete");
+      if(ACTIVE.every(function(kk){return S.builds[kk];})) awardBadge("build");
+      ctx.unlock();
+    };
+    if(isPhoto) photoBuild(card, PHOTO_CFG[k], cb); else shakeBuilder(card, k, cb);
+  });
+  /* hotspot */
+  addScreen(3,v.name+" "+v.vessel.split(" ")[0]+" — Spot It",true,function(root,ctx){
+    var card=h("div",{class:"card"},[
+      h("p",{class:"eyebrow",text:"Spot It · "+v.name}),
+      h("h2",{class:"scr",text:"Find every component"}),
+      h("p",{class:"lede",text:"Tap each part of the finished shake. Find them all to confirm you know a brand-standard build when you see one."})
+    ]);
+    root.appendChild(card);
+    hotspot(card, v, function(){
+      S.hotspots[k]=true; addPoints(10,"spotted all");
+      if(ACTIVE.every(function(kk){return S.hotspots[kk];})) awardBadge("eagle");
+      ctx.unlock();
+    });
+  });
+  /* knowledge check */
+  addScreen(3,v.name+" "+v.vessel.split(" ")[0]+" — Check",true,function(root,ctx){
+    var card=h("div",{class:"card"},[
+      h("p",{class:"eyebrow",text:"Knowledge Check"}),
+      h("h2",{class:"scr",text:"Quick check"})
+    ]);
+    root.appendChild(card);
+    quiz(card, v.quiz, {scored:false}, function(correct,total){
+      addPoints(correct*10,"correct"); ctx.unlock();
+    });
+  });
+});
+
+/* SECTION 4 — PREP & READINESS */
+addScreen(4,"Prep & Readiness",false,function(root,ctx){
+  ctx.unlock();
+  root.appendChild(h("div",{class:"card"},[
+    h("p",{class:"eyebrow",text:"Prep & Readiness"}),
+    h("h1",{class:"scr",text:"Build it the same, every time"}),
+    h("p",{class:"lede",text:IS_COUNTER?"Consistency sells these shakes. Every shake should look like the photo — a tall whipped-cream swirl, a generous mix-in crown, and a clean dome lid.":"Consistency sells these shakes. Every shake should look like the photo — a clean rolled rim on the glass, a tall whipped-cream swirl, and a generous mix-in crown."}),
+    h("div",{class:"igrid"},[
+      ["❄️","var(--navy)","Blend Smooth","Thick, creamy, no lumps — spoonable but pourable."],
+      (IS_COUNTER?["🧢","var(--fp)","Dome Lid & Straw","Seat the dome lid clean and add the green straw — every cup, every time."]:["⭐","var(--fp)","Rolled Rim (glass only)","Frost the rim, then roll it in the crushed mix-in all the way around."]),
+      ["🌀","var(--slate)","The Finish","Tall whipped-cream swirl, then a generous mix-in crown over the top."],
+      (IS_COUNTER
+        ? ["🥤","var(--blue)","The To-Go Cup","16 oz logoed cup, dome lid + straw. Mix-in garnish on top only — no rim."]
+        : ["🥤","var(--blue)","Dine-In vs. To-Go","The 12 oz classic glass is the dine-in serving; when a guest wants it to go, build it in the 16 oz cup with a dome lid and straw."])
+    ].map(function(t){return h("div",{class:"itile"},[
+      h("div",{class:"ic",style:"background:"+t[1]},t[0]),h("h3",{text:t[2]}),h("p",{text:t[3]})
+    ]);})),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"⭐"),h("div",{},[h("b",{},"Presentation standard: "),document.createTextNode(IS_COUNTER?"The 16 oz logoed cup gets whipped cream and a mix-in crown on top, then a dome lid and green straw. No rim treatment, no picks, and no chocolate sauce in the Kit Kat.":"The 12 oz classic shake glass gets a frosted, mix-in rolled rim AND a top garnish. The 16 oz logoed cup gets top garnish only, then a dome lid and green straw. No picks on either build, and no chocolate sauce in the Kit Kat.")])]),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"📸"),h("div",{},[h("b",{},"Quality check: "),document.createTextNode("If it doesn't look like the photo, remake it. Wipe drips, seat the lid clean, and hand it over picture-ready.")])])
+  ]));
+});
+
+addScreen(4,"Kit Kat Prep",false,function(root,ctx){
+  ctx.unlock();
+  root.appendChild(h("div",{class:"card"},[
+    h("p",{class:"eyebrow",text:"Prep · Kit Kat"}),
+    h("h1",{class:"scr",text:"Kit Kat fine crumble"}),
+    h("p",{class:"lede",text:"Produce a consistent, fine Kit Kat crumble for garnishing the Kit Kat Shake. It arrives pre-crushed with big wafer chunks — chop it down to a uniform, fine crumble before service."}),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"🧰"),h("div",{},[h("b",{},"Equipment. "),document.createTextNode("A chef’s knife and cutting board, OR a food processor — plus a rubber spatula or bench scraper, a food-safe container with a lid, and disposable gloves. Ingredient: pre-crushed Kit Kat pieces.")])]),
+    h("div",{class:"igrid"},[
+      ["1","var(--kk)","Prepare","Wash, rinse and sanitize all equipment and work surfaces. Wash hands and put on disposable gloves."],
+      ["2","var(--slate)","Process","Chop or pulse the pre-crushed Kit Kat down to a fine, uniform crumble — use one of the two approved methods below."],
+      ["3","var(--navy)","Inspect","Check the texture: about 1–3 mm, uniform, with visible chocolate and wafer pieces. No large chunks, no powder."],
+      ["4","var(--green-d)","Store","Move to a clean, dry, airtight container; label with the product name, prep date and prepared-by. Store at room temperature in a cool, dry spot — do NOT refrigerate or freeze."]
+    ].map(function(t){return h("div",{class:"itile"},[
+      h("div",{class:"ic",style:"background:"+t[1]},t[0]),h("h3",{text:t[2]}),h("p",{text:t[3]})
+    ]);})),
+    h("p",{class:"eyebrow",style:"margin-top:16px",text:"Two approved methods"}),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"🔪"),h("div",{},[h("b",{},"Chef’s knife. "),document.createTextNode("Spread the pre-crushed Kit Kat evenly on the board. Rock the knife back and forth, gathering it into a pile now and then, until it’s a fine, uniform crumble.")])]),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"⚙️"),h("div",{},[h("b",{},"Food processor. "),document.createTextNode("Fill the bowl no more than halfway. Pulse in short 1-second bursts, checking the texture frequently, and stop as soon as it’s right.")])]),
+    h("div",{class:"callout red"},[h("span",{class:"ic"},"⚠️"),h("div",{},[h("b",{},"Do not over-process. "),document.createTextNode("The finished crumble must keep visible chocolate and wafer pieces — never grind it into a powder.")])]),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"🎯"),h("div",{},[h("b",{},"The standard: "),document.createTextNode("Evenly sized (about 1–3 mm), uniform, with visible chocolate and wafer texture, and it sprinkles evenly onto whipped cream. No large chunks, no powder.")])]),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"🌡️"),h("div",{},[h("b",{},"Store at room temperature. "),document.createTextNode("Keep the finished crumble in a clean, dry, airtight container in a cool, dry spot — ideally 60–75°F / 16–24°C — away from heat, humidity and direct sunlight. Keep it tightly covered when not in use.")])]),
+    h("div",{class:"callout red"},[h("span",{class:"ic"},"🚫"),h("div",{},[h("b",{},"Do not refrigerate or freeze. "),document.createTextNode("Cold introduces moisture and condensation: the chocolate can bloom (turn whitish) and the wafer pieces lose their crisp texture.")])]),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"🏷️"),h("div",{},[h("b",{},"Label & hold time. "),document.createTextNode("Label with product name, prep date and prepared-by. Hold up to 72 hours after opening and processing (or follow your QA team’s opened-product guidance), and discard per your brand’s shelf-life policy — or sooner if it gets wet, clumps, or shows any sign of contamination.")])]),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"🏬"),h("div",{},[h("b",{},"Brand standard. "),document.createTextNode("The method can vary by location (chef’s knife or food processor), but every location must produce the same uniform, fine crumble (about 1–3 mm) with visible chocolate and wafer pieces — for a consistent guest experience across all Wahlburgers.")])])
+  ]));
+});
+
+addScreen(4,"Crumble Check",true,function(root,ctx){
+  var items=["Equipment and work surfaces cleaned and sanitized","Processed with an approved method — knife or food processor","Uniform crumble, about 1–3 mm","Visible chocolate and wafer pieces — no powder","No large chunks remaining","Labeled and stored at room temperature (not refrigerated)"];
+  var done={};
+  var card=h("div",{class:"card"},[
+    h("p",{class:"eyebrow",text:"Quality Check"}),
+    h("h1",{class:"scr",text:"Check the crumble"}),
+    h("p",{class:"lede",text:"Tap each standard to confirm the Kit Kat crumble is service-ready. Complete the list to continue."})
+  ]);
+  var ul=h("ul",{class:"check-list"});
+  items.forEach(function(it,i){
+    var li=h("li",{onClick:function(){
+      li.classList.toggle("done"); done[i]=li.classList.contains("done");
+      var c=items.filter(function(_,j){return done[j];}).length;
+      if(c===items.length){ addPoints(15,"crumble is service-ready!"); ctx.unlock(); }
+    }},[ h("span",{class:"box",text:"✓"}), h("span",{class:"txt",text:it}) ]);
+    ul.appendChild(li);
+  });
+  card.appendChild(ul);
+  root.appendChild(card);
+});
+
+addScreen(4,"Supply & Setup",false,function(root,ctx){
+  ctx.unlock();
+  root.appendChild(h("div",{class:"card"},[
+    h("p",{class:"eyebrow",text:"Materials & Setup"}),
+    h("h1",{class:"scr",text:"Supply & ordering"}),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"✅"),h("div",{},[h("b",{},"Mix-ins."),document.createTextNode(" Fruity Pebbles (Post, 4/40 oz) and chopped Kit Kat (2/5 lb) order through Sysco. Confirm case packs and DC availability against your order guide before launch.")])]),
+    (IS_COUNTER
+      ? h("div",{class:"callout"},[h("span",{class:"ic"},"🥤"),h("div",{},[h("b",{},"No specialty glassware. "),document.createTextNode("The 16 oz logoed cups, dome lids, and straws are your standard to-go supply — just confirm par levels before launch.")])])
+      : h("div",{class:"callout red"},[h("span",{class:"ic"},"⚠️"),h("div",{},[h("b",{},"Glassware — action required. "),document.createTextNode("12 oz Acopa Soda Glasses are NOT auto-shipped — order them via WebstaurantStore before launch. To-go orders need 16 oz logoed cups, dome lids, and green straws at par.")])])),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"🪧"),h("div",{},[h("b",{},"Merchandising. "),document.createTextNode(IS_COUNTER?"Counter card / easel-back at the point of sale before launch.":"Counter card / easel-back at the point of sale; table tents throughout the dining room before launch.")])])
+  ]));
+});
+
+addScreen(4,"Launch Timeline",false,function(root,ctx){
+  ctx.unlock();
+  var tl=[
+    ["JUL 20","","Order Supply","Mix-ins, glassware, cups, lids & straws ordered."],
+    ["JUL 21","","Training Launch","LMS training opens for all teams."],
+    ["JUL 21","","POS Programming","Specialty shake buttons built and tested."],
+    ["JUL 23","","Product Deadline","All product on-site & verified."],
+    ["JUL 24","","Marketing Received","POP, counter cards & table tents available."],
+    ["JUL 28","go","Go-Live","System-wide launch to guests."]
+  ];
+  root.appendChild(h("div",{class:"card"},[
+    h("p",{class:"eyebrow",text:"Plan the Launch"}),
+    h("h1",{class:"scr",text:"Launch timeline"}),
+    h("div",{class:"tl"},tl.map(function(t){return h("div",{class:"tl-item"},[
+      h("div",{class:"tl-dot "+t[1]},t[0]),
+      h("div",{},[h("h4",{text:t[2]}),h("p",{text:t[3]})])
+    ]);})),
+    h("p",{class:"hint",text:"Dates reflect the standard cadence — confirm against your market calendar."})
+  ]));
+});
+
+addScreen(4,"Pre-Launch Checklist",true,function(root,ctx){
+  var items=["Mix-ins received and verified","Kit Kat crumble prepped to standard (fine, 1–3 mm)","Glassware / cups, lids & straws at par","Team training completed",
+    "Recipes and build guides reviewed","POS buttons tested and functioning","Marketing materials received and deployed"];
+  var done={};
+  var card=h("div",{class:"card"},[
+    h("p",{class:"eyebrow",text:"Operational Readiness"}),
+    h("h1",{class:"scr",text:"Pre-launch checklist"}),
+    h("p",{class:"lede",text:"Tap each item to confirm your store is ready for go-live. Complete the list to continue."})
+  ]);
+  var ul=h("ul",{class:"check-list"});
+  items.forEach(function(it,i){
+    var li=h("li",{onClick:function(){
+      li.classList.toggle("done"); done[i]=li.classList.contains("done");
+      var c=items.filter(function(_,j){return done[j];}).length;
+      if(c===items.length){ addPoints(15,"ready for launch!"); ctx.unlock(); }
+    }},[ h("span",{class:"box",text:"✓"}), h("span",{class:"txt",text:it}) ]);
+    ul.appendChild(li);
+  });
+  card.appendChild(ul);
+  root.appendChild(card);
+});
+
+/* SECTION 4 — BUILD IT FAST (timed) */
+addScreen(4,"Build It Fast",true,function(root,ctx){
+  var card=h("div",{class:"card"},[
+    h("p",{class:"eyebrow",text:"Timed Challenge"}),
+    h("h1",{class:"scr",text:"⚡ Build It Fast"}),
+    h("p",{class:"lede",text:"Dinner rush! Sequence the "+(IS_COUNTER?"to-go cup":"dine-in")+" shake build before the timer runs out. Beat the clock for the Speed Demon badge."})
+  ]);
+  root.appendChild(card);
+  timedBuild(card, VARIANTS[ACTIVE[0]].build, 50, function(win,firstTry){
+    if(win){ addPoints(25,"beat the clock!"); awardBadge("speed"); }
+    else { addPoints(10,"build complete"); }
+    ctx.unlock();
+  });
+});
+
+/* SECTION 5 — SELLING + CAUSE */
+addScreen(5,"Sell the Shake",true,function(root,ctx){
+  var revealed={};
+  var scripts=[
+    {ic:"🌈",t:"Fruity Pebbles Pitch",b:"\u201CHave you tried our Fruity Pebbles Shake? Creamy vanilla blended with the cereal you grew up on — now on our menu.\u201D"},
+    {ic:"🍫",t:"Kit Kat Pitch",b:"\u201COur Kit Kat Shake has real crushed Kit Kat blended right in — rich, creamy, and now on our menu.\u201D"},
+    {ic:"🥤",t:"Make It To-Go",b:"\u201CWant me to make that to go? It travels great — sealed cup, dome lid, and a straw.\u201D"},
+    {ic:"⚠️",t:"Allergen Honesty",b:"Both shakes contain dairy. Kit Kat also contains wheat and soy. Never guess — check the allergen guide."},
+    {ic:"📣",t:"Talking Points",b:"Two flavors · suggest on every check and takeout order · high-margin dessert add-on."},
+    {ic:"⭐",t:"Suggestive Selling",b:"Name the flavor when you offer it. \u201CFruity Pebbles or Kit Kat?\u201D converts better than \u201Cany dessert today?\u201D"}
+  ];
+  var card=h("div",{class:"card"},[
+    h("p",{class:"eyebrow",text:"Guest Experience"}),
+    h("h1",{class:"scr",text:"Sell the shake & the cause"}),
+    h("p",{class:"lede",text:"Tap each card to learn the scripts and talking points. Reveal them all to continue."})
+  ]);
+  var grid=h("div",{class:"reveal-grid"});
+  scripts.forEach(function(r,i){
+    var tile=h("div",{class:"reveal",onClick:function(){
+      if(tile.classList.contains("open")) return;
+      tile.classList.add("open"); revealed[i]=true; addPoints(5,"learned");
+      if(Object.keys(revealed).length>=scripts.length) ctx.unlock();
+    }},[ h("div",{class:"face"},[h("div",{class:"ic"},r.ic),h("span",{text:r.t})]),
+        h("div",{class:"back",text:r.b}), h("div",{class:"tap",text:"Tap"}) ]);
+    grid.appendChild(tile);
+  });
+  card.appendChild(grid);
+  root.appendChild(card);
+});
+
+addScreen(5,"Guest Scenarios",true,function(root,ctx){
+  var card=h("div",{class:"card"},[
+    h("p",{class:"eyebrow",text:"Scenario Practice"}),
+    h("h2",{class:"scr",text:"What would you say?"}),
+    h("p",{class:"lede",text:"Pick the best response to each guest. There's a right answer every time."})
+  ]);
+  root.appendChild(card);
+  quiz(card, SCENARIOS.map(function(s){return {type:"scenario",stem:s.stem,opts:s.opts,a:s.a,fb:s.fb};}),
+    {scored:false}, function(correct,total){
+      addPoints(correct*15,"great service"); awardBadge("ambassador"); ctx.unlock();
+  });
+});
+
+/* SECTION 6 — FINAL CHALLENGE */
+addScreen(6,"Final Challenge",false,function(root,ctx){
+  ctx.hideNav();
+  renderFinalIntro(root,ctx);
+});
+
+/* ============================================================
+   INTERACTION COMPONENTS
+   ============================================================ */
+function openDetail(k,onClose){
+  var v=VARIANTS[k]; S.opened[k]=true;
+  var ov=h("div",{class:"overlay",onClick:function(e){if(e.target===ov)close();}});
+  function close(){ov.remove(); if(onClose)onClose();}
+  var body=h("div",{class:"sheet-body"},[
+    h("img",{class:"detail-photo",src:v.img,alt:v.name}),
+    h("div",{class:"pillrow"},v.pills.map(function(p){return h("span",{class:"pill "+p[1],text:p[0]});})),
+    h("div",{class:"spec-row"},[h("span",{text:"Served in"}),h("span",{class:"v",text:v.vessel})]),
+    h("p",{class:"lede",style:"margin-top:12px",text:v.desc}),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"😋"),h("div",{},[h("b",{},"Flavor & selling: "),document.createTextNode(v.flavor)])]),
+    h("p",{class:"eyebrow",style:"margin-top:14px",text:"Key ingredients"}),
+    h("div",{},v.reveals.filter(function(r){return !/Talking|Finishing|Server/.test(r.t);}).map(function(r){
+      return h("div",{class:"spec-row"},[h("span",{},[document.createTextNode(r.ic+"  "+r.t)])]);
+    })),
+    (v.adult?h("div",{class:"callout red"},[h("span",{class:"ic"},"🪪"),h("div",{},[h("b",{},"21+ only. "),document.createTextNode("Always confirm a valid ID before serving. Full-service, alcohol-serving locations only.")])]):null),
+    h("button",{class:"btn btn-primary",style:"width:100%;margin-top:16px",onClick:close},"Got it")
+  ]);
+  var sheet=h("div",{class:"sheet"},[
+    h("div",{class:"sheet-head"},[h("h3",{},[document.createTextNode(v.name)]),h("button",{class:"x",onClick:close,text:"✕"})]),
+    body
+  ]);
+  ov.appendChild(sheet);
+  document.body.appendChild(ov);
+}
+
+function buildSequencer(card, steps, key, onDone){
+  var correct=steps.slice(), N=correct.length;
+  var order=new Array(N).fill(null);
+  var firstTry=true, done=false;
+  var slotsWrap=h("div",{class:"slots"});
+  var tray=h("div",{class:"tray"});
+  var slotEls=[], chipByCi={};
+  function sT(s){return (s&&typeof s==="object")?s.t:s;}
+  function sEm(s){return (s&&typeof s==="object")?(s.em||""):"";}
+  function sC(s){return (s&&typeof s==="object")?(s.c||"#1F3A4D"):"#1F3A4D";}
+
+  // slots (numbered, in order)
+  correct.forEach(function(_,i){
+    var slot=h("div",{class:"slot",
+      ondragover:function(e){e.preventDefault();},
+      ondrop:function(e){e.preventDefault();var ci=parseInt(e.dataTransfer.getData("text/plain"),10);if(!isNaN(ci))tryPlace(ci);}},[
+      h("div",{class:"num",text:(i+1)}),
+      h("div",{class:"content",text:"…"})
+    ]);
+    slotEls.push(slot); slotsWrap.appendChild(slot);
+  });
+
+  // chips in shuffled order, but tracked by their correct index (identity)
+  var idxs=correct.map(function(_,i){return i;});
+  for(var i=idxs.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=idxs[i];idxs[i]=idxs[j];idxs[j]=tmp;}
+  idxs.forEach(function(ci){
+    var st=correct[ci];
+    var chip=h("button",{class:"chip","draggable":"true",style:"background:"+sC(st),
+      ondragstart:function(e){e.dataTransfer.setData("text/plain",""+ci);e.dataTransfer.effectAllowed="move";},
+      onClick:function(){ tryPlace(ci); }},[
+        h("span",{class:"cem",text:sEm(st)}),
+        h("span",{text:sT(st)})
+      ]);
+    chipByCi[ci]=chip; tray.appendChild(chip);
+  });
+
+  function nextSlot(){ return order.indexOf(null); }
+  function refresh(){
+    var n=nextSlot();
+    slotEls.forEach(function(s,i){
+      if(order[i]!=null) return;
+      var active=(i===n && !done);
+      s.classList.toggle("active", active);
+      s.querySelector(".content").textContent = active ? "Tap the next step…" : "…";
+    });
+  }
+  function tryPlace(ci){
+    if(done) return;
+    var n=nextSlot(); if(n<0) return;
+    if(ci===n){
+      // correct next step — lock it in and remove the chip
+      order[n]=ci;
+      slotEls[n].classList.remove("active");
+      slotEls[n].classList.add("filled","ok");
+      var cont=slotEls[n].querySelector(".content"); cont.textContent="";
+      cont.appendChild(h("span",{class:"sem",text:sEm(correct[ci])}));
+      cont.appendChild(document.createTextNode(sT(correct[ci])));
+      if(chipByCi[ci]) chipByCi[ci].classList.add("used");
+      if(nextSlot()<0) complete(); else refresh();
+    } else {
+      // wrong step for this position — bounce, keep the chip available
+      firstTry=false;
+      var s=slotEls[n];
+      s.classList.add("err");
+      setTimeout(function(){ s.classList.remove("err"); refresh(); },480);
+      toast("Not yet — that's a later step","\u21A9\uFE0F","");
+    }
+  }
+  function complete(){
+    done=true;
+    slotEls.forEach(function(s){ s.classList.remove("active"); });
+    card.appendChild(h("div",{class:"feedback good show"},[h("b",{},"Perfect build! \uD83C\uDF89"),document.createTextNode(" That's the brand-standard sequence.")]));
+    onDone(firstTry);
+  }
+
+  card.appendChild(h("div",{class:"build-wrap"},[ slotsWrap,
+    h("p",{class:"eyebrow",text:"Steps — tap (or drag) them in order"}), tray ]));
+  refresh();
+}
+
+/* ============================================================
+   BLENDER BUILD SIMULATION
+   ============================================================ */
+function sprk(cx,cy,sx,sy,n){var c=["#C42E3A","#2E5AAC","#FFFFFF","#C42E3A","#2E5AAC","#FFFFFF"],s="";
+  for(var i=0;i<n;i++){var x=cx+(Math.random()*2-1)*sx,y=cy+(Math.random()*2-1)*sy,r=Math.floor(Math.random()*180);
+  s+='<rect x="'+(x-2.1).toFixed(1)+'" y="'+(y-0.85).toFixed(1)+'" width="4.2" height="1.7" rx="0.85" fill="'+c[i%6]+'" transform="rotate('+r+' '+x.toFixed(1)+' '+y.toFixed(1)+')"/>';}return s;}
+function rimSprk(cx,cy,rx,ry,n){var c=["#C42E3A","#2E5AAC","#FFFFFF"],s="";
+  for(var i=0;i<n;i++){var a=(i/n)*Math.PI*2,x=cx+Math.cos(a)*rx,y=cy+Math.sin(a)*ry+(Math.random()*4-1),r=Math.floor(Math.random()*180);
+  s+='<rect x="'+(x-1.9).toFixed(1)+'" y="'+(y-0.8).toFixed(1)+'" width="3.8" height="1.6" rx="0.8" fill="'+c[i%3]+'" transform="rotate('+r+' '+x.toFixed(1)+' '+y.toFixed(1)+')"/>';}return s;}
+function whip(cx,t){return '<g filter="url(#dropS)">'
+  +'<ellipse cx="'+cx+'" cy="'+(t+15)+'" rx="25" ry="11" fill="url(#whipG)"/>'
+  +'<ellipse cx="'+(cx-11)+'" cy="'+(t+7)+'" rx="12" ry="11" fill="url(#whipG)"/>'
+  +'<ellipse cx="'+(cx+11)+'" cy="'+(t+7)+'" rx="12" ry="11" fill="url(#whipG)"/>'
+  +'<ellipse cx="'+cx+'" cy="'+(t+2)+'" rx="13" ry="12" fill="url(#whipG)"/>'
+  +'<ellipse cx="'+(cx-6)+'" cy="'+(t-5)+'" rx="8.5" ry="8" fill="url(#whipG)"/>'
+  +'<ellipse cx="'+(cx+6)+'" cy="'+(t-6)+'" rx="7.5" ry="7" fill="url(#whipG)"/>'
+  +'<ellipse cx="'+cx+'" cy="'+(t-12)+'" rx="5.6" ry="6.4" fill="url(#whipG)"/>'
+  +'<path d="M'+(cx-1)+','+(t-17)+' q3,-5 5,-1" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>'
+  +'<path d="M'+(cx-16)+','+(t+9)+' q16,7 32,0" fill="none" stroke="rgba(196,181,150,.38)" stroke-width="1.8"/>'
+  +'<path d="M'+(cx-9)+','+(t+1)+' q9,5 18,0" fill="none" stroke="rgba(196,181,150,.32)" stroke-width="1.5"/>'
+  +'<ellipse cx="'+(cx-7)+'" cy="'+(t-6)+'" rx="2.4" ry="3.1" fill="rgba(255,255,255,.85)"/>'
+  +'</g>';}
+function flag(cx,y){return '<g id="vFlag" class="garnish" filter="url(#dropS)">'
+  +'<circle cx="'+cx+'" cy="'+(y-1)+'" r="1.7" fill="#C2914F"/>'
+  +'<rect x="'+(cx-0.8)+'" y="'+y+'" width="1.7" height="30" rx="0.8" fill="#A9844F"/>'
+  +'<path d="M'+(cx+0.9)+','+(y+1)+' L'+(cx+17)+','+(y+0.5)+' Q'+(cx+19)+','+(y+6)+' '+(cx+17)+','+(y+11.5)+' L'+(cx+0.9)+','+(y+12)+' Z" fill="#fff" stroke="rgba(0,0,0,.08)" stroke-width="0.4"/>'
+  +'<rect x="'+(cx+0.9)+'" y="'+(y+1)+'" width="16.3" height="1.7" fill="#B0303A"/>'
+  +'<rect x="'+(cx+0.9)+'" y="'+(y+4.3)+'" width="16.4" height="1.7" fill="#B0303A"/>'
+  +'<rect x="'+(cx+0.9)+'" y="'+(y+7.6)+'" width="16.2" height="1.7" fill="#B0303A"/>'
+  +'<rect x="'+(cx+0.9)+'" y="'+(y+10.6)+'" width="15.4" height="1.3" fill="#B0303A"/>'
+  +'<rect x="'+(cx+0.9)+'" y="'+(y+1)+'" width="7" height="5.5" fill="#2E5AAC"/>'
+  +'</g>';}
+
+function blenderSVG(){return ''
+  +'<defs>'
+  +'<clipPath id="jarClip"><rect x="64" y="64" width="44" height="120" rx="7"/></clipPath>'
+  +'<linearGradient id="shakeG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7EFDC"/><stop offset=".5" stop-color="#EFE0C2"/><stop offset="1" stop-color="#E2CEA4"/></linearGradient>'
+  +'<linearGradient id="steelG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7E888F"/><stop offset=".22" stop-color="#D9DEE2"/><stop offset=".46" stop-color="#A7B0B6"/><stop offset=".7" stop-color="#CDD3D7"/><stop offset="1" stop-color="#737D85"/></linearGradient>'
+  +'<radialGradient id="dialG" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#EEF1F3"/><stop offset="1" stop-color="#8A949B"/></radialGradient>'
+  +'<linearGradient id="glassG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(255,255,255,.32)"/><stop offset=".5" stop-color="rgba(205,222,232,.10)"/><stop offset="1" stop-color="rgba(150,176,192,.26)"/></linearGradient>'
+  +'<radialGradient id="whipG" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".7" stop-color="#FBF7EF"/><stop offset="1" stop-color="#ECE3D2"/></radialGradient>'
+  +'<linearGradient id="domeG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,.42)"/><stop offset="1" stop-color="rgba(196,214,226,.20)"/></linearGradient>'
+  +'<linearGradient id="strawG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F0F2F4"/><stop offset=".5" stop-color="#CDD4D9"/><stop offset="1" stop-color="#A9B2B8"/></linearGradient>'
+  +'<linearGradient id="cupG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#CBBC9C"/><stop offset=".22" stop-color="#F1E9D7"/><stop offset=".5" stop-color="#E6DAC1"/><stop offset=".8" stop-color="#EFE7D3"/><stop offset="1" stop-color="#C7B894"/></linearGradient>'
+  +'<filter id="dropS" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="2.1" flood-color="#1a2a33" flood-opacity="0.30"/></filter>'
+  +'<filter id="blurS"><feGaussianBlur stdDeviation="3"/></filter>'
+  +'</defs>'
+  // ground shadow
+  +'<ellipse cx="86" cy="239" rx="50" ry="6" fill="rgba(15,28,38,.22)" filter="url(#blurS)"/>'
+  // motor base
+  +'<path d="M50,232 L122,232 Q126,232 125,227 L120,200 Q119,196 114,196 L58,196 Q53,196 52,200 L47,227 Q46,232 50,232 Z" fill="url(#steelG)" stroke="#5F6970" stroke-width="1"/>'
+  +'<rect x="49" y="224" width="74" height="8" rx="3" fill="#5A646B"/>'
+  +'<rect x="58" y="199" width="5" height="28" rx="2.5" fill="rgba(255,255,255,.32)"/>'
+  +'<circle cx="66" cy="214" r="7" fill="url(#dialG)" stroke="#6B757C" stroke-width="1"/>'
+  +'<rect x="65.2" y="208" width="1.6" height="5" rx="0.8" fill="#5A646B"/>'
+  +'<circle cx="104" cy="213" r="3.4" fill="#44B549" stroke="#2F8F38" stroke-width="0.8"/>'
+  +'<circle cx="104" cy="213" r="6" fill="#44B549" opacity=".25"/>'
+  // collar/neck
+  +'<path d="M72,196 L100,196 L96,184 L76,184 Z" fill="#9AA4AB" stroke="#5F6970" stroke-width="1"/>'
+  // pitcher glass body
+  +'<path d="M58,72 L58,176 Q58,188 70,188 L102,188 Q114,188 114,176 L114,72 Z" fill="url(#glassG)" stroke="#39596B" stroke-width="2"/>'
+  // liquid (clipped) + meniscus, inside spin group
+  +'<g id="jarSpin"><rect id="jarFill" x="64" y="182" width="44" height="0" fill="#FBF8F1" clip-path="url(#jarClip)"/>'
+  +'<ellipse id="jarTop" cx="86" cy="182" rx="21" ry="4" fill="#F4ECDA" style="opacity:0"/></g>'
+  // measurement ticks
+  +'<line x1="66" y1="112" x2="73" y2="112" stroke="rgba(57,89,107,.45)" stroke-width="1"/>'
+  +'<line x1="66" y1="132" x2="71" y2="132" stroke="rgba(57,89,107,.45)" stroke-width="1"/>'
+  +'<line x1="66" y1="152" x2="73" y2="152" stroke="rgba(57,89,107,.45)" stroke-width="1"/>'
+  // glass highlights
+  +'<rect x="67" y="80" width="4" height="92" rx="2" fill="rgba(255,255,255,.30)"/>'
+  +'<rect x="74" y="84" width="2.4" height="76" rx="1.2" fill="rgba(255,255,255,.18)"/>'
+  // spout
+  +'<path d="M108,72 Q119,71 120,76 Q120,80 113,80 Q109,78 108,75 Z" fill="url(#glassG)" stroke="#39596B" stroke-width="1.6"/>'
+  // handle
+  +'<path d="M114,88 C133,90 133,122 114,126" fill="none" stroke="#39596B" stroke-width="5" stroke-linecap="round"/>'
+  +'<path d="M114,92 C129,94 129,120 114,123" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.6"/>'
+  // rim + lid
+  +'<ellipse cx="86" cy="72" rx="28" ry="6.5" fill="url(#glassG)" stroke="#39596B" stroke-width="2"/>'
+  +'<ellipse cx="86" cy="68" rx="29" ry="6.5" fill="#243A45" stroke="#16252D" stroke-width="1"/>'
+  +'<rect x="80" y="58" width="12" height="11" rx="2.5" fill="#2C4351" stroke="#16252D" stroke-width="1"/>';}
+
+var VES={
+  fs:{ fill:{x:234,y:69,w:56,bottom:170}, men:{cx:262,rxTop:27,rxBot:6,ry:4.5},
+    body:function(){return ''
+      +'<defs><clipPath id="vclip"><path d="M234,69 C239,120 250,150 262,170 C274,150 285,120 290,69 Z"/></clipPath></defs>'
+      +'<ellipse cx="262" cy="201" rx="26" ry="5" fill="rgba(15,28,38,.16)" filter="url(#blurS)"/>'
+      // fill (behind translucent glass)
+      +'<rect id="vShakeFill" x="234" y="170" width="56" height="0" fill="url(#shakeG)" clip-path="url(#vclip)"/>'
+      +'<ellipse id="vTop" cx="262" cy="170" rx="6" ry="4.5" fill="#F2E7CF" style="opacity:0"/>'
+      // foot + stem
+      +'<ellipse cx="262" cy="194" rx="20" ry="5" fill="url(#glassG)" stroke="#39596B" stroke-width="2"/>'
+      +'<path d="M256,172 L268,172 L267,189 L257,189 Z" fill="url(#glassG)" stroke="#39596B" stroke-width="1.6"/>'
+      // bowl outline
+      +'<path d="M231,66 C236,120 248,150 256,170 C258,176 266,176 268,170 C276,150 288,120 293,66" fill="url(#glassG)" stroke="#39596B" stroke-width="2.4" stroke-linejoin="round"/>'
+      +'<ellipse cx="262" cy="66" rx="31" ry="7" fill="url(#glassG)" stroke="#39596B" stroke-width="2.4"/>'
+      // glass highlights
+      +'<path d="M243,76 C246,116 252,144 258,166" fill="none" stroke="rgba(255,255,255,.30)" stroke-width="3" stroke-linecap="round"/>'
+      +'<path d="M250,74 C252,108 256,134 260,158" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1.6"/>';},
+    garnish:function(){return ''
+      +'<g id="vFrost" class="garnish"><ellipse cx="262" cy="66" rx="32" ry="7.6" fill="none" stroke="#F7F2E8" stroke-width="5"/></g>'
+      +'<g id="vRim" class="garnish">'+rimSprk(262,66,31,7,30)+'</g>'
+      +'<g id="vWhip" class="garnish">'+whip(262,58)+'</g>'
+      +'<g id="vTopSpr" class="garnish">'+sprk(262,46,22,9,22)+'</g>'
+      +flag(262,26);}
+  },
+  cup:{ fill:{x:240,y:92,w:44,bottom:113}, men:{cx:262,rxTop:24,rxBot:24,ry:4.5},
+    body:function(){return ''
+      +'<defs><clipPath id="vclip"><rect x="240" y="90" width="44" height="25" rx="9"/></clipPath></defs>'
+      +'<ellipse cx="262" cy="214" rx="26" ry="5" fill="rgba(15,28,38,.16)" filter="url(#blurS)"/>'
+      // opaque kraft cup body
+      +'<path d="M236,90 L288,90 L283,206 Q283,210 279,210 L245,210 Q241,210 241,206 Z" fill="url(#cupG)" stroke="#B6A684" stroke-width="1.5"/>'
+      +'<path d="M236,90 L240,90 L245,210 L243,210 Q241,210 241,206 Z" fill="rgba(255,255,255,.18)"/>'
+      +'<path d="M284,90 L288,90 L283,206 Q283,210 280,210 L281,210 Z" fill="rgba(90,70,40,.14)"/>'
+      // recessed mouth
+      +'<ellipse cx="262" cy="90" rx="26" ry="5.5" fill="#CFC0A2" stroke="#B6A684" stroke-width="1.5"/>'
+      +'<ellipse cx="262" cy="90" rx="22" ry="4.2" fill="#BDAD8C"/>'
+      // brand logo
+      +'<image href="'+IMG.logo+'" x="247" y="135" width="30" height="30" preserveAspectRatio="xMidYMid meet"/>'
+      // shake surface at mouth (over body), clipped to mouth
+      +'<rect id="vShakeFill" x="240" y="113" width="44" height="0" fill="url(#shakeG)" clip-path="url(#vclip)"/>'
+      +'<ellipse id="vTop" cx="262" cy="113" rx="24" ry="4.5" fill="#F2E7CF" style="opacity:0"/>';},
+    garnish:function(){return ''
+      +'<g id="vWhip" class="garnish">'+whip(262,80)+'</g>'
+      +'<g id="vTopSpr" class="garnish">'+sprk(262,66,21,9,20)+'</g>'
+      +'<g id="vStraw" class="garnish"><rect x="279" y="36" width="7.5" height="64" rx="3.7" fill="url(#strawG)" stroke="#9AA3A8" stroke-width="1" transform="rotate(13 283 68)"/><ellipse cx="281" cy="38" rx="3.7" ry="1.7" fill="#9AA3A8" transform="rotate(13 281 38)"/></g>'
+      +'<g id="vLid" class="garnish"><path d="M232,90 Q232,64 262,64 Q292,64 292,90 Z" fill="url(#domeG)" stroke="#7C95A4" stroke-width="2"/><ellipse cx="262" cy="90" rx="30" ry="6" fill="none" stroke="#7C95A4" stroke-width="2"/><path d="M246,84 Q252,71 266,69" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2.4" stroke-linecap="round"/><rect x="257" y="58" width="10" height="8" rx="2" fill="url(#domeG)" stroke="#7C95A4" stroke-width="1.5"/></g>'
+      +flag(246,28);}
+  },
+  adult:{ fill:{x:239,y:92,w:46,bottom:202}, men:{cx:262,rxTop:24,rxBot:23,ry:5},
+    body:function(){return ''
+      +'<defs><clipPath id="vclip"><path d="M239,92 L285,92 L285,200 Q285,203 282,203 L242,203 Q239,203 239,200 Z"/></clipPath></defs>'
+      +'<ellipse cx="262" cy="210" rx="28" ry="5" fill="rgba(15,28,38,.16)" filter="url(#blurS)"/>'
+      // handle (behind)
+      +'<path d="M286,108 C312,110 312,152 286,156" fill="none" stroke="#39596B" stroke-width="7" stroke-linecap="round"/>'
+      +'<path d="M286,112 C307,114 307,150 286,153" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="2"/>'
+      // fill behind glass
+      +'<rect id="vShakeFill" x="239" y="202" width="46" height="0" fill="url(#shakeG)" clip-path="url(#vclip)"/>'
+      +'<ellipse id="vTop" cx="262" cy="202" rx="23" ry="5" fill="#F2E7CF" style="opacity:0"/>'
+      // mug body glass
+      +'<path d="M236,90 L288,90 L288,200 Q288,207 281,207 L243,207 Q236,207 236,200 Z" fill="url(#glassG)" stroke="#39596B" stroke-width="2.4" stroke-linejoin="round"/>'
+      +'<rect x="236" y="196" width="52" height="6" fill="rgba(57,89,107,.18)"/>'
+      +'<ellipse cx="262" cy="90" rx="26" ry="6" fill="url(#glassG)" stroke="#39596B" stroke-width="2.4"/>'
+      +'<rect x="243" y="98" width="4" height="100" rx="2" fill="rgba(255,255,255,.30)"/>'
+      +'<rect x="250" y="100" width="2.2" height="86" rx="1.1" fill="rgba(255,255,255,.16)"/>';},
+    garnish:function(){return ''
+      +'<g id="vFrost" class="garnish"><ellipse cx="262" cy="90" rx="27" ry="6.5" fill="none" stroke="#F7F2E8" stroke-width="5"/></g>'
+      +'<g id="vRim" class="garnish">'+rimSprk(262,90,26,6,28)+'</g>'
+      +'<g id="vWhip" class="garnish">'+whip(262,82)+'</g>'
+      +'<g id="vTopSpr" class="garnish">'+sprk(262,68,20,9,20)+'</g>'
+      +flag(262,46);}
+  }
+};
+
+function composeScene(vkey){
+  return '<svg viewBox="0 0 320 248" xmlns="http://www.w3.org/2000/svg">'
+    + blenderSVG() + VES[vkey].body() + VES[vkey].garnish()
+    + '<path id="pourStream" d="M119,77 C150,74 190,80 240,96" stroke="url(#shakeG)" stroke-width="7" fill="none" stroke-linecap="round" style="opacity:0"/>'
+    + '</svg>';
+}
+
+/* Pointer-based drag with tap fallback (works on touch + mouse) */
+function enableDrag(chip, getRect, onDeliver){
+  var dragging=false, moved=false, sx=0, sy=0, clone=null;
+  chip.addEventListener("pointerdown",function(e){
+    dragging=true; moved=false; sx=e.clientX; sy=e.clientY;
+    try{chip.setPointerCapture(e.pointerId);}catch(_){}
+    clone=chip.cloneNode(true); clone.className="ing fly"; clone.style.left=(e.clientX-32)+"px";
+    clone.style.top=(e.clientY-20)+"px"; clone.style.opacity=".95"; clone.style.transition="none";
+    document.body.appendChild(clone); chip.style.opacity=".25";
+    e.preventDefault();
+  });
+  chip.addEventListener("pointermove",function(e){
+    if(!dragging) return;
+    if(Math.abs(e.clientX-sx)>6||Math.abs(e.clientY-sy)>6) moved=true;
+    if(clone){ clone.style.left=(e.clientX-32)+"px"; clone.style.top=(e.clientY-20)+"px"; }
+  });
+  function end(e){
+    if(!dragging) return; dragging=false;
+    if(clone){ clone.remove(); clone=null; }
+    chip.style.opacity="";
+    if(!moved){ onDeliver(true); return; }   // tap = deliver to active target
+    var r=getRect(), x=e.clientX, y=e.clientY;
+    onDeliver(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom);
+  }
+  chip.addEventListener("pointerup",end);
+  chip.addEventListener("pointercancel",end);
+}
+
+var BSTAGE={
+  fs:[
+    {type:"deliver",target:"rim",prompt:"Prepare the glass — apply frosting evenly around the rim.",
+     items:[{key:"frost",label:"Frosting",em:"\uD83E\uDDF4"}],apply:function(s){s.show("vFrost");}},
+    {type:"deliver",target:"rim",prompt:"Roll the frosted rim in red, white & blue sprinkles.",
+     items:[{key:"rimspr",label:"R/W/B Sprinkles",em:"\uD83C\uDF86"}],apply:function(s){s.show("vRim");}},
+    {type:"deliver",target:"blender",prompt:"Add the vanilla ice cream (10 oz) and whole milk (3 oz) to the blender.",
+     items:[{key:"ic",label:"Vanilla Ice Cream",em:"\uD83C\uDF68"},{key:"milk",label:"Whole Milk",em:"\uD83E\uDD5B"}],apply:function(s){}},
+    {type:"press",prompt:"Press BLEND until thick, smooth and creamy.",apply:function(s){}},
+    {type:"pour",prompt:"Pour the shake into the 12 oz classic glass.",apply:function(s){}},
+    {type:"deliver",target:"vessel",prompt:"Top it with a tall whipped-cream swirl.",
+     items:[{key:"whip",label:"Whipped Cream",em:"\uD83C\uDF00"}],apply:function(s){s.show("vWhip");}},
+    {type:"deliver",target:"vessel",prompt:"Finish with red, white & blue sprinkles over the top.",
+     items:[{key:"topspr",label:"R/W/B Sprinkles",em:"\uD83C\uDF86"}],apply:function(s){s.show("vTopSpr");}},
+    {type:"deliver",target:"vessel",prompt:"Insert one US American flag pick into the whipped cream to finish.",
+     items:[{key:"flag",label:"US American Flag Pick",em:"\uD83C\uDDFA\uD83C\uDDF8"}],apply:function(s){s.show("vFlag");}}
+  ],
+  cup:[
+    {type:"deliver",target:"blender",prompt:"Add the vanilla ice cream (12 oz) and whole milk (4 oz) to the blender.",
+     items:[{key:"ic",label:"Vanilla Ice Cream",em:"\uD83C\uDF68"},{key:"milk",label:"Whole Milk",em:"\uD83E\uDD5B"}],apply:function(s){}},
+    {type:"press",prompt:"Press BLEND for 1\u20132 minutes until smooth.",apply:function(s){}},
+    {type:"pour",prompt:"Pour into the 16 oz logoed cup.",apply:function(s){}},
+    {type:"deliver",target:"vessel",prompt:"Top with a whipped-cream swirl.",
+     items:[{key:"whip",label:"Whipped Cream",em:"\uD83C\uDF00"}],apply:function(s){s.show("vWhip");}},
+    {type:"deliver",target:"vessel",prompt:"Finish with red, white & blue sprinkles over the top.",
+     items:[{key:"topspr",label:"R/W/B Sprinkles",em:"\uD83C\uDF86"}],apply:function(s){s.show("vTopSpr");}},
+    {type:"deliver",target:"vessel",prompt:"Cap it with the dome lid and add the straw.",
+     items:[{key:"lid",label:"Dome Lid + Straw",em:"\uD83E\uDD64"}],apply:function(s){s.show("vStraw");s.show("vLid");}},
+    {type:"deliver",target:"vessel",prompt:"Insert one US American flag pick to finish.",
+     items:[{key:"flag",label:"US American Flag Pick",em:"\uD83C\uDDFA\uD83C\uDDF8"}],apply:function(s){s.show("vFlag");}}
+  ],
+  adult:[
+    {type:"deliver",target:"rim",prompt:"Prepare the glass — apply frosting evenly around the rim.",
+     items:[{key:"frost",label:"Frosting",em:"\uD83E\uDDF4"}],apply:function(s){s.show("vFrost");}},
+    {type:"deliver",target:"rim",prompt:"Roll the frosted rim in red, white & blue sprinkles.",
+     items:[{key:"rimspr",label:"R/W/B Sprinkles",em:"\uD83C\uDF86"}],apply:function(s){s.show("vRim");}},
+    {type:"deliver",target:"blender",prompt:"Add Stoli vodka (1.5 oz), whole milk (1 oz), ice cream (10 oz) & a pinch of red, white & blue sprinkles.",
+     items:[{key:"vodka",label:"Stoli Vanilla Vodka",em:"\uD83C\uDF78"},{key:"milk",label:"Whole Milk",em:"\uD83E\uDD5B"},{key:"ic",label:"Vanilla Ice Cream",em:"\uD83C\uDF68"},{key:"bspr",label:"R/W/B Sprinkles",em:"\uD83C\uDF86"}],apply:function(s){}},
+    {type:"press",prompt:"Press BLEND until smooth.",apply:function(s){}},
+    {type:"pour",prompt:"Pour into the prepared 14 oz mug.",apply:function(s){}},
+    {type:"deliver",target:"vessel",prompt:"Top with a whipped-cream swirl.",
+     items:[{key:"whip",label:"Whipped Cream",em:"\uD83C\uDF00"}],apply:function(s){s.show("vWhip");}},
+    {type:"deliver",target:"vessel",prompt:"Finish with red, white & blue sprinkles over the top.",
+     items:[{key:"topspr",label:"R/W/B Sprinkles",em:"\uD83C\uDF86"}],apply:function(s){s.show("vTopSpr");}},
+    {type:"deliver",target:"vessel",prompt:"Insert one US American flag pick into the whipped cream to finish.",
+     items:[{key:"flag",label:"US American Flag Pick",em:"\uD83C\uDDFA\uD83C\uDDF8"}],apply:function(s){s.show("vFlag");}}
+  ]
+};
+
+/* ============================================================
+   REAL-PHOTO GUIDED BUILD  (full-service dine-in shake)
+   Uses staged line photography instead of animation.
+   ============================================================ */
+// Per-variant real-photo build configs. target: vessel the ingredient drops onto · fx: motion before reveal
+// asset: (optional) draggable ingredient photo — drops in when provided; emoji is the placeholder · pre: frame shown before the drag
+var PHOTO_CFG=(function(){
+  function cfg(k){
+    var fk=k.slice(0,2), fmt=k.slice(2);
+    var glass=(fmt==="12");
+    var mixName=(fk==="fp")?"Fruity Pebbles":"crushed Kit Kat";
+    var mixEm=(fk==="fp")?"🌈":"🍫";
+    var accent=(fk==="fp")?"#E23B7A":"#D3122A";
+    var P=function(s){return IMG["ph_"+k+"_"+s];};
+    var steps=[];
+    if(glass){
+      steps.push({t:"Frost the rim of the glass", em:"🧴", c:"#C9A24A", img:IMG.pb_frost, target:"glass",
+                  asset:IMG.drag_frost||null, pre:IMG.pb_glass, preCap:"Start with a clean 12 oz classic shake glass.",
+                  note:"Apply frosting evenly around the outside rim."});
+      steps.push({t:"Roll the rim in "+mixName, em:mixEm, c:accent, img:P("rim"), target:"glass",
+                  asset:null, note:"Press and roll the frosted rim into the crushed mix-in on a flat plate until evenly coated."});
+    }
+    steps.push({t:"Add "+icOz(glass)+" vanilla ice cream", em:"🍨", c:"#3AA0E8", img:IMG.pb_ic, target:"blender",
+                asset:IMG.drag_ic||null, pre:IMG.pb_empty, preCap:"Start at the blender.",
+                note:"Measure "+icOz(glass)+" of vanilla ice cream into the blender."});
+    steps.push({t:"Add "+milkOz(glass)+" whole milk", em:"🥛", c:"#16B9A9", img:IMG.pb_icmilk, target:"blender",
+                asset:IMG.drag_milk||null, note:"This build uses "+milkOz(glass)+" of whole milk."});
+    steps.push({t:"Add "+MIX+" "+mixName, em:mixEm, c:accent, img:P("mix"), target:"blender",
+                asset:null, note:"Crushed mix-in goes into the blender before you blend."});
+    steps.push({t:"Blend smooth & creamy", em:"🌀", c:"#008252", img:P("blend"), target:"blender",
+                fx:"shake", asset:null, note:"Blend until smooth, pulsing the mix-in to keep a little texture."});
+    steps.push({t:"Pour into the "+(glass?"12 oz glass":"16 oz logoed cup"), em:"🫗", c:"#008252", img:P("pour"),
+                target:(glass?"glass":"cup"), fx:"pour", asset:(IMG["pour_pitcher_"+fk]||IMG.pour_pitcher)||null,
+                pre:(glass?null:IMG.pb_cup_empty), preCap:(glass?null:"Start with a clean 16 oz logoed cup."),
+                note:"Fill to the top."});
+    steps.push({t:"Top with whipped cream", em:"🍦", c:"#6B4E8A", img:P("whip"), target:(glass?"glass":"cup"),
+                asset:IMG.drag_whip||null, note:"A tall swirl, approximately 2 oz."});
+    steps.push({t:"Finish with "+mixName+" on top", em:mixEm, c:accent, img:P("fin"), target:(glass?"glass":"cup"),
+                asset:null, note: glass
+                  ? "Garnish over the whipped cream — the glass is now rimmed AND topped."
+                  : "Garnish over the whipped cream, then cap with the dome lid and green straw."});
+    return {start:(glass?IMG.pb_glass:IMG.pb_empty),
+            startCap:"Mise en place — let's build it.",
+            vessel:(glass?"glass":"cup"), finish:P("fin"), steps:steps};
+  }
+  return {fp12:cfg("fp12"), fp16:cfg("fp16"), kk12:cfg("kk12"), kk16:cfg("kk16")};
+})();
+
+function photoBuild(card, cfg, onComplete){
+  var steps=cfg.steps;
+  var i=0, busy=false;
+
+  var stage=h("img",{class:"pbimg",src:cfg.start,alt:"Build stage"});
+  var hint=h("div",{class:"pbhint"});
+  var stageWrap=h("div",{class:"pbstage pbdrop"},[stage,hint]);
+  stageWrap.addEventListener("dragover",function(e){e.preventDefault();stageWrap.classList.add("over");});
+  stageWrap.addEventListener("dragleave",function(){stageWrap.classList.remove("over");});
+  stageWrap.addEventListener("drop",function(e){e.preventDefault();stageWrap.classList.remove("over");
+    var ci=parseInt(e.dataTransfer.getData("text/plain"),10); if(ci===i) doStep();});
+  var cap=h("div",{class:"pbcap",text:cfg.startCap});
+  card.appendChild(stageWrap); card.appendChild(cap);
+
+  var dots=h("div",{class:"pbdots"});
+  var dotEls=steps.map(function(){var d=h("span",{class:"pbdot"});dots.appendChild(d);return d;});
+  card.appendChild(dots);
+
+  var tray=h("div",{class:"pbtray"}); card.appendChild(tray);
+
+  card.appendChild(h("p",{class:"eyebrow",text:"Build sequence"}));
+  var checklist=h("div",{class:"pbcheck"});
+  var checkEls=steps.map(function(st,n){
+    var row=h("div",{class:"pbrow"},[
+      h("span",{class:"pbrn",text:(n+1)}),
+      h("span",{class:"pbct"},[h("span",{class:"pbce",text:st.em}),document.createTextNode(st.t)]),
+      h("span",{class:"pbtick",text:"✓"})
+    ]);
+    checklist.appendChild(row); return row;
+  });
+  card.appendChild(checklist);
+
+  function flash(){ stage.classList.remove("pbflash"); void stage.offsetWidth; stage.classList.add("pbflash"); setTimeout(function(){ stage.classList.remove("pbflash"); }, 340); }
+  function setStage(src,capt){ stage.src=src; if(capt!=null) cap.textContent=capt; flash(); }
+  function renderChip(){
+    tray.textContent="";
+    var st=steps[i];
+    if(st.pre){ setTimeout(function(){ if(steps[i]===st) setStage(st.pre, st.preCap||"Ready for the next step"); }, 900); }   // let the prior result linger, then the glass appears before the drag
+    hint.textContent = (st.target==="blender"?"▸ Drop on the blender":"▸ Drop on the "+cfg.vessel);
+    var icon = st.asset ? h("img",{class:"pbai",src:st.asset,alt:""}) : h("span",{class:"pbce2",text:st.em});
+    var chip=h("button",{class:"pbchip","draggable":"true",style:"background:"+st.c,
+      ondragstart:function(e){e.dataTransfer.setData("text/plain",""+i);e.dataTransfer.effectAllowed="move";chip.classList.add("dragging");},
+      ondragend:function(){chip.classList.remove("dragging");},
+      onClick:function(){ doStep(); }},[
+        icon,
+        h("div",{class:"pbtx2"},[
+          h("div",{class:"pbal2",text:"Step "+(i+1)+" of "+steps.length}),
+          h("div",{class:"pbnm",text:st.t})
+        ]),
+        h("span",{class:"pbgo",text:"⇧ drag"})
+    ]);
+    tray.appendChild(chip);
+    tray.appendChild(h("div",{class:"pbnote",text:st.note}));
+  }
+  function doStep(){
+    if(busy||i>=steps.length) return;
+    var st=steps[i];
+    function reveal(){
+      setStage(st.img, (i+1)+". "+st.t);
+      dotEls[i].classList.add("on"); checkEls[i].classList.add("done");
+      i++; busy=false;
+      if(i>=steps.length) finish(); else renderChip();
+    }
+    if(st.fx==="shake"){ busy=true; hint.textContent="Blending…"; stage.classList.remove("pbflash"); stage.classList.add("pbshake");
+      setTimeout(function(){ stage.classList.remove("pbshake"); reveal(); }, 950); }
+    else if(st.fx==="pour"){ busy=true; hint.textContent="Pouring…";
+      var jar=h("img",{class:"pbjar",src:(st.asset||IMG.pour_pitcher),alt:""});
+      stageWrap.appendChild(jar); void jar.offsetWidth; jar.classList.add("go");
+      setTimeout(function(){ setStage(st.img,(i+1)+". "+st.t); }, 780);     // filled glass appears mid-pour
+      setTimeout(function(){ if(jar.parentNode) jar.parentNode.removeChild(jar);
+        dotEls[i].classList.add("on"); checkEls[i].classList.add("done"); i++; busy=false;
+        if(i>=steps.length) finish(); else renderChip(); }, 1300);
+    }
+    else { reveal(); }
+  }
+  function finish(){
+    hint.textContent=""; tray.textContent="";
+    tray.appendChild(h("div",{class:"feedback good show"},[
+      h("b",{},"Brand-standard build! 🎉"),
+      document.createTextNode(" Every step matched the spec — build it this way every time and serve it picture-ready.")
+    ]));
+    onComplete(true);
+  }
+  renderChip();
+}
+
+
+function shakeBuilder(card, vkey, onComplete){
+  var v=VARIANTS[vkey], stages=BSTAGE[vkey], si=0, firstTry=true;
+  var wrap=h("div",{class:"sim"});
+  var promptBar=h("div",{class:"sim-prompt"});
+  var sceneWrap=h("div",{class:"scene-wrap"}); sceneWrap.innerHTML=composeScene(vkey);
+  var zoneHi=h("div",{class:"zone-hi"}); sceneWrap.appendChild(zoneHi);
+  var stepsDots=h("div",{class:"sim-steps"});
+  var tray=h("div",{class:"sim-tray"});
+  var actionWrap=h("div",{class:"sim-action"});
+  wrap.appendChild(promptBar); wrap.appendChild(sceneWrap); wrap.appendChild(stepsDots);
+  wrap.appendChild(tray); wrap.appendChild(actionWrap); card.appendChild(wrap);
+
+  var $$=function(id){return sceneWrap.querySelector("#"+id);};
+  var jarFill=$$("jarFill"), jarSpin=$$("jarSpin"), vShake=$$("vShakeFill"), pour=$$("pourStream");
+  var jarTop=$$("jarTop"), vTop=$$("vTop");
+  var ves=VES[vkey], jarLevel=0;
+  function setJar(l){jarLevel=l;var b=182,t=72,y=b-(b-t)*l;jarFill.setAttribute("y",y);jarFill.setAttribute("height",Math.max(0,b-y));
+    if(jarTop){jarTop.setAttribute("cy",y);jarTop.style.opacity=l>0.03?"1":"0";}}
+  function setVessel(l){var b=ves.fill.bottom,t=ves.fill.y,y=b-(b-t)*l;vShake.setAttribute("y",y);vShake.setAttribute("height",Math.max(0,b-y));
+    if(vTop&&ves.men){var m=ves.men,rx=m.rxBot+(m.rxTop-m.rxBot)*l;vTop.setAttribute("cx",m.cx);vTop.setAttribute("cy",y);vTop.setAttribute("rx",rx);vTop.style.opacity=l>0.03?"1":"0";}}
+  var scene={
+    show:function(id){var el=$$(id); if(el) el.classList.add("show");},
+    addToJar:function(frac){ setJar(Math.min(1,jarLevel+frac)); },
+    blend:function(done){ jarSpin.classList.add("spinning"); jarFill.setAttribute("fill","url(#shakeG)");
+      setTimeout(function(){ jarSpin.classList.remove("spinning"); if(done)done(); },1250); },
+    pour:function(done){ pour.style.opacity="1"; var t0=performance.now();
+      (function anim(t){var k=Math.min(1,(t-t0)/1100); setJar(1-k); setVessel(k);
+        if(k<1) requestAnimationFrame(anim); else { pour.style.opacity="0"; if(done)done(); }})(performance.now()); }
+  };
+
+  var ZONES={ blender:[.05,.16,.46,.82], vessel:[.55,.24,.99,.97], rim:[.55,.10,.99,.40] };
+  function zoneRect(name){var r=sceneWrap.getBoundingClientRect(),z=ZONES[name];
+    return {left:r.left+z[0]*r.width,top:r.top+z[1]*r.height,right:r.left+z[2]*r.width,bottom:r.top+z[3]*r.height};}
+  function showZone(name){var z=ZONES[name];
+    zoneHi.style.left=(z[0]*100)+"%"; zoneHi.style.top=(z[1]*100)+"%";
+    zoneHi.style.width=((z[2]-z[0])*100)+"%"; zoneHi.style.height=((z[3]-z[1])*100)+"%"; zoneHi.classList.add("on");}
+  function hideZone(){ zoneHi.classList.remove("on"); }
+  var TNAME={blender:"blender",vessel:(vkey==="cup"?"cup":(vkey==="adult"?"mug":"glass")),rim:"rim"};
+
+  function renderStage(){
+    var st=stages[si];
+    stepsDots.innerHTML="";
+    stages.forEach(function(_,i){var d=document.createElement("i"); d.className=(i<si?"done":(i===si?"cur":"")); stepsDots.appendChild(d);});
+    promptBar.innerHTML='<span class="stepno">Step '+(si+1)+"/"+stages.length+'</span><span>'+st.prompt+"</span>";
+    tray.innerHTML=""; actionWrap.innerHTML=""; hideZone();
+    if(st.type==="deliver"){
+      showZone(st.target);
+      var total=st.items.length, delivered=0;
+      st.items.forEach(function(it){
+        var chip=h("div",{class:"ing"},[h("span",{class:"em"},it.em),document.createTextNode(it.label)]);
+        tray.appendChild(chip);
+        enableDrag(chip, function(){return zoneRect(st.target);}, function(success){
+          if(!success){ toast("Drop it on the "+TNAME[st.target],"\uD83D\uDC46",""); firstTry=false; return; }
+          if(chip.classList.contains("used")) return;
+          chip.classList.add("used");
+          if(st.target==="blender") scene.addToJar(1/total);
+          delivered++;
+          if(delivered>=total){ st.apply(scene); afterStage(); }
+        });
+      });
+    } else if(st.type==="press"){
+      var b=h("button",{class:"btn-blend go",onClick:function(){ b.disabled=true; b.className="btn-blend";
+        scene.blend(function(){ afterStage(); }); }},"\uD83C\uDF00 BLEND");
+      actionWrap.appendChild(b);
+    } else if(st.type==="pour"){
+      var p=h("button",{class:"btn-blend pour go",onClick:function(){ p.disabled=true; p.className="btn-blend pour";
+        scene.pour(function(){ afterStage(); }); }},"\uD83E\uDD64 POUR");
+      actionWrap.appendChild(p);
+    }
+  }
+  function afterStage(){ si++; if(si>=stages.length) finishBuild(); else setTimeout(renderStage,380); }
+  function finishBuild(){
+    hideZone();
+    promptBar.innerHTML='<span class="stepno">Done</span><span>Beautiful build — just like the photo!</span>';
+    tray.innerHTML=""; actionWrap.innerHTML="";
+    Array.prototype.forEach.call(stepsDots.querySelectorAll("i"),function(d){d.className="done";});
+    wrap.appendChild(h("div",{class:"simdone"},[ h("img",{src:v.img,alt:v.name}),
+      h("div",{},"Brand-standard "+v.name+" — ready to serve. \u2713") ]));
+    onComplete(firstTry);
+  }
+  renderStage();
+}
+
+function hotspot(card, v, onDone){
+  if(!v.spots||!v.spots.length){
+    card.appendChild(h("div",{class:"callout"},[h("span",{class:"ic"},"📷"),h("div",{},[h("b",{},"Coming with final photography. "),document.createTextNode("This spot-the-details check unlocks once the finished product photos are loaded.")])]));
+    onDone&&onDone(); return;
+  }
+  var found={};
+  var wrap=h("div",{class:"hs-wrap"});
+  var img=h("img",{src:v.hsImg||v.img,alt:v.name});
+  wrap.appendChild(img);
+  var tags=h("div",{class:"hs-list"});
+  var tagEls={};
+  v.spots.forEach(function(s,i){
+    var sp=h("div",{class:"spot",style:"left:"+s.x+"%;top:"+s.y+"%;width:"+(s.r*2)+"%;padding-bottom:"+(s.r*2)+"%;",
+      onClick:function(){
+        if(found[i])return; found[i]=true; sp.classList.add("found");
+        if(tagEls[i])tagEls[i].classList.add("got");
+        addPoints(4,"found "+s.lab.toLowerCase());
+        if(Object.keys(found).length>=v.spots.length){
+          var msg=h("div",{class:"feedback good show"},[h("b",{},"Eagle eye! 👀"),document.createTextNode(" You found every component.")]);
+          card.appendChild(msg); onDone();
+        }
+      }},[ h("div",{class:"dot"}), h("div",{class:"lab",text:s.lab}) ]);
+    wrap.appendChild(sp);
+    var tag=h("div",{class:"hs-tag",text:s.lab}); tagEls[i]=tag; tags.appendChild(tag);
+  });
+  card.appendChild(wrap);
+  card.appendChild(tags);
+  card.appendChild(h("p",{class:"hint",text:"Tap the shake to find each labeled part."}));
+}
+
+function quiz(card, questions, opts, onComplete){
+  opts=opts||{}; var qi=0, correct=0;
+  var holder=h("div",{}); card.appendChild(holder);
+  function render(){
+    holder.innerHTML="";
+    if(qi>=questions.length){ onComplete(correct,questions.length); return; }
+    var q=questions[qi];
+    var optsArr = q.type==="tf" ? ["True","False"] : q.opts;
+    var box=h("div",{},[
+      h("div",{class:"qcount",text:"Question "+(qi+1)+" of "+questions.length}),
+      q.img?h("img",{class:"qimg",src:q.img,alt:"menu item"}):null,
+      h("p",{class:"qstem",text:q.stem})
+    ]);
+    var fb=h("div",{class:"feedback"});
+    var answered=false;
+    optsArr.forEach(function(label,idx){
+      var b=h("button",{class:"opt",onClick:function(){
+        if(answered)return; answered=true;
+        var right = idx===q.a;
+        if(right){ b.classList.add("sel-ok"); correct++; }
+        else { b.classList.add("sel-bad");
+          // highlight correct
+          Array.prototype.forEach.call(box.querySelectorAll(".opt"),function(el,j){ if(j===q.a) el.classList.add("reveal-ok"); });
+        }
+        Array.prototype.forEach.call(box.querySelectorAll(".opt"),function(el){ el.disabled=true; });
+        fb.className="feedback show "+(right?"good":"bad");
+        fb.innerHTML="<b>"+(right?"Correct! ✓":"Not quite.")+"</b>"+q.fb;
+        nextBtn.style.display="flex";
+      }},label);
+      box.appendChild(b);
+    });
+    box.appendChild(fb);
+    var nextBtn=h("button",{class:"btn btn-primary btn-sm",style:"display:none;margin-top:12px;width:100%",onClick:function(){
+      qi++; render();
+    }}, qi===questions.length-1?"Finish":"Next Question");
+    box.appendChild(nextBtn);
+    holder.appendChild(box);
+  }
+  render();
+}
+
+function timedBuild(card, steps, seconds, onDone){
+  var ring=h("div",{class:"timer-ring",text:seconds+"s"});
+  var barI=h("i");
+  var tb=h("div",{class:"timerbar"},[barI]);
+  card.appendChild(ring); card.appendChild(tb);
+  var t=seconds, timer, finished=false;
+  var buildHolder=h("div",{});
+  card.appendChild(buildHolder);
+  buildSequencer(buildHolder, steps, "timed", function(firstTry){
+    if(finished)return; finished=true; clearInterval(timer);
+    onDone(true,firstTry);
+  });
+  timer=setInterval(function(){
+    t--; ring.textContent=t+"s"; barI.style.width=(t/seconds*100)+"%";
+    if(t<=10){ ring.classList.add("warn"); barI.classList.add("warn"); }
+    if(t<=0){ clearInterval(timer); if(!finished){ finished=true;
+      ring.textContent="Time!";
+      card.appendChild(h("div",{class:"feedback bad show"},[h("b",{},"Time's up!"),document.createTextNode(" No worries — accuracy beats speed. You've got the sequence down. Tap Continue.")]));
+      onDone(false,false);
+    }}
+  },1000);
+}
+
+/* ============================================================
+   FINAL CHALLENGE
+   ============================================================ */
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+function renderFinalIntro(root,ctx){
+  root.innerHTML="";
+  var card=h("div",{class:"card center"},[
+    h("span",{class:"kicker",text:"Final Challenge"}),
+    h("h1",{class:"scr",text:"Specialty Shake Certification"}),
+    h("p",{class:"lede",text:"One last challenge to prove you're launch-ready. A mix of recipe, build, allergen, and service questions. Score 90% or higher to earn your certificate."}),
+    h("div",{class:"igrid"},[
+      h("div",{class:"itile"},[h("div",{class:"ic",style:"background:var(--navy)"},"❓"),h("h3",{text:FINAL_POOL.length+" Questions"}),h("p",{text:"Multiple choice, true/false, scenarios & image ID."})]),
+      h("div",{class:"itile"},[h("div",{class:"ic",style:"background:var(--green)"},"🎯"),h("h3",{text:"Pass = 90%"}),h("p",{text:"Retry as many times as you need to nail it."})])
+    ]),
+    h("button",{class:"btn btn-primary",style:"width:100%;margin-top:18px",onClick:function(){runFinal(root,ctx);}},"Start the Challenge")
+  ]);
+  root.appendChild(card);
+}
+
+function runFinal(root,ctx){
+  root.innerHTML="";
+  var questions=shuffle(FINAL_POOL); // use all
+  var qi=0, correct=0;
+  var card=h("div",{class:"card"});
+  root.appendChild(card);
+  function render(){
+    card.innerHTML="";
+    if(qi>=questions.length){ return showResult(); }
+    var q=questions[qi];
+    var optsArr=q.type==="tf"?["True","False"]:q.opts;
+    card.appendChild(h("div",{class:"qcount",text:"Question "+(qi+1)+" of "+questions.length}));
+    var pbar=h("div",{class:"progress",style:"margin-bottom:14px"},[h("div",{class:"bar",style:"width:"+(qi/questions.length*100)+"%"})]);
+    card.appendChild(pbar);
+    if(q.img) card.appendChild(h("img",{class:"qimg",src:q.img,alt:"item"}));
+    card.appendChild(h("p",{class:"qstem",text:q.stem}));
+    var fb=h("div",{class:"feedback"}); var answered=false;
+    var btns=[];
+    optsArr.forEach(function(label,idx){
+      var b=h("button",{class:"opt",onClick:function(){
+        if(answered)return; answered=true;
+        var right=idx===q.a;
+        if(right){b.classList.add("sel-ok");correct++;}
+        else{ b.classList.add("sel-bad"); btns[q.a].classList.add("reveal-ok"); }
+        btns.forEach(function(x){x.disabled=true;});
+        fb.className="feedback show "+(right?"good":"bad");
+        fb.innerHTML="<b>"+(right?"Correct! ✓":"Not quite.")+"</b>"+q.fb;
+        nb.style.display="flex";
+      }},label);
+      btns.push(b); card.appendChild(b);
+    });
+    card.appendChild(fb);
+    var nb=h("button",{class:"btn btn-primary btn-sm",style:"display:none;margin-top:12px;width:100%",onClick:function(){qi++;render();}},
+      qi===questions.length-1?"See My Score":"Next");
+    card.appendChild(nb);
+  }
+  function showResult(){
+    var pct=Math.round(correct/questions.length*100);
+    var pass=pct>=MASTERY;
+    if(pct>S.bestScore) S.bestScore=pct;
+    // Report best score to the LMS
+    WB_SCORM.recordResult(S.bestScore, MASTERY);
+    if(pass && !S.passed){ S.passed=true; awardBadge("certified"); WB_SCORM.setStatus("passed"); }
+    addPoints(correct*10,"final answers");
+    card.innerHTML="";
+    var color=pass?"var(--green-d)":"var(--red)";
+    card.appendChild(h("div",{class:"center"},[
+      h("p",{class:"eyebrow",text:pass?"Challenge Complete":"Almost There"}),
+      h("div",{class:"scoredial",style:"background:conic-gradient("+color+" "+(pct*3.6)+"deg,var(--line) 0)"},[
+        h("div",{style:"width:92px;height:92px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:"+color},pct+"%")
+      ]),
+      h("h1",{class:"scr",text:pass?"You're Specialty Shake Certified! ⭐":"So close!"}),
+      h("p",{class:"lede",text:pass
+        ? "You got "+correct+" of "+questions.length+" correct. You're ready to build, sell, and serve both Specialty Shakes to brand standard."
+        : "You got "+correct+" of "+questions.length+" correct — you need 90% to pass. Review the items you missed and give it another go. You've got this!"})
+    ]));
+    if(pass){
+      card.appendChild(h("button",{class:"btn btn-primary",style:"width:100%;margin-top:6px",onClick:function(){showCertificate(root);}},"🎓 Get My Certificate"));
+      card.appendChild(h("button",{class:"btn btn-ghost btn-sm",style:"width:100%;margin-top:10px",onClick:function(){qi=0;correct=0;questions=shuffle(FINAL_POOL);render();}},"Improve My Score"));
+    } else {
+      card.appendChild(h("button",{class:"btn btn-primary",style:"width:100%;margin-top:6px",onClick:function(){qi=0;correct=0;questions=shuffle(FINAL_POOL);render();}},"Try Again"));
+    }
+    WB_SCORM.commit();
+  }
+  render();
+}
+
+function showCertificate(root){
+  root.innerHTML="";
+  var nm=WB_SCORM.getStudentName()||S.name||"";
+  var card=h("div",{class:"card"});
+  var dateStr=new Date().toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
+  function draw(name){
+    card.innerHTML="";
+    var cert=h("div",{class:"cert"},[
+      h("img",{class:"wm",src:IMG.logo,alt:"Wahlburgers"}),
+      h("div",{class:"sub",text:"Wahlburgers · Certificate of Completion"}),
+      h("div",{class:"ttl",text:"Indulgent Specialty Shakes · Fruity Pebbles & Kit Kat"}),
+      h("div",{class:"sub",style:"color:var(--navy);font-weight:700",text:"Menu Training"}),
+      h("p",{style:"margin:14px 0 0;font-size:13px;color:var(--muted)",text:"This certifies that"}),
+      h("div",{class:"name",text:name||"Team Member"}),
+      h("p",{style:"margin:8px 0 0;font-size:13px;color:var(--muted)",text:"has successfully completed the training with a score of"}),
+      h("div",{class:"scorebig",text:S.bestScore+"%"}),
+      h("p",{class:"meta",text:"Completed "+dateStr+"  ·  Total points: "+S.points})
+    ]);
+    card.appendChild(cert);
+    if(!name){
+      card.appendChild(h("p",{class:"eyebrow",style:"margin-top:16px;text-align:center",text:"Add your name to personalize it"}));
+      var input=h("input",{class:"nameinput",type:"text",placeholder:"Your name",maxlength:"40"});
+      card.appendChild(input);
+      card.appendChild(h("button",{class:"btn btn-primary btn-sm",style:"width:100%;margin-top:10px",onClick:function(){
+        S.name=input.value.trim(); draw(S.name);
+      }},"Add to Certificate"));
+    }
+    var actions=h("div",{style:"display:flex;gap:10px;margin-top:14px"});
+    actions.appendChild(h("button",{class:"btn btn-gold",style:"flex:1",onClick:function(){window.print();}},"🖨️ Print / Save"));
+    card.appendChild(actions);
+    // badge wall
+    card.appendChild(h("p",{class:"eyebrow",style:"margin-top:22px;text-align:center",text:"Badges Earned"}));
+    var tray=h("div",{class:"badgetray"});
+    for(var id in BADGES){
+      tray.appendChild(h("div",{class:"bdg"+(S.badges[id]?" earned":"")},[
+        h("div",{class:"disc"},BADGES[id].ic), h("span",{text:BADGES[id].name})
+      ]));
+    }
+    card.appendChild(tray);
+    card.appendChild(h("div",{class:"callout",style:"margin-top:18px"},[h("span",{class:"ic"},"🇺🇸"),
+      h("div",{},[h("b",{},"Build → Sprinkle → Serve. "),document.createTextNode("Build every shake to the photo, suggest it to every guest, and remember — a portion of every pour honors our nation's heroes. Go live June 30!")])]));
+    var finishBtn=h("button",{class:"btn btn-primary",style:"width:100%;margin-top:16px",onClick:function(){
+      WB_SCORM.finish();
+      finishBtn.textContent="✓ Progress Saved — you may close this window";
+      finishBtn.disabled=true;
+    }},"Finish & Save to LMS");
+    card.appendChild(finishBtn);
+  }
+  draw(nm);
+  root.appendChild(card);
+}
+
+/* ============================================================
+   ROUTER
+   ============================================================ */
+var SECTIONS={1:"Welcome",2:"Meet the Menu",3:"Item Training",4:"Prep & Readiness",5:"Guest & Selling",6:"Final Challenge"};
+var unlocked=false, navHidden=false;
+
+function render(){
+  var scr=FLOW[S.idx];
+  var stage=$("stage"); stage.innerHTML=""; window.scrollTo(0,0);
+  unlocked=false; navHidden=false;
+  $("secLabel").textContent="Section "+scr.sec+" of 6 · "+(scr.label||SECTIONS[scr.sec]);
+  $("bar").style.width=((S.idx)/(FLOW.length-1)*100)+"%";
+
+  var ctx={
+    unlock:function(){unlocked=true;refreshNav();},
+    lock:function(){unlocked=false;refreshNav();},
+    hideNav:function(){navHidden=true;$("navbar").style.display="none";},
+    next:go
+  };
+  scr.build(stage,ctx);
+  refreshNav();
+}
+function refreshNav(){
+  if(navHidden){ $("navbar").style.display="none"; return; }
+  $("navbar").style.display="flex";
+  var nav=$("navbar"); nav.innerHTML="";
+  var scr=FLOW[S.idx];
+  if(S.idx>0){
+    nav.appendChild(h("button",{class:"btn btn-ghost",onClick:function(){go(-1);}},"← Back"));
+  }
+  var needGate=scr.gate && !unlocked;
+  var cont=h("button",{class:"btn btn-primary"+(needGate?"":""),onClick:function(){if(!needGate)go(1);}},
+    S.idx===FLOW.length-1?"Finish":"Continue →");
+  if(needGate) cont.disabled=true;
+  nav.appendChild(cont);
+}
+function go(dir){
+  var ni=S.idx+dir;
+  if(ni<0||ni>=FLOW.length) return;
+  S.idx=ni; render();
+  WB_SCORM.commit();
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+window.addEventListener("DOMContentLoaded",function(){
+  WB_SCORM.init();
+  var bl=$("brandLogo"); if(bl&&IMG.logo) bl.src=IMG.logo;
+  render();
+});
+</script>
+</body>
+</html>
