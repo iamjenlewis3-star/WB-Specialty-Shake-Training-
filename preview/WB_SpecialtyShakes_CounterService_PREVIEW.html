@@ -969,7 +969,7 @@ addScreen(4,"Kit Kat Prep",false,function(root,ctx){
       ["1","var(--kk)","Prepare","Wash, rinse and sanitize all equipment and work surfaces. Wash hands and put on disposable gloves."],
       ["2","var(--slate)","Process","Chop or pulse the pre-crushed Kit Kat down to a fine, uniform crumble — use one of the two approved methods below."],
       ["3","var(--navy)","Inspect","Check the texture: about 1–3 mm, uniform, with visible chocolate and wafer pieces. No large chunks, no powder."],
-      ["4","var(--green-d)","Store","Transfer to a clean, labeled, food-safe container, cover immediately, and store per your restaurant’s food-safety procedures."]
+      ["4","var(--green-d)","Store","Move to a clean, dry, airtight container; label with the product name, prep date and prepared-by. Store at room temperature in a cool, dry spot — do NOT refrigerate or freeze."]
     ].map(function(t){return h("div",{class:"itile"},[
       h("div",{class:"ic",style:"background:"+t[1]},t[0]),h("h3",{text:t[2]}),h("p",{text:t[3]})
     ]);})),
@@ -978,12 +978,15 @@ addScreen(4,"Kit Kat Prep",false,function(root,ctx){
     h("div",{class:"callout"},[h("span",{class:"ic"},"⚙️"),h("div",{},[h("b",{},"Food processor. "),document.createTextNode("Fill the bowl no more than halfway. Pulse in short 1-second bursts, checking the texture frequently, and stop as soon as it’s right.")])]),
     h("div",{class:"callout red"},[h("span",{class:"ic"},"⚠️"),h("div",{},[h("b",{},"Do not over-process. "),document.createTextNode("The finished crumble must keep visible chocolate and wafer pieces — never grind it into a powder.")])]),
     h("div",{class:"callout"},[h("span",{class:"ic"},"🎯"),h("div",{},[h("b",{},"The standard: "),document.createTextNode("Evenly sized (about 1–3 mm), uniform, with visible chocolate and wafer texture, and it sprinkles evenly onto whipped cream. No large chunks, no powder.")])]),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"🌡️"),h("div",{},[h("b",{},"Store at room temperature. "),document.createTextNode("Keep the finished crumble in a clean, dry, airtight container in a cool, dry spot — ideally 60–75°F / 16–24°C — away from heat, humidity and direct sunlight. Keep it tightly covered when not in use.")])]),
+    h("div",{class:"callout red"},[h("span",{class:"ic"},"🚫"),h("div",{},[h("b",{},"Do not refrigerate or freeze. "),document.createTextNode("Cold introduces moisture and condensation: the chocolate can bloom (turn whitish) and the wafer pieces lose their crisp texture.")])]),
+    h("div",{class:"callout"},[h("span",{class:"ic"},"🏷️"),h("div",{},[h("b",{},"Label & hold time. "),document.createTextNode("Label with product name, prep date and prepared-by. Hold up to 72 hours after opening and processing (or follow your QA team’s opened-product guidance), and discard per your brand’s shelf-life policy — or sooner if it gets wet, clumps, or shows any sign of contamination.")])]),
     h("div",{class:"callout"},[h("span",{class:"ic"},"🏬"),h("div",{},[h("b",{},"Brand standard. "),document.createTextNode("The method can vary by location (chef’s knife or food processor), but every location must produce the same uniform, fine crumble (about 1–3 mm) with visible chocolate and wafer pieces — for a consistent guest experience across all Wahlburgers.")])])
   ]));
 });
 
 addScreen(4,"Crumble Check",true,function(root,ctx){
-  var items=["Equipment and work surfaces cleaned and sanitized","Processed with an approved method — knife or food processor","Uniform crumble, about 1–3 mm","Visible chocolate and wafer pieces — no powder","No large chunks remaining","Labeled, covered, and stored properly"];
+  var items=["Equipment and work surfaces cleaned and sanitized","Processed with an approved method — knife or food processor","Uniform crumble, about 1–3 mm","Visible chocolate and wafer pieces — no powder","No large chunks remaining","Labeled and stored at room temperature (not refrigerated)"];
   var done={};
   var card=h("div",{class:"card"},[
     h("p",{class:"eyebrow",text:"Quality Check"}),
