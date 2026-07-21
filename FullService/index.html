@@ -414,7 +414,7 @@ function mkVariant(o){
   var glass = (o.fmt === "12");
   var vessel = glass ? "12 oz classic shake glass" : "16 oz logoed cup";
   return {
-    key:o.key, name:o.name, sub: glass ? "Dine-In · Full Service Only" : "Takeout · Full & Counter Service",
+    key:o.key, name:o.name, sub: glass ? "Dine-In" : "Takeout",
     img:o.hero, hsImg:o.hero, price:"", adult:false, flavorKey:o.flavorKey,
     vessel:vessel,
     spots:o.spots||[],
@@ -460,7 +460,7 @@ var VARIANTS = {
     hero:(IMG.ph_fp12||IMG.fs), mixName:"Fruity Pebbles", mixShort:"Fruity Pebbles",
     spots:[{x:46,y:12,r:7,lab:"Fruity Pebbles Crown"},{x:58,y:23,r:7,lab:"Whipped Cream"},{x:40,y:31,r:7,lab:"Cereal-Rolled Rim"},{x:48,y:55,r:7,lab:"Blended Shake"},{x:48,y:84,r:7,lab:"12 oz Glass"}],
     mixIc:"🌈", accent:"#E23B7A", accent2:"#F5C518",
-    desc:"A colorful, nostalgic shake — creamy vanilla ice cream blended with Fruity Pebbles for a sweet, fruity crunch in every sip. Served in the 12 oz classic shake glass with a frosted, cereal-rolled rim and a Fruity Pebbles crown. Full-service dine-in only.",
+    desc:"A colorful, nostalgic shake — creamy vanilla ice cream blended with Fruity Pebbles for a sweet, fruity crunch in every sip. Served in the 12 oz classic shake glass with a frosted, cereal-rolled rim and a Fruity Pebbles crown. A dine-in serving — a to-go order is built in the 16 oz takeout cup.",
     flavorNote:"Sweet, fruity and creamy with a light cereal crunch. Nostalgic and colorful — a photo-ready dessert.",
     script:"\u201CHave you tried our Fruity Pebbles Shake? Creamy vanilla blended with the cereal you grew up on — now on our menu.\u201D",
     allerg:". Cereal and shared equipment — verify wheat and gluten declarations against the supplier spec.",
@@ -476,7 +476,7 @@ var VARIANTS = {
     hero:(IMG.ph_fp16||IMG.cup), mixName:"Fruity Pebbles", mixShort:"Fruity Pebbles",
     spots:[{x:50,y:13,r:7,lab:"Green Straw"},{x:43,y:28,r:7,lab:"Whip + Cereal Crown"},{x:66,y:24,r:7,lab:"Dome Lid"},{x:50,y:62,r:7,lab:"16 oz Logoed Cup"},{x:40,y:70,r:7,lab:"Blended Shake"}],
     mixIc:"🌈", accent:"#E23B7A", accent2:"#F5C518",
-    desc:"The same nostalgic Fruity Pebbles shake, built for takeout — offered at both full-service and counter-service locations. Served in the 16 oz logoed cup, topped with whipped cream and a Fruity Pebbles crown, then capped with a dome lid and green straw.",
+    desc:"The same nostalgic Fruity Pebbles shake, built for takeout in the 16 oz logoed cup — topped with whipped cream and a Fruity Pebbles crown, then capped with a dome lid and green straw.",
     flavorNote:"Sweet, fruity and creamy with a light cereal crunch. Travels well and shows off through the dome.",
     script:"\u201CWant to add a Fruity Pebbles Shake? Creamy vanilla blended with the cereal you grew up on — it travels great.\u201D",
     allerg:". Cereal and shared equipment — verify wheat and gluten declarations against the supplier spec.",
@@ -492,7 +492,7 @@ var VARIANTS = {
     hero:(IMG.ph_kk12||IMG.fs), mixName:"Crushed Kit Kat", mixShort:"crushed Kit Kat",
     spots:[{x:54,y:11,r:7,lab:"Crushed Kit Kat"},{x:40,y:19,r:7,lab:"Whipped Cream"},{x:45,y:31,r:7,lab:"Kit Kat-Rolled Rim"},{x:48,y:55,r:7,lab:"Blended Shake"},{x:48,y:84,r:7,lab:"12 oz Glass"}],
     mixIc:"🍫", accent:"#D3122A", accent2:"#5A3A22",
-    desc:"Creamy vanilla ice cream blended with real crushed Kit Kat for a rich, wafer-crunch shake. Served in the 12 oz classic shake glass with a frosted rim rolled in crushed Kit Kat and a Kit Kat finish on top. Full-service dine-in only.",
+    desc:"Creamy vanilla ice cream blended with real crushed Kit Kat for a rich, wafer-crunch shake. Served in the 12 oz classic shake glass with a frosted rim rolled in crushed Kit Kat and a Kit Kat finish on top. A dine-in serving — a to-go order is built in the 16 oz takeout cup.",
     flavorNote:"Rich, chocolatey and creamy with a crisp wafer crunch. Indulgent without being heavy.",
     script:"\u201CHave you seen our Kit Kat Shake? Real crushed Kit Kat blended right in — rich, creamy, and now on our menu.\u201D",
     allerg:", and contains WHEAT, SOY and may contain nuts from the confection.",
@@ -508,7 +508,7 @@ var VARIANTS = {
     hero:(IMG.ph_kk16||IMG.cup), mixName:"Crushed Kit Kat", mixShort:"crushed Kit Kat",
     spots:[{x:51,y:11,r:7,lab:"Green Straw"},{x:70,y:30,r:7,lab:"Dome Lid"},{x:40,y:29,r:7,lab:"Whip + Kit Kat Crown"},{x:50,y:66,r:7,lab:"16 oz Logoed Cup"},{x:33,y:52,r:7,lab:"Blended Shake"}],
     mixIc:"🍫", accent:"#D3122A", accent2:"#5A3A22",
-    desc:"The same rich Kit Kat shake, built for takeout — offered at both full-service and counter-service locations. Served in the 16 oz logoed cup, topped with whipped cream and crushed Kit Kat, then capped with a dome lid and green straw.",
+    desc:"The same rich Kit Kat shake, built for takeout in the 16 oz logoed cup — topped with whipped cream and crushed Kit Kat, then capped with a dome lid and green straw.",
     flavorNote:"Rich, chocolatey and creamy with a crisp wafer crunch. Built to travel.",
     script:"\u201CWant to add a Kit Kat Shake? Real crushed Kit Kat blended right in — it travels great.\u201D",
     allerg:", and contains WHEAT, SOY and may contain nuts from the confection.",
@@ -555,9 +555,9 @@ var FINAL_POOL = [
   {type:"mc",stem:"Which build gets the frosted, rolled rim?",
    opts:["Both the glass and the cup","Only the 12 oz classic shake glass","Only the 16 oz cup"],a:1,
    fb:"Rim treatment is dine-in only — the 12 oz glass. The 16 oz cup gets top garnish only."},
-  {type:"mc",stem:"Which specialty shake builds does a counter-service location offer?",
-   opts:["The 12 oz glass and the 16 oz cup","The 16 oz takeout cup only","The 12 oz glass only"],a:1,
-   fb:"Counter service is takeout only — the 16 oz logoed cup. The 12 oz specialty glass is a dine-in build at full-service locations."},
+  {type:"mc",stem:IS_COUNTER?"How does a counter-service location serve the specialty shake?":"When a full-service guest wants their shake to go, what's it served in?",
+   opts:["The 12 oz dine-in glass","The 16 oz takeout cup","It isn't offered to go"],a:1,
+   fb:IS_COUNTER?"Counter service builds the 16 oz takeout cup only — that's the one way it's served.":"Dine-in shakes come in the 12 oz glass; a to-go order is built in the 16 oz takeout cup."},
   {type:"mc",stem:"How is the 16 oz takeout cup finished?",
    opts:["Rolled rim and a straw","Whipped cream, mix-in on top, dome lid, green straw","Nothing on top"],a:1,
    fb:"Top garnish, then the dome lid and green straw."},
@@ -676,7 +676,7 @@ addScreen(2,"Meet the Menu",true,function(root,ctx){
     h("p",{class:"eyebrow",text:"Meet the Menu"}),
     h("h1",{class:"scr",text:IS_COUNTER?"How we serve it":"Two flavors, two ways to serve them"}),
     h("p",{class:"lede",text:IS_COUNTER?"Tap each shake to explore its photo, ingredients, flavor and selling notes. Open both to continue.":"Tap each item to explore its photo, ingredients, flavor and selling notes. Open all four to continue."}),
-    h("div",{class:"callout"},[h("span",{class:"ic"},"🏪"),h("div",{},[h("b",{},"Know your service model. "),document.createTextNode(IS_COUNTER?"Counter-service restaurants serve the 16 oz takeout build only. The 12 oz specialty glass is a full-service, dine-in build — you won't build it at your location.":"Full-service restaurants offer both builds — the 12 oz specialty glass for dine-in and the 16 oz logoed cup for takeout. Counter-service restaurants offer the 16 oz takeout build only.")])])
+    h("div",{class:"callout"},[h("span",{class:"ic"},"🏪"),h("div",{},[h("b",{},"Know your service model. "),document.createTextNode(IS_COUNTER?"Your counter-service location serves the 16 oz takeout cup only — that's the build you'll make.":"A full-service location builds both: the 12 oz specialty glass for dine-in, and the 16 oz logoed cup when a guest wants their shake to go.")])])
   ]);
   var grid=h("div",{class:"menu-grid"});
   ACTIVE.forEach(function(k){
@@ -795,7 +795,7 @@ addScreen(4,"Prep & Readiness",false,function(root,ctx){
       ["🌀","var(--slate)","The Finish","Tall whipped-cream swirl, then a generous mix-in crown over the top."],
       (IS_COUNTER
         ? ["🥤","var(--blue)","The To-Go Cup","16 oz logoed cup, dome lid + straw. Mix-in garnish on top only — no rim."]
-        : ["🥤","var(--blue)","Glass vs. To-Go","Full service: 12 oz glass dine-in + 16 oz cup to-go. Counter service: 16 oz cup only."])
+        : ["🥤","var(--blue)","Dine-In vs. To-Go","The 12 oz classic glass is the dine-in serving; when a guest wants it to go, build it in the 16 oz cup with a dome lid and straw."])
     ].map(function(t){return h("div",{class:"itile"},[
       h("div",{class:"ic",style:"background:"+t[1]},t[0]),h("h3",{text:t[2]}),h("p",{text:t[3]})
     ]);})),
@@ -812,7 +812,7 @@ addScreen(4,"Supply & Setup",false,function(root,ctx){
     h("div",{class:"callout"},[h("span",{class:"ic"},"✅"),h("div",{},[h("b",{},"Mix-ins."),document.createTextNode(" Fruity Pebbles (Post, 4/40 oz) and chopped Kit Kat (2/5 lb) order through Sysco. Confirm case packs and DC availability against your order guide before launch.")])]),
     (IS_COUNTER
       ? h("div",{class:"callout"},[h("span",{class:"ic"},"🥤"),h("div",{},[h("b",{},"No specialty glassware. "),document.createTextNode("The 16 oz logoed cups, dome lids, and straws are your standard to-go supply — just confirm par levels before launch.")])])
-      : h("div",{class:"callout red"},[h("span",{class:"ic"},"⚠️"),h("div",{},[h("b",{},"Glassware — action required. "),document.createTextNode("12 oz Acopa Soda Glasses are NOT auto-shipped. Full-service locations must order their own via WebstaurantStore before launch. Counter/takeout needs 16 oz logoed cups, dome lids, and green straws at par.")])])),
+      : h("div",{class:"callout red"},[h("span",{class:"ic"},"⚠️"),h("div",{},[h("b",{},"Glassware — action required. "),document.createTextNode("12 oz Acopa Soda Glasses are NOT auto-shipped — order them via WebstaurantStore before launch. To-go orders need 16 oz logoed cups, dome lids, and green straws at par.")])])),
     h("div",{class:"callout"},[h("span",{class:"ic"},"🪧"),h("div",{},[h("b",{},"Merchandising. "),document.createTextNode(IS_COUNTER?"Counter card / easel-back at the point of sale before launch.":"Counter card / easel-back at the point of sale; table tents throughout the dining room before launch.")])])
   ]));
 });
@@ -865,7 +865,7 @@ addScreen(4,"Build It Fast",true,function(root,ctx){
   var card=h("div",{class:"card"},[
     h("p",{class:"eyebrow",text:"Timed Challenge"}),
     h("h1",{class:"scr",text:"⚡ Build It Fast"}),
-    h("p",{class:"lede",text:"Dinner rush! Sequence the "+(IS_COUNTER?"to-go cup":"full-service")+" shake build before the timer runs out. Beat the clock for the Speed Demon badge."})
+    h("p",{class:"lede",text:"Dinner rush! Sequence the "+(IS_COUNTER?"to-go cup":"dine-in")+" shake build before the timer runs out. Beat the clock for the Speed Demon badge."})
   ]);
   root.appendChild(card);
   timedBuild(card, VARIANTS[ACTIVE[0]].build, 50, function(win,firstTry){
