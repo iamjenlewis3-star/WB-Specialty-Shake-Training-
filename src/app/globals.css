@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/* Class-based dark mode: the <html> element carries `.dark` (set by ThemeProvider,
+   which persists the user's Light / Dark / System preference). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------
+   Wahlburgers Academy design tokens
+   Brand: deep navy + Wahlburgers red, warm neutral surfaces.
+   ------------------------------------------------------------------ */
+:root {
+  --wb-navy: #0e1f38;
+  --wb-navy-600: #16305a;
+  --wb-red: #c8102e;
+  --wb-red-600: #a20d25;
+  --wb-gold: #e0a33c;
+
+  --background: #f4f6fa;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --surface-3: #eef2f7;
+  --foreground: #0d1526;
+  --muted: #5b6779;
+  --muted-2: #8492a6;
+  --border: #dfe5ee;
+  --border-strong: #c7d1e0;
+  --primary: #0e1f38;
+  --primary-foreground: #ffffff;
+  --accent: #c8102e;
+  --accent-foreground: #ffffff;
+  --ring: #2563eb;
+
+  --success: #16794b;
+  --success-bg: #dcf5e8;
+  --warning: #a4620a;
+  --warning-bg: #fdf0d5;
+  --danger: #b3182c;
+  --danger-bg: #fde3e6;
+  --info: #1d4ed8;
+  --info-bg: #dde8fe;
+  --neutral-bg: #eef1f6;
+
+  --chart-1: #1e5fbf;
+  --chart-2: #c8102e;
+  --chart-3: #14866d;
+  --chart-4: #e0a33c;
+  --chart-5: #7c53c3;
+  --chart-6: #3f7fa6;
+
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: #070c16;
+  --surface: #0e1725;
+  --surface-2: #131f31;
+  --surface-3: #1a293f;
+  --foreground: #e9eef7;
+  --muted: #9aa8bd;
+  --muted-2: #6f7f96;
+  --border: #22314a;
+  --border-strong: #2f4160;
+  --primary: #e9eef7;
+  --primary-foreground: #0e1f38;
+  --accent: #ef3b52;
+  --accent-foreground: #ffffff;
+  --ring: #60a5fa;
+
+  --success: #5fdCA4;
+  --success-bg: #0d3325;
+  --warning: #f0b95e;
+  --warning-bg: #3a2a0c;
+  --danger: #ff8494;
+  --danger-bg: #3d1119;
+  --info: #8db4ff;
+  --info-bg: #10224a;
+  --neutral-bg: #1b2740;
+
+  --chart-1: #6aa5ff;
+  --chart-2: #ff7183;
+  --chart-3: #4fd1a5;
+  --chart-4: #f2c069;
+  --chart-5: #b18cf0;
+  --chart-6: #74b6d8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-2: var(--muted-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+  --color-neutral-bg: var(--neutral-bg);
+  --color-navy: var(--wb-navy);
+  --color-navy-600: var(--wb-navy-600);
+  --color-wbred: var(--wb-red);
+  --color-gold: var(--wb-gold);
+  --radius-card: var(--radius);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { border-color: var(--border); }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Accessible focus ring everywhere (keyboard navigation requirement). */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@keyframes wb-shimmer { 100% { transform: translateX(100%); } }
+.skeleton {
+  position: relative; overflow: hidden;
+  background: var(--surface-3); border-radius: 8px;
+}
+.skeleton::after {
+  content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+  background-image: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+  animation: wb-shimmer 1.6s infinite;
+}
+.dark .skeleton::after {
+  background-image: linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
+}
+
+@keyframes wb-fade-up { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: none; } }
+.animate-fade-up { animation: wb-fade-up .28s ease-out both; }
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; color: #000; }
+}
