@@ -443,6 +443,9 @@ export async function createLearningPath(formData: FormData): Promise<void> {
   const category = String(formData.get("category") ?? "") || null;
   const certificationId = String(formData.get("certification_id") ?? "") || null;
   const courseIds = formData.getAll("course_ids").map(String).filter(isUuid);
+  const assessmentIds = formData.getAll("assessment_ids").map(String).filter(isUuid);
+  const assetIds = formData.getAll("asset_ids").map(String).filter(isUuid);
+  const liveSessions = String(formData.get("live_sessions") ?? "").split("\n").map((t) => t.trim()).filter(Boolean);
   if (!name || courseIds.length === 0) {
     redirect(`/admin/learning-paths?toast=${encodeURIComponent("Name the path and choose at least one course.")}&tone=error`);
   }
@@ -459,11 +462,35 @@ export async function createLearningPath(formData: FormData): Promise<void> {
       `insert into learning_path_items (learning_path_id, position, item_type, course_id, title, is_required)
        values ($1,$2,'course',$3,$4,true)`, [row.id, index + 1, courseId, course?.title ?? null]);
   }
+  // A path is a curriculum, not just a course list: standalone knowledge checks,
+  // classroom or virtual sessions and reference documents all take a place in it.
+  let position = courseIds.length;
+  for (const assessmentId of assessmentIds) {
+    const assessment = await queryOne<{ title: string }>(`select title from assessments where id = $1`, [assessmentId]);
+    position += 1;
+    await query(
+      `insert into learning_path_items (learning_path_id, position, item_type, assessment_id, title, is_required)
+       values ($1,$2,'assessment',$3,$4,true)`, [row.id, position, assessmentId, assessment?.title ?? null]);
+  }
+  for (const title of liveSessions) {
+    position += 1;
+    await query(
+      `insert into learning_path_items (learning_path_id, position, item_type, title, is_required)
+       values ($1,$2,'live_session',$3,true)`, [row.id, position, title]);
+  }
+  for (const assetId of assetIds) {
+    const asset = await queryOne<{ name: string }>(`select name from assets where id = $1`, [assetId]);
+    position += 1;
+    await query(
+      `insert into learning_path_items (learning_path_id, position, item_type, asset_id, title, is_required)
+       values ($1,$2,'document',$3,$4,false)`, [row.id, position, assetId, asset?.name ?? null]);
+  }
   if (certificationId) {
     const cert = await queryOne<{ name: string }>(`select name from certifications where id = $1`, [certificationId]);
+    position += 1;
     await query(
       `insert into learning_path_items (learning_path_id, position, item_type, certification_id, title, is_required)
-       values ($1,$2,'certification',$3,$4,true)`, [row.id, courseIds.length + 1, certificationId, cert?.name ?? null]);
+       values ($1,$2,'certification',$3,$4,true)`, [row.id, position, certificationId, cert?.name ?? null]);
   }
 
   await logAudit(actor, { action: "learning_path.created", entityType: "learning_path", entityId: row.id, entityLabel: name });

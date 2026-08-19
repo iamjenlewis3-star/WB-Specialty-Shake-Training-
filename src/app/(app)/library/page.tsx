@@ -57,7 +57,10 @@ export default async function LibraryPage({
                     <Td className="capitalize text-[var(--muted)]">{item.item_type.replace("_", " ")}</Td>
                     <Td>
                       <Pill tone={item.my_status === "completed" ? "success" : item.my_status ? "info" : "neutral"}>
-                        {item.my_status ? item.my_status.replace("_", " ") : "Not assigned"}
+                        {item.my_status ? item.my_status.replace("_", " ")
+                          : item.item_type === "document" ? "Reference"
+                          : item.item_type === "live_session" ? "Scheduled"
+                          : "Not assigned"}
                       </Pill>
                     </Td>
                     <Td className="text-right">
@@ -65,6 +68,10 @@ export default async function LibraryPage({
                         <LinkButton href={`/learn/${item.my_enrollment_id}`} variant="outline" size="sm">Open</LinkButton>
                       ) : item.course_id ? (
                         <LinkButton href={`/library/${item.course_id}`} variant="ghost" size="sm">Details</LinkButton>
+                      ) : item.asset_id ? (
+                        <LinkButton href={`/api/assets/${item.asset_id}/file`} target="_blank" variant="ghost" size="sm">Read</LinkButton>
+                      ) : item.item_type === "live_session" ? (
+                        <LinkButton href="/calendar" variant="ghost" size="sm">Calendar</LinkButton>
                       ) : null}
                     </Td>
                   </Tr>

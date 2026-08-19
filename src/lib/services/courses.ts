@@ -235,8 +235,10 @@ export async function learningPathDetail(pathId: string, userId?: string) {
   const items = await query<{
     id: string; position: number; item_type: string; title: string | null; course_id: string | null;
     course_title: string | null; estimated_minutes: number | null; my_status: string | null; my_enrollment_id: string | null;
+    asset_id: string | null; is_required: boolean;
   }>(
-    `select i.id, i.position, i.item_type, i.title, i.course_id, c.title as course_title, c.estimated_minutes,
+    `select i.id, i.position, i.item_type, i.title, i.course_id, i.asset_id, i.is_required,
+            c.title as course_title, c.estimated_minutes,
             e.status as my_status, e.id as my_enrollment_id
        from learning_path_items i
        left join courses c on c.id = i.course_id

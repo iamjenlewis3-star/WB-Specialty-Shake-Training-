@@ -12,10 +12,13 @@ export const dynamic = "force-dynamic";
 
 export default async function LearningPathsPage() {
   const user = await requirePermission("learning_paths.manage");
-  const [paths, catalog, certifications, stats] = await Promise.all([
+  const [paths, catalog, certifications, assessments, documents, stats] = await Promise.all([
     listLearningPaths(),
     listCatalog(user.id, { pageSize: 60 }),
     query<{ id: string; name: string }>(`select id, name from certifications where status = 'active' order by name`),
+    query<{ id: string; title: string }>(`select id, title from assessments where status = 'active' order by title`),
+    query<{ id: string; name: string }>(
+      `select id, name from assets where status = 'active' and is_archived = false order by name limit 200`),
     query<{ learning_path_id: string; enrolled: string; completed: string; avg_progress: string }>(`
       select learning_path_id, count(*)::text as enrolled,
              count(*) filter (where status = 'completed')::text as completed,
@@ -48,6 +51,19 @@ export default async function LearningPathsPage() {
             <Field label="Courses in order" required hint="Ctrl/Cmd-click to select several — order follows the list">
               <select name="course_ids" multiple required size={8} className="w-full rounded-lg border border-[var(--border-strong)] bg-[var(--surface)] p-2 text-[13px]">
                 {catalog.rows.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
+              </select>
+            </Field>
+            <Field label="Standalone knowledge checks" hint="Assessments that sit in the path outside a course">
+              <select name="assessment_ids" multiple size={8} className="w-full rounded-lg border border-[var(--border-strong)] bg-[var(--surface)] p-2 text-[13px]">
+                {assessments.map((a) => <option key={a.id} value={a.id}>{a.title}</option>)}
+              </select>
+            </Field>
+            <Field label="Instructor-led or virtual sessions" hint="One per line — scheduled on the training calendar">
+              <TextArea name="live_sessions" rows={3} placeholder={"Shake station skills lab\nGM certification workshop"} />
+            </Field>
+            <Field label="Reference documents" hint="Resources the learner keeps alongside the path">
+              <select name="asset_ids" multiple size={6} className="w-full rounded-lg border border-[var(--border-strong)] bg-[var(--surface)] p-2 text-[13px]">
+                {documents.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
             </Field>
             <div className="sm:col-span-2"><SubmitButton pendingLabel="Creating…">Create learning path</SubmitButton></div>

@@ -677,20 +677,31 @@ export async function seedDatabase(db: SqlClient): Promise<void> {
   const pathItemRows: unknown[][] = [];
   for (const p of LEARNING_PATHS) {
     p.courses.forEach((code, i) => {
-      pathItemRows.push([uuid(), pathIds.get(p.name), i + 1, "course", courseIds.get(code), null, null,
+      pathItemRows.push([uuid(), pathIds.get(p.name), i + 1, "course", courseIds.get(code), null, null, null,
         COURSES.find((c) => c.code === code)?.title ?? code, true]);
     });
     if (p.certification) {
       pathItemRows.push([uuid(), pathIds.get(p.name), p.courses.length + 1, "certification", null, null,
-        certIds.get(p.certification), p.certification, true]);
+        certIds.get(p.certification), null, p.certification, true]);
     }
     if (["Cook Certification", "General Manager Certification"].includes(p.name)) {
-      pathItemRows.push([uuid(), pathIds.get(p.name), p.courses.length + 2, "manager_validation", null, null, null,
+      pathItemRows.push([uuid(), pathIds.get(p.name), p.courses.length + 2, "manager_validation", null, null, null, null,
         "Manager validation — observed on the floor", true]);
+    }
+    // A path is a curriculum, not just a course list: classroom time and the
+    // reference documents a learner keeps at their station belong in it too.
+    if (["Cook Certification", "Shift Leader Development", "General Manager Certification"].includes(p.name)) {
+      pathItemRows.push([uuid(), pathIds.get(p.name), p.courses.length + 3, "live_session", null, null, null, null,
+        `${p.name} skills lab — instructor led`, true]);
+    }
+    if (assetIds.length > 0) {
+      pathItemRows.push([uuid(), pathIds.get(p.name), p.courses.length + 4, "document", null, null, null,
+        assetIds[pathItemRows.length % assetIds.length], "Reference document for this path", false]);
     }
   }
   await insertMany(db, "learning_path_items",
-    ["id", "learning_path_id", "position", "item_type", "course_id", "assessment_id", "certification_id", "title", "is_required"],
+    ["id", "learning_path_id", "position", "item_type", "course_id", "assessment_id", "certification_id", "asset_id",
+      "title", "is_required"],
     pathItemRows);
   log(`${LEARNING_PATHS.length} learning paths created`);
 

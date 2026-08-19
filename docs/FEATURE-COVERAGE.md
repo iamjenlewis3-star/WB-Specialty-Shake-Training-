@@ -49,7 +49,7 @@ is implemented and functional against the database — no decorative screens.
 | Assessments: single, multiple, true/false, matching, ordering, scenario, image; passing score, attempts, randomization, pools, time limit, feedback, retake delay | `/admin/assessments`, `src/lib/services/assessments.ts` |
 | Certifications with requirements, validity, manager approval, renewal and expiry reminders | `/admin/certifications`, `issueCertification`, settings |
 | Badges and achievement criteria | `/admin/badges`, `evaluateBadges`, `/achievements` |
-| Learning paths containing courses, certifications and manager validation, with visual progress | `/admin/learning-paths`, `/library?path=…`, `learning_path_enrollments` |
+| Learning paths containing courses, standalone knowledge checks, instructor-led sessions, reference documents, certifications and manager validation, with visual progress | `/admin/learning-paths`, `/library?path=…`, `learning_path_enrollments` |
 
 ## Training operations
 
@@ -115,4 +115,4 @@ is implemented and functional against the database — no decorative screens.
 | Strong TypeScript, modular features, typed services, central authorization, input validation, error handling, environment variables | Throughout; Zod validation in actions |
 | Performance: pagination, server-side filtering, indexes, aggregate SQL, lazy loading | Services and schema indexes |
 | Demo data: 30–50 locations, 4–8 franchise groups, 250+ employees, regions, roles, 20–30 courses, paths, certifications, assessments, thousands of historical completions, inactive/overdue/new hires/expiring certifications | `src/lib/db/seed.ts` — 45 locations, 7 franchise groups, 446 people, 28 courses, 8,195 enrollments (2,465 migrated) |
-| Testing across the listed workflows | `npm test` — 178 assertions; `npm run e2e` — 35 browser assertions |
+| Testing across the listed workflows | `npm test` — 187 assertions; `npm run e2e` — 35 browser assertions |

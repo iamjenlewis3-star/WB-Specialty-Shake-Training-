@@ -51,6 +51,7 @@ const { resolveScope } = await import("../src/lib/auth/session");
 const people = await import("../src/lib/services/people");
 const analytics = await import("../src/lib/services/analytics");
 const learning = await import("../src/lib/services/learning");
+const courses = await import("../src/lib/services/courses");
 const progress = await import("../src/lib/services/progress");
 const scormService = await import("../src/lib/services/scorm");
 const scormPackage = await import("../src/lib/scorm/package");
@@ -781,6 +782,32 @@ group("Learner experience");
 
   const recommended = await learning.recommendedCourses(cook.user_id, 4);
   check("recommendations exclude courses already assigned", recommended.length >= 0);
+}
+
+// ------------------------------------------------- learning path composition
+group("Learning path composition");
+{
+  const types = await query<{ item_type: string; count: string }>(
+    `select item_type, count(*)::text as count from learning_path_items group by item_type`);
+  const has = (type: string) => types.some((t) => t.item_type === type && Number(t.count) > 0);
+  for (const type of ["course", "certification", "manager_validation", "live_session", "document"]) {
+    check(`paths can contain ${type.replace("_", " ")} items`, has(type));
+  }
+  check("document items point at a real asset",
+    Number((await queryOne<{ count: string }>(
+      `select count(*)::text as count from learning_path_items i
+         join assets a on a.id = i.asset_id where i.item_type = 'document'`))?.count) > 0);
+
+  const withPath = await queryOne<{ id: string }>(`select id from learning_paths limit 1`);
+  if (withPath) {
+    const detail = await courses.learningPathDetail(withPath.id);
+    check("path detail returns items in order",
+      Boolean(detail) && detail!.items.every((item, i) => i === 0 || item.position >= detail!.items[i - 1].position));
+    check("non-course items keep a readable title",
+      detail!.items.filter((i) => !i.course_id).every((i) => Boolean(i.title)));
+    check("reference documents are optional, not required",
+      detail!.items.filter((i) => i.item_type === "document").every((i) => i.is_required === false));
+  }
 }
 
 // ---------------------------------------------------------------- summary
