@@ -284,11 +284,19 @@ async function ModuleRenderer({
             where assessment_id = $1 and user_id = $2 order by attempt_number desc`, [mod.assessment_id, userId]),
       ]);
       if (!assessment) return <p>Assessment unavailable.</p>;
-      const questions: QuizQuestion[] = questionRows.map((q) => ({
+      let questions: QuizQuestion[] = questionRows.map((q) => ({
         id: q.id, prompt: q.prompt, question_type: q.question_type,
         scenario_text: q.scenario_text, image_url: q.image_url,
         options: optionRows.filter((o) => o.question_id === q.id).map((o) => ({ id: o.id, label: o.label })),
       }));
+      // Randomization and question pools are applied per attempt; grading is by
+      // question id on the server, so any subset or order grades correctly.
+      if (assessment.randomize_questions) {
+        questions = [...questions].sort(() => Math.random() - 0.5);
+      }
+      if (assessment.questions_per_attempt && assessment.questions_per_attempt < questions.length) {
+        questions = questions.slice(0, assessment.questions_per_attempt);
+      }
       return (
         <AssessmentModule
           enrollmentId={enrollmentId} moduleId={mod.id} assessmentId={assessment.id} title={assessment.title}

@@ -51,6 +51,7 @@ restriction shown is genuinely enforced.
 | `npm run dev` | Development server |
 | `npm run build` / `npm start` | Production build and server |
 | `npm test` | 145-assertion workflow suite against a fresh, isolated database |
+| `npm run e2e` | Browser walkthrough of the full demo flow (start the server first) |
 | `npm run db:reset` | Rebuild the database and re-seed the demonstration data |
 | `npm run db:seed` | Create the database if missing and print row counts |
 | `npm run typecheck` | TypeScript, no emit |
@@ -138,6 +139,15 @@ reporting, exports, calendar, engagement and the learner experience.
 Security behaviour covered by the suite includes zip-slip rejection, non-ZIP and manifest-less
 archive rejection, cross-learner SCORM writes, out-of-scope employee reads and out-of-scope
 transcript reads.
+
+```bash
+npm start          # in one shell
+npm run e2e        # in another
+```
+
+`npm run e2e` drives a real browser through the leadership demo: sign in, create a course, add a
+module, publish it, assign it to a restaurant, sign in as a learner, complete the course, then check
+the transcript, the course completion report, access denials, dark mode and the mobile layout.
 
 ---
 

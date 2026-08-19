@@ -2,7 +2,7 @@
   "name": "wahlburgers-academy",
   "version": "1.0.0",
   "private": true,
-  "description": "Wahlburgers Academy — proprietary enterprise LMS platform",
+  "description": "Wahlburgers Academy \u2014 proprietary enterprise LMS platform",
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "db:reset": "tsx scripts/reset-db.mts",
     "db:seed": "tsx scripts/seed.mts",
-    "test": "tsx --conditions=react-server scripts/test-workflows.mts"
+    "test": "tsx --conditions=react-server scripts/test-workflows.mts",
+    "e2e": "tsx scripts/e2e.mts"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.5",
@@ -36,6 +37,7 @@
     "@types/node": "22.10.2",
     "@types/react": "19.2.0",
     "@types/react-dom": "19.2.0",
+    "playwright": "^1.56.1",
     "server-only": "^0.0.1",
     "tailwindcss": "4.3.3",
     "tsx": "4.20.6",

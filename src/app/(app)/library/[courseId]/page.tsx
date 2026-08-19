@@ -96,6 +96,23 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
             </CardBody>
           </Card>
 
+          {course.prerequisites?.length ? (
+            <Card>
+              <CardHeader title="Prerequisites" subtitle="Complete these first" />
+              <CardBody>
+                <ul className="space-y-1.5 text-[14px]">
+                  {course.prerequisites.map((id) => (
+                    <li key={id}>
+                      <Link href={`/library/${id}`} className="font-medium text-[var(--accent)] hover:underline">
+                        View prerequisite course
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </CardBody>
+            </Card>
+          ) : null}
+
           <Card>
             <CardHeader title="Course content" subtitle={`${modules.length} modules`} />
             <ol>
