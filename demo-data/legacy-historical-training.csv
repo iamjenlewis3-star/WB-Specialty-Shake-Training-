@@ -1,0 +1,112 @@
+Record ID,Employee ID,Employee Name,Course ID,Course Name,Course Version,Assigned Date,Start Date,Completion Date,Completion Status,Score,Passing Score,Attempts,Duration (minutes)
+LMS-900000,WB10013,Kayla Nguyen,WB-102,Food Safety Fundamentals,1.0,2023-02-01,2023-02-02,2023-02-02,Completed,81,80,2,21
+LMS-900001,WB10013,Kayla Nguyen,WB-103,Guest Experience Fundamentals,1.0,2024-03-01,2024-03-03,2024-03-03,Completed,84,80,1,22
+LMS-900002,WB10013,Kayla Nguyen,WB-105,Host Position Training,1.0,2023-05-01,2023-05-05,2023-05-05,Completed,90,80,1,24
+LMS-900003,WB10013,Kayla Nguyen,WB-106,Server Position Training,1.0,2024-06-01,2024-06-06,2024-06-06,Completed,93,80,2,25
+LMS-900004,WB10013,Kayla Nguyen,WB-108,Menu Knowledge Certification,1.0,2023-08-01,2023-08-08,2023-08-08,Completed,99,80,2,27
+LMS-900005,WB10014,Grant Ibarra,WB-101,Wahlburgers Orientation,1.0,2023-02-01,2023-02-04,2023-02-04,Completed,85,80,2,25
+LMS-900006,WB10014,Grant Ibarra,WB-102,Food Safety Fundamentals,1.0,2024-03-01,2024-03-05,2024-03-05,Completed,88,80,1,26
+LMS-900007,WB10014,Grant Ibarra,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2023-05-01,2023-05-07,2023-05-07,Completed,94,80,1,28
+LMS-900008,WB10014,Grant Ibarra,WB-105,Host Position Training,1.0,2024-06-01,2024-06-08,2024-06-08,Completed,97,80,2,29
+LMS-900009,WB10014,Grant Ibarra,WB-107,Bartender Training,1.0,2023-08-01,2023-08-10,2023-08-10,Completed,81,80,2,31
+LMS-900010,WB10014,Grant Ibarra,WB-108,Menu Knowledge Certification,1.0,2024-09-01,2024-09-11,2024-09-11,Completed,84,80,1,32
+LMS-900011,WB10015,Dylan Faulkner,WB-101,Wahlburgers Orientation,1.0,2024-03-01,2024-03-07,2024-03-07,Completed,92,80,1,30
+LMS-900012,WB10015,Dylan Faulkner,WB-103,Guest Experience Fundamentals,1.0,2023-05-01,2023-05-09,2023-05-09,Completed,98,80,1,32
+LMS-900013,WB10015,Dylan Faulkner,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2024-06-01,2024-06-10,2024-06-10,Completed,79,80,2,33
+LMS-900014,WB10015,Dylan Faulkner,WB-106,Server Position Training,1.0,2023-08-01,2023-08-12,2023-08-12,Completed,85,80,2,35
+LMS-900015,WB10015,Dylan Faulkner,WB-107,Bartender Training,1.0,2024-09-01,2024-09-13,2024-09-13,Completed,88,80,1,36
+LMS-900016,WB10016,Maya Lindqvist,WB-102,Food Safety Fundamentals,1.0,2023-05-01,2023-05-11,2023-05-11,Completed,80,80,1,36
+LMS-900017,WB10016,Maya Lindqvist,WB-103,Guest Experience Fundamentals,1.0,2024-06-01,2024-06-12,2024-06-12,Completed,83,80,2,37
+LMS-900018,WB10016,Maya Lindqvist,WB-105,Host Position Training,1.0,2023-08-01,2023-08-14,2023-08-14,Completed,89,80,2,39
+LMS-900019,WB10016,Maya Lindqvist,WB-106,Server Position Training,1.0,2024-09-01,2024-09-15,2024-09-15,Completed,92,80,1,40
+LMS-900020,WB10016,Maya Lindqvist,WB-108,Menu Knowledge Certification,1.0,2023-11-01,2023-11-17,2023-11-17,Completed,98,80,1,42
+LMS-900021,WB10017,Theo Ellery,WB-101,Wahlburgers Orientation,1.0,2023-05-01,2023-05-13,2023-05-13,Completed,84,80,1,40
+LMS-900022,WB10017,Theo Ellery,WB-102,Food Safety Fundamentals,1.0,2024-06-01,2024-06-14,2024-06-14,Completed,87,80,2,41
+LMS-900023,WB10017,Theo Ellery,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2023-08-01,2023-08-16,2023-08-16,Completed,93,80,2,43
+LMS-900024,WB10017,Theo Ellery,WB-105,Host Position Training,1.0,2024-09-01,2024-09-17,2024-09-17,Completed,96,80,1,44
+LMS-900025,WB10017,Theo Ellery,WB-107,Bartender Training,1.0,2023-11-01,2023-11-19,2023-11-19,Completed,80,80,1,46
+LMS-900026,WB10017,Theo Ellery,WB-108,Menu Knowledge Certification,1.0,2024-12-01,2024-12-20,2024-12-20,Completed,83,80,2,47
+LMS-900027,WB10018,Priya Sandoval,WB-101,Wahlburgers Orientation,1.0,2024-06-01,2024-06-16,2024-06-16,Completed,91,80,2,45
+LMS-900028,WB10018,Priya Sandoval,WB-103,Guest Experience Fundamentals,1.0,2023-08-01,2023-08-18,2023-08-18,Completed,97,80,2,47
+LMS-900029,WB10018,Priya Sandoval,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2024-09-01,2024-09-19,2024-09-19,Completed,78,80,1,48
+LMS-900030,WB10018,Priya Sandoval,WB-106,Server Position Training,1.0,2023-11-01,2023-11-21,2023-11-21,Completed,84,80,1,50
+LMS-900031,WB10018,Priya Sandoval,WB-107,Bartender Training,1.0,2024-12-01,2024-12-22,2024-12-22,Completed,87,80,2,51
+LMS-900032,WB10019,Zara Ibarra,WB-102,Food Safety Fundamentals,1.0,2023-08-01,2023-08-20,2023-08-20,Completed,79,80,2,51
+LMS-900033,WB10019,Zara Ibarra,WB-103,Guest Experience Fundamentals,1.0,2024-09-01,2024-09-21,2024-09-21,Completed,82,80,1,52
+LMS-900034,WB10019,Zara Ibarra,WB-105,Host Position Training,1.0,2023-11-01,2023-11-23,2023-11-23,Completed,88,80,1,54
+LMS-900035,WB10019,Zara Ibarra,WB-106,Server Position Training,1.0,2024-12-01,2024-12-24,2024-12-24,Completed,91,80,2,55
+LMS-900036,WB10019,Zara Ibarra,WB-108,Menu Knowledge Certification,1.0,2023-02-01,2023-02-26,2023-02-26,Completed,97,80,2,57
+LMS-900037,WB10020,Vera Yates,WB-101,Wahlburgers Orientation,1.0,2023-08-01,2023-08-22,2023-08-22,Completed,83,80,2,55
+LMS-900038,WB10020,Vera Yates,WB-102,Food Safety Fundamentals,1.0,2024-09-01,2024-09-23,2024-09-23,Completed,86,80,1,56
+LMS-900039,WB10020,Vera Yates,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2023-11-01,2023-11-25,2023-11-25,Completed,92,80,1,58
+LMS-900040,WB10020,Vera Yates,WB-105,Host Position Training,1.0,2024-12-01,2024-12-26,2024-12-26,Completed,95,80,2,59
+LMS-900041,WB10020,Vera Yates,WB-107,Bartender Training,1.0,2023-02-01,2023-02-01,2023-02-01,Completed,79,80,2,61
+LMS-900042,WB10020,Vera Yates,WB-108,Menu Knowledge Certification,1.0,2024-03-01,2024-03-02,2024-03-02,Completed,82,80,1,62
+LMS-900043,WB10021,Emmett Maddox,WB-101,Wahlburgers Orientation,1.0,2024-09-01,2024-09-25,2024-09-25,Completed,90,80,1,60
+LMS-900044,WB10021,Emmett Maddox,WB-103,Guest Experience Fundamentals,1.0,2023-11-01,2023-11-27,2023-11-27,Completed,96,80,1,62
+LMS-900045,WB10021,Emmett Maddox,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2024-12-01,2024-12-01,2024-12-01,Completed,99,80,2,63
+LMS-900046,WB10021,Emmett Maddox,WB-106,Server Position Training,1.0,2023-02-01,2023-02-03,2023-02-03,Completed,83,80,2,65
+LMS-900047,WB10021,Emmett Maddox,WB-107,Bartender Training,1.0,2024-03-01,2024-03-04,2024-03-04,Completed,86,80,1,66
+LMS-900048,WB10022,Yusuf Ingram,WB-102,Food Safety Fundamentals,1.0,2023-11-01,2023-11-02,2023-11-02,Completed,78,80,1,66
+LMS-900049,WB10022,Yusuf Ingram,WB-103,Guest Experience Fundamentals,1.0,2024-12-01,2024-12-03,2024-12-03,Completed,81,80,2,67
+LMS-900050,WB10022,Yusuf Ingram,WB-105,Host Position Training,1.0,2023-02-01,2023-02-05,2023-02-05,Completed,87,80,2,69
+LMS-900051,WB10022,Yusuf Ingram,WB-106,Server Position Training,1.0,2024-03-01,2024-03-06,2024-03-06,Completed,90,80,1,70
+LMS-900052,WB10022,Yusuf Ingram,WB-108,Menu Knowledge Certification,1.0,2023-05-01,2023-05-08,2023-05-08,Completed,96,80,1,72
+LMS-900053,WB10023,Selena Novak,WB-101,Wahlburgers Orientation,1.0,2023-11-01,2023-11-04,2023-11-04,Completed,82,80,1,70
+LMS-900054,WB10023,Selena Novak,WB-102,Food Safety Fundamentals,1.0,2024-12-01,2024-12-05,2024-12-05,Completed,85,80,2,71
+LMS-900055,WB10023,Selena Novak,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2023-02-01,2023-02-07,2023-02-07,Completed,91,80,2,73
+LMS-900056,WB10023,Selena Novak,WB-105,Host Position Training,1.0,2024-03-01,2024-03-08,2024-03-08,Completed,94,80,1,74
+LMS-900057,WB10023,Selena Novak,WB-107,Bartender Training,1.0,2023-05-01,2023-05-10,2023-05-10,Completed,78,80,1,76
+LMS-900058,WB10023,Selena Novak,WB-108,Menu Knowledge Certification,1.0,2024-06-01,2024-06-11,2024-06-11,Completed,81,80,2,77
+LMS-900059,WB10024,Diego Fontaine,WB-101,Wahlburgers Orientation,1.0,2024-12-01,2024-12-07,2024-12-07,Completed,89,80,2,75
+LMS-900060,WB10024,Diego Fontaine,WB-103,Guest Experience Fundamentals,1.0,2023-02-01,2023-02-09,2023-02-09,Completed,95,80,2,77
+LMS-900061,WB10024,Diego Fontaine,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2024-03-01,2024-03-10,2024-03-10,Completed,98,80,1,78
+LMS-900062,WB10024,Diego Fontaine,WB-106,Server Position Training,1.0,2023-05-01,2023-05-12,2023-05-12,Completed,82,80,1,20
+LMS-900063,WB10024,Diego Fontaine,WB-107,Bartender Training,1.0,2024-06-01,2024-06-13,2024-06-13,Completed,85,80,2,21
+LMS-900064,WB10025,Theo Jennings,WB-102,Food Safety Fundamentals,1.0,2023-02-01,2023-02-11,2023-02-11,Completed,99,80,2,21
+LMS-900065,WB10025,Theo Jennings,WB-103,Guest Experience Fundamentals,1.0,2024-03-01,2024-03-12,2024-03-12,Completed,80,80,1,22
+LMS-900066,WB10025,Theo Jennings,WB-105,Host Position Training,1.0,2023-05-01,2023-05-14,2023-05-14,Completed,86,80,1,24
+LMS-900067,WB10025,Theo Jennings,WB-106,Server Position Training,1.0,2024-06-01,2024-06-15,2024-06-15,Completed,89,80,2,25
+LMS-900068,WB10025,Theo Jennings,WB-108,Menu Knowledge Certification,1.0,2023-08-01,2023-08-17,2023-08-17,Completed,95,80,2,27
+LMS-900069,WB10026,Simone Sutherland,WB-101,Wahlburgers Orientation,1.0,2023-02-01,2023-02-13,2023-02-13,Completed,81,80,2,25
+LMS-900070,WB10026,Simone Sutherland,WB-102,Food Safety Fundamentals,1.0,2024-03-01,2024-03-14,2024-03-14,Completed,84,80,1,26
+LMS-900071,WB10026,Simone Sutherland,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2023-05-01,2023-05-16,2023-05-16,Completed,90,80,1,28
+LMS-900072,WB10026,Simone Sutherland,WB-105,Host Position Training,1.0,2024-06-01,2024-06-17,2024-06-17,Completed,93,80,2,29
+LMS-900073,WB10026,Simone Sutherland,WB-107,Bartender Training,1.0,2023-08-01,2023-08-19,2023-08-19,Completed,99,80,2,31
+LMS-900074,WB10026,Simone Sutherland,WB-108,Menu Knowledge Certification,1.0,2024-09-01,2024-09-20,2024-09-20,Completed,80,80,1,32
+LMS-900075,WB10027,Sean Kowalski,WB-101,Wahlburgers Orientation,1.0,2024-03-01,2024-03-16,2024-03-16,Completed,88,80,1,30
+LMS-900076,WB10027,Sean Kowalski,WB-103,Guest Experience Fundamentals,1.0,2023-05-01,2023-05-18,2023-05-18,Completed,94,80,1,32
+LMS-900077,WB10027,Sean Kowalski,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2024-06-01,2024-06-19,2024-06-19,Completed,97,80,2,33
+LMS-900078,WB10027,Sean Kowalski,WB-106,Server Position Training,1.0,2023-08-01,2023-08-21,2023-08-21,Completed,81,80,2,35
+LMS-900079,WB10027,Sean Kowalski,WB-107,Bartender Training,1.0,2024-09-01,2024-09-22,2024-09-22,Completed,84,80,1,36
+LMS-900080,WB10028,Umar Nguyen,WB-102,Food Safety Fundamentals,1.0,2023-05-01,2023-05-20,2023-05-20,Completed,98,80,1,36
+LMS-900081,WB10028,Umar Nguyen,WB-103,Guest Experience Fundamentals,1.0,2024-06-01,2024-06-21,2024-06-21,Completed,79,80,2,37
+LMS-900082,WB10028,Umar Nguyen,WB-105,Host Position Training,1.0,2023-08-01,2023-08-23,2023-08-23,Completed,85,80,2,39
+LMS-900083,WB10028,Umar Nguyen,WB-106,Server Position Training,1.0,2024-09-01,2024-09-24,2024-09-24,Completed,88,80,1,40
+LMS-900084,WB10028,Umar Nguyen,WB-108,Menu Knowledge Certification,1.0,2023-11-01,2023-11-26,2023-11-26,Completed,94,80,1,42
+LMS-900085,WB10029,Tyler Mercado,WB-101,Wahlburgers Orientation,1.0,2023-05-01,2023-05-22,2023-05-22,Completed,80,80,1,40
+LMS-900086,WB10029,Tyler Mercado,WB-102,Food Safety Fundamentals,1.0,2024-06-01,2024-06-23,2024-06-23,Completed,83,80,2,41
+LMS-900087,WB10029,Tyler Mercado,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2023-08-01,2023-08-25,2023-08-25,Completed,89,80,2,43
+LMS-900088,WB10029,Tyler Mercado,WB-105,Host Position Training,1.0,2024-09-01,2024-09-26,2024-09-26,Completed,92,80,1,44
+LMS-900089,WB10029,Tyler Mercado,WB-107,Bartender Training,1.0,2023-11-01,2023-11-01,2023-11-01,Completed,98,80,1,46
+LMS-900090,WB10029,Tyler Mercado,WB-108,Menu Knowledge Certification,1.0,2024-12-01,2024-12-02,2024-12-02,Completed,79,80,2,47
+LMS-900091,WB10030,Diego Herrera,WB-101,Wahlburgers Orientation,1.0,2024-06-01,2024-06-25,2024-06-25,Completed,87,80,2,45
+LMS-900092,WB10030,Diego Herrera,WB-103,Guest Experience Fundamentals,1.0,2023-08-01,2023-08-27,2023-08-27,Completed,93,80,2,47
+LMS-900093,WB10030,Diego Herrera,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2024-09-01,2024-09-01,2024-09-01,Completed,96,80,1,48
+LMS-900094,WB10030,Diego Herrera,WB-106,Server Position Training,1.0,2023-11-01,2023-11-03,2023-11-03,Completed,80,80,1,50
+LMS-900095,WB10030,Diego Herrera,WB-107,Bartender Training,1.0,2024-12-01,2024-12-04,2024-12-04,Completed,83,80,2,51
+LMS-900096,WB10031,Amara Johnson,WB-102,Food Safety Fundamentals,1.0,2023-08-01,2023-08-02,2023-08-02,Completed,97,80,2,51
+LMS-900097,WB10031,Amara Johnson,WB-103,Guest Experience Fundamentals,1.0,2024-09-01,2024-09-03,2024-09-03,Completed,78,80,1,52
+LMS-900098,WB10031,Amara Johnson,WB-105,Host Position Training,1.0,2023-11-01,2023-11-05,2023-11-05,Completed,84,80,1,54
+LMS-900099,WB10031,Amara Johnson,WB-106,Server Position Training,1.0,2024-12-01,2024-12-06,2024-12-06,Completed,87,80,2,55
+LMS-900100,WB10031,Amara Johnson,WB-108,Menu Knowledge Certification,1.0,2023-02-01,2023-02-08,2023-02-08,Completed,93,80,2,57
+LMS-900101,WB10032,Gia Alvarez,WB-101,Wahlburgers Orientation,1.0,2023-08-01,2023-08-04,2023-08-04,Completed,79,80,2,55
+LMS-900102,WB10032,Gia Alvarez,WB-102,Food Safety Fundamentals,1.0,2024-09-01,2024-09-05,2024-09-05,Completed,82,80,1,56
+LMS-900103,WB10032,Gia Alvarez,WB-104,"Cook Fundamentals: Quality, Safety & Execution",1.0,2023-11-01,2023-11-07,2023-11-07,Completed,88,80,1,58
+LMS-900104,WB10032,Gia Alvarez,WB-105,Host Position Training,1.0,2024-12-01,2024-12-08,2024-12-08,Completed,91,80,2,59
+LMS-900105,WB10032,Gia Alvarez,WB-107,Bartender Training,1.0,2023-02-01,2023-02-10,2023-02-10,Completed,97,80,2,61
+LMS-900106,WB10032,Gia Alvarez,WB-108,Menu Knowledge Certification,1.0,2024-03-01,2024-03-11,2024-03-11,Completed,78,80,1,62
+LMS-900107,WB10013,Kayla Nguyen,LEG-2019-BRAND,2019 Brand Refresh Training,1.0,2019-04-01,2019-04-08,2019-04-08,Completed,95,80,1,45
+LMS-900108,WB99999,Unknown Person,WB-101,Wahlburgers Orientation,1.0,2023-01-02,2023-01-03,2023-01-03,Completed,88,80,1,30
+LMS-900109,WB10014,Grant Ibarra,WB-102,Food Safety Fundamentals,1.0,2023-03-01,2023-03-05,13/45/2023,Completed,91,80,1,25
+LMS-900000,WB10013,Kayla Nguyen,WB-102,Food Safety Fundamentals,1.0,2023-02-01,2023-02-02,2023-02-02,Completed,81,80,2,21

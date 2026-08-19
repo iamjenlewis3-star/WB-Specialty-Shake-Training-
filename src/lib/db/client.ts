@@ -53,11 +53,45 @@ export function getDb(): Promise<PGlite> {
   return globalThis.__wbDb;
 }
 
+/**
+ * The embedded engine holds a single connection, so every statement is funneled
+ * through a FIFO queue. Concurrent HTTP requests then queue instead of
+ * interleaving on one connection (which the WASM build cannot do safely).
+ */
+let queue: Promise<unknown> = Promise.resolve();
+
+function enqueue<T>(task: () => Promise<T>): Promise<T> {
+  const run = queue.then(task, task);
+  queue = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
+}
+
+/**
+ * If the engine ever aborts, drop the cached instance so the next statement
+ * re-opens the database from disk rather than failing for the process lifetime.
+ */
+function handleFatal(error: unknown): never {
+  const message = error instanceof Error ? error.message : String(error);
+  if (/Aborted|memory access out of bounds|unreachable/i.test(message)) {
+    globalThis.__wbDb = undefined;
+  }
+  throw error;
+}
+
 /** Run a parameterized query and return typed rows. */
 export async function query<T = Record<string, unknown>>(sql: string, params: unknown[] = []): Promise<T[]> {
-  const db = await getDb();
-  const res = await db.query<T>(sql, params as never[]);
-  return res.rows as T[];
+  return enqueue(async () => {
+    try {
+      const db = await getDb();
+      const res = await db.query<T>(sql, params as never[]);
+      return res.rows as T[];
+    } catch (error) {
+      return handleFatal(error);
+    }
+  });
 }
 
 /** Run a query expecting at most one row. */
@@ -68,19 +102,31 @@ export async function queryOne<T = Record<string, unknown>>(sql: string, params:
 
 /** Execute raw SQL (no parameters, multiple statements allowed). */
 export async function exec(sql: string): Promise<void> {
-  const db = await getDb();
-  await db.exec(sql);
+  return enqueue(async () => {
+    try {
+      const db = await getDb();
+      await db.exec(sql);
+    } catch (error) {
+      return handleFatal(error);
+    }
+  });
 }
 
 /** Run a set of statements inside a transaction. */
 export async function tx<T>(fn: (client: SqlClient) => Promise<T>): Promise<T> {
-  const db = await getDb();
-  return db.transaction(async (t) => {
-    return fn({
-      query: (sql, params) => t.query(sql, (params ?? []) as never[]) as never,
-      exec: (sql) => t.exec(sql),
-    });
-  }) as Promise<T>;
+  return enqueue(async () => {
+    try {
+      const db = await getDb();
+      return (await db.transaction(async (t) => {
+        return fn({
+          query: (sql, params) => t.query(sql, (params ?? []) as never[]) as never,
+          exec: (sql) => t.exec(sql),
+        });
+      })) as T;
+    } catch (error) {
+      return handleFatal(error);
+    }
+  });
 }
 
 /** Helper for building `$1, $2, ...` placeholder lists. */

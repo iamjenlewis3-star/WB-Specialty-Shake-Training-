@@ -1,0 +1,13 @@
+Employee ID,First Name,Last Name,Email,Location,Position,Department,Hire Date,Status,Last Login
+WB25000,Marisol,Ferrer,new.hire1@wahlburgers.test,Boston Seaport,Cook,Back of House,2026-01-10,Active,
+WB25001,Dante,Whitlock,new.hire2@wahlburgers.test,Boston Seaport,Server,Front of House,2026-02-11,Active,
+WB25002,Priya,Nair,new.hire3@wahlburgers.test,Boston Seaport,Host,Bar,2026-03-12,Active,
+WB25003,Colin,Brady,new.hire4@wahlburgers.test,Boston Seaport,Bartender,Back of House,2026-04-13,Active,
+WB25004,Ayana,Okonkwo,new.hire5@wahlburgers.test,Boston Seaport,Prep Cook,Front of House,2026-05-14,Active,
+WB25005,Tomas,Delacroix,new.hire6@wahlburgers.test,Boston Seaport,Busser,Bar,2026-06-15,Active,
+WB25006,Freya,Lindberg,new.hire7@wahlburgers.test,Boston Seaport,Cook,Back of House,2026-07-16,Active,
+WB25007,Emeka,Adeyemi,new.hire8@wahlburgers.test,Boston Seaport,Server,Front of House,2026-08-17,Active,
+WB25008,Rosa,Marquez,new.hire9@wahlburgers.test,Boston Seaport,Host,Bar,2026-01-18,Active,
+WB25009,Nikhil,Rao,new.hire10@wahlburgers.test,Boston Seaport,Bartender,Back of House,2026-02-10,Active,
+WB25010,Cara,Sutton,new.hire11@wahlburgers.test,Boston Seaport,Prep Cook,Front of House,2026-03-11,Active,
+WB25011,Levi,Hoffman,new.hire12@wahlburgers.test,Boston Seaport,Busser,Bar,2026-04-12,Inactive,
