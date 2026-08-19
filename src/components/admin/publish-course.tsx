@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Rocket } from "lucide-react";
-import { Modal, Field, TextArea, SubmitButton } from "@/components/ui/interactive";
+import { Modal, Field, TextArea, TextInput, SubmitButton } from "@/components/ui/interactive";
 import { buttonClass } from "@/components/ui/button";
 import { publishCourse } from "@/lib/actions/content";
 import { cn } from "@/lib/utils";
@@ -52,6 +52,9 @@ export function PublishCourseButton({
           ) : null}
           <Field label="Change notes" hint="Shown in version history and on the course page">
             <TextArea name="change_notes" rows={2} placeholder="What changed in this version…" />
+          </Field>
+          <Field label="Schedule for later" hint="Leave blank to publish now. Scheduled versions are released by the daily automation job.">
+            <TextInput name="scheduled_for" type="date" />
           </Field>
           <div className="flex justify-end gap-2">
             <button type="button" onClick={() => setOpen(false)} className={buttonClass("ghost", "sm")}>Cancel</button>

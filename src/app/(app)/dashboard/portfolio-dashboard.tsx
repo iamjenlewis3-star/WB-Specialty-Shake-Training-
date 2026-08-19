@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { AlertTriangle, BadgeCheck, Building2, TrendingUp, UserMinus, Users } from "lucide-react";
+import { AlertTriangle, BadgeCheck, Building2, TrendingUp, Trophy, UserMinus, Users } from "lucide-react";
 import { Card, CardBody, CardHeader, KpiTile, PageHeader, Pill, ProgressBar, Table, TableWrap, Td, Th, Tr, EmptyState } from "@/components/ui/primitives";
 import { LinkButton } from "@/components/ui/button";
 import { BarChartView, LineChartView } from "@/components/charts";
 import { completionByDimension, completionOverTime, locationPerformance, systemMetrics, certificationRisk } from "@/lib/services/analytics";
+import { leaderboard } from "@/lib/services/leaderboard";
 import { getSetting } from "@/lib/services/settings";
 import { formatRelative, completionTone, healthBand } from "@/lib/utils";
 import type { CurrentUser } from "@/lib/auth/session";
@@ -15,13 +16,18 @@ import type { CurrentUser } from "@/lib/auth/session";
  */
 export async function PortfolioDashboard({ user }: { user: CurrentUser }) {
   const thresholds = await getSetting<{ green: number; yellow: number }>("risk_thresholds", { green: 90, yellow: 75 });
-  const [metrics, locations, trend, byRole, certRisk] = await Promise.all([
+  const [metrics, locations, trend, byRole, certRisk, board] = await Promise.all([
     systemMetrics(user.scope),
     locationPerformance(user.scope),
     completionOverTime(user.scope, {}, 12),
     completionByDimension(user.scope, "role"),
     certificationRisk(user.scope, 60, 8),
+    leaderboard(user.scope, "locations", 100),
   ]);
+
+  // Where this portfolio's restaurants sit on the Academy leaderboard.
+  const rankedBoard = board.rows;
+  const bestRank = rankedBoard.findIndex((row) => row.name === locations[0]?.name) + 1;
 
   const isOwner = user.roleCode === "franchise_owner";
   const ranked = [...locations].sort((a, b) => b.completion_pct - a.completion_pct);
@@ -44,6 +50,14 @@ export async function PortfolioDashboard({ user }: { user: CurrentUser }) {
         <KpiTile label="Restaurants" value={locations.length} sublabel={`${atRisk.length} below ${thresholds.green}%`} tone={atRisk.length ? "warning" : "success"} icon={<Building2 size={16} />} href="/admin/locations" />
         <KpiTile label="Overdue assignments" value={metrics.overdue_assignments} sublabel={`${metrics.overdue_learners} employees affected`} tone="danger" icon={<AlertTriangle size={16} />} href="/reports/overdue_training" />
         <KpiTile label="Certifications expiring" value={metrics.certifications_expiring} sublabel="Next 60 days" tone="warning" icon={<BadgeCheck size={16} />} href="/reports/certification_compliance" />
+        <KpiTile
+          label="Leaderboard"
+          value={rankedBoard.length ? `#${Math.max(1, bestRank || 1)}` : "—"}
+          sublabel={`Top restaurant: ${rankedBoard[0]?.name ?? "—"} · ${rankedBoard.length} ranked`}
+          tone="accent"
+          icon={<Trophy size={16} />}
+          href="/achievements?board=locations"
+        />
       </div>
 
       <Card>

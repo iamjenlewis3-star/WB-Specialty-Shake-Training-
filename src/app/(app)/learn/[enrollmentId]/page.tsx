@@ -276,19 +276,28 @@ async function ModuleRenderer({
         query<{ id: string; prompt: string; question_type: string; scenario_text: string | null; image_url: string | null }>(
           `select id, prompt, question_type, scenario_text, image_url from questions where assessment_id = $1 order by position`,
           [mod.assessment_id]),
-        query<{ id: string; question_id: string; label: string; position: number }>(
-          `select o.id, o.question_id, o.label, o.position from question_options o
+        query<{ id: string; question_id: string; label: string; position: number; match_key: string | null }>(
+          `select o.id, o.question_id, o.label, o.position, o.match_key from question_options o
              join questions q on q.id = o.question_id where q.assessment_id = $1 order by o.position`, [mod.assessment_id]),
         query<{ score: string | null; passed: boolean | null; completed_at: string | null }>(
           `select score::text as score, passed, completed_at from assessment_attempts
             where assessment_id = $1 and user_id = $2 order by attempt_number desc`, [mod.assessment_id, userId]),
       ]);
       if (!assessment) return <p>Assessment unavailable.</p>;
-      let questions: QuizQuestion[] = questionRows.map((q) => ({
+      let questions: QuizQuestion[] = questionRows.map((q) => {
+        let opts = optionRows.filter((o) => o.question_id === q.id).map((o) => ({ id: o.id, label: o.label }));
+        // Ordering questions store the steps in their correct sequence, so the
+        // learner must be shown them shuffled — otherwise the answer is pre-filled.
+        if (q.question_type === "ordering") opts = [...opts].sort(() => Math.random() - 0.5);
+        return {
         id: q.id, prompt: q.prompt, question_type: q.question_type,
         scenario_text: q.scenario_text, image_url: q.image_url,
-        options: optionRows.filter((o) => o.question_id === q.id).map((o) => ({ id: o.id, label: o.label })),
-      }));
+        options: opts,
+        matchKeys: q.question_type === "matching"
+          ? Array.from(new Set(optionRows.filter((o) => o.question_id === q.id && o.match_key).map((o) => o.match_key!))).sort()
+          : undefined,
+        };
+      });
       // Randomization and question pools are applied per attempt; grading is by
       // question id on the server, so any subset or order grades correctly.
       if (assessment.randomize_questions) {

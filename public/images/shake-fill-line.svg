@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220" role="img" aria-label="Three shake cups showing under-filled, correct and over-filled builds">
+  <style>
+    .cup { fill: #f7f4ef; stroke: #2a2622; stroke-width: 3; }
+    .shake { fill: #c8a06a; }
+    .crown { fill: #ffffff; stroke: #2a2622; stroke-width: 2.5; }
+    .band { stroke: #b3261e; stroke-width: 2.5; stroke-dasharray: 6 5; }
+    .label { font: 600 13px system-ui, sans-serif; fill: #2a2622; text-anchor: middle; }
+    .sub { font: 400 11px system-ui, sans-serif; fill: #6b635b; text-anchor: middle; }
+  </style>
+  <g transform="translate(20,20)">
+    <path class="cup" d="M8 10 h64 l-9 120 h-46 Z" />
+    <path class="shake" d="M20 82 h41 l-6 45 h-30 Z" />
+    <line class="band" x1="4" y1="34" x2="76" y2="34" />
+    <text class="label" x="40" y="158">A</text>
+    <text class="sub" x="40" y="174">Under-filled</text>
+  </g>
+  <g transform="translate(170,20)">
+    <path class="cup" d="M8 10 h64 l-9 120 h-46 Z" />
+    <path class="shake" d="M11 34 h58 l-12 93 h-34 Z" />
+    <path class="crown" d="M18 34 q10 -22 22 -14 q12 -8 22 14 Z" />
+    <line class="band" x1="4" y1="34" x2="76" y2="34" />
+    <text class="label" x="40" y="158">B</text>
+    <text class="sub" x="40" y="174">Fill band + crown</text>
+  </g>
+  <g transform="translate(320,20)">
+    <path class="cup" d="M8 10 h64 l-9 120 h-46 Z" />
+    <path class="shake" d="M9 18 h62 l-13 109 h-36 Z" />
+    <path class="crown" d="M14 18 q13 -26 26 -16 q13 -10 26 16 Z" />
+    <line class="band" x1="4" y1="34" x2="76" y2="34" />
+    <text class="label" x="40" y="158">C</text>
+    <text class="sub" x="40" y="174">Over-filled</text>
+  </g>
+</svg>

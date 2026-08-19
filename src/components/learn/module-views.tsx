@@ -230,6 +230,61 @@ export interface QuizQuestion {
   scenario_text: string | null;
   image_url: string | null;
   options: Array<{ id: string; label: string }>;
+  /** Distinct match targets for matching questions (answer key stays server-side). */
+  matchKeys?: string[];
+}
+
+/** Question types whose answers are collected by a bespoke control, not an option list. */
+const ARRANGED = ["ordering", "matching"];
+
+/** Ordering question: learners arrange the steps, order is submitted as the answer. */
+function OrderingQuestion({ question }: { question: QuizQuestion }) {
+  const [order, setOrder] = React.useState(question.options.map((o) => o.id));
+  const move = (index: number, delta: number) => {
+    const next = [...order];
+    const target = index + delta;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    setOrder(next);
+  };
+  return (
+    <div className="space-y-1.5 pl-8">
+      {order.map((optionId, index) => {
+        const option = question.options.find((o) => o.id === optionId)!;
+        return (
+          <div key={optionId} className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2">
+            <input type="hidden" name={`q_${question.id}`} value={optionId} />
+            <span className="flex size-6 items-center justify-center rounded-full bg-[var(--surface-3)] text-[12px] font-semibold">{index + 1}</span>
+            <span className="flex-1 text-[13.5px]">{option.label}</span>
+            <button type="button" onClick={() => move(index, -1)} className={buttonClass("ghost", "icon")} aria-label="Move up">↑</button>
+            <button type="button" onClick={() => move(index, 1)} className={buttonClass("ghost", "icon")} aria-label="Move down">↓</button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Matching question: each item is paired with one of the available targets. */
+function MatchingQuestion({ question }: { question: QuizQuestion }) {
+  return (
+    <div className="space-y-2 pl-8">
+      {question.options.map((option) => (
+        <label key={option.id} className="flex flex-wrap items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2">
+          <span className="flex-1 text-[13.5px]">{option.label}</span>
+          <select
+            name={`q_${question.id}_${option.id}`}
+            defaultValue=""
+            className="h-8 rounded-lg border border-[var(--border-strong)] bg-[var(--surface)] px-2 text-[13px]"
+          >
+            <option value="">Match to…</option>
+            {(question.matchKeys ?? []).map((key) => <option key={key} value={key}>{key}</option>)}
+          </select>
+          <input type="hidden" name={`q_${question.id}`} value={option.id} />
+        </label>
+      ))}
+    </div>
+  );
 }
 
 export function AssessmentModule({
@@ -246,7 +301,9 @@ export function AssessmentModule({
   const [answers, setAnswers] = React.useState<Record<string, string[]>>({});
   const outOfAttempts = attemptLimit !== null && attemptsUsed >= attemptLimit;
 
-  const answered = questions.filter((q) => (answers[q.id]?.length ?? 0) > 0).length;
+  const answered = questions.filter(
+    (q) => ARRANGED.includes(q.question_type) || (answers[q.id]?.length ?? 0) > 0,
+  ).length;
 
   if (completed && !started) {
     return (
@@ -315,10 +372,20 @@ export function AssessmentModule({
                 {q.scenario_text ? <p className="mb-1.5 rounded-lg bg-[var(--surface-2)] p-2.5 text-[13px] italic text-[var(--muted)]">{q.scenario_text}</p> : null}
                 <p className="text-[14.5px] font-medium">{q.prompt}</p>
                 <p className="mt-0.5 text-[11.5px] uppercase tracking-wide text-[var(--muted-2)]">
-                  {q.question_type === "multiple" ? "Select all that apply" : q.question_type === "true_false" ? "True or false" : "Select one"}
+                  {q.question_type === "multiple" ? "Select all that apply"
+                    : q.question_type === "true_false" ? "True or false"
+                    : q.question_type === "ordering" ? "Put these in the correct order"
+                    : q.question_type === "matching" ? "Match each item to its pair"
+                    : "Select one"}
                 </p>
               </div>
             </div>
+            {q.image_url ? (
+              <img src={q.image_url} alt="" className="ml-8 max-h-64 rounded-lg border border-[var(--border)]" />
+            ) : null}
+            {q.question_type === "ordering" ? <OrderingQuestion question={q} /> : null}
+            {q.question_type === "matching" ? <MatchingQuestion question={q} /> : null}
+            {ARRANGED.includes(q.question_type) ? null : (
             <div className="space-y-1.5 pl-8">
               {q.options.map((opt) => {
                 const multi = q.question_type === "multiple";
@@ -352,6 +419,7 @@ export function AssessmentModule({
                 );
               })}
             </div>
+            )}
           </CardBody>
         </Card>
       ))}

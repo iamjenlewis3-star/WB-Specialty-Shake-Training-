@@ -464,7 +464,18 @@ export async function seedDatabase(db: SqlClient): Promise<void> {
   log(`${scormRows.length} SCORM packages registered`);
 
   // ---------------- Assessments ----------------
-  interface QSeed { prompt: string; type: string; options: Array<[string, boolean]>; }
+  interface QSeed {
+    prompt: string;
+    type: string;
+    options?: Array<[string, boolean]>;
+    /** Ordering questions: the steps stored in their correct sequence. */
+    sequence?: string[];
+    /** Matching questions: each item paired with the target it belongs to. */
+    matches?: Array<[string, string]>;
+    /** Image-based questions: the picture the learner is asked about. */
+    image?: string;
+    scenario?: string;
+  }
   const QUESTION_BANK: Record<string, QSeed[]> = {
     "WB-102": [
       { prompt: "What is the correct minimum internal temperature for a Wahlburgers beef patty?", type: "single",
@@ -494,6 +505,17 @@ export async function seedDatabase(db: SqlClient): Promise<void> {
         options: [["Whipped cream crown", true], ["Crushed Kit Kat topping", true], ["Full Kit Kat bar garnish", true], ["Caramel drizzle base", false]] },
       { prompt: "Counter service shakes are handed off with the guest's name called at the pickup window.", type: "true_false",
         options: [["True", true], ["False", false]] },
+      { prompt: "Put the specialty shake build in the correct order.", type: "ordering",
+        sequence: ["Chill the glass and stage the spindle cup", "Add three pumps of shake base",
+          "Add the flavour mix-in and blend to spec", "Pour and crown with whipped cream", "Add the garnish and hand off"] },
+      { prompt: "Match each specialty shake to its signature garnish.", type: "matching",
+        matches: [["Fruity Pebbles Shake", "Cereal rim"], ["Kit Kat Shake", "Kit Kat bar"],
+          ["Thin Mint Shake", "Cookie crumble"], ["Salted Caramel Shake", "Caramel drizzle"]] },
+      { prompt: "Which shake build is pictured at the correct fill line?", type: "image",
+        image: "/images/shake-fill-line.svg",
+        options: [["B — filled to the band with the whipped cream crown above it", true],
+          ["A — under-filled, well below the band", false],
+          ["C — over-filled past the band", false]] },
     ],
     "WB-127": [
       { prompt: "Which lever most directly improves ticket times during a peak rush?", type: "single",
@@ -502,6 +524,13 @@ export async function seedDatabase(db: SqlClient): Promise<void> {
         options: [["Sales target", true], ["Menu focus item", true], ["Station assignments", true], ["Payroll review with the team", false]] },
       { prompt: "A GM certification requires manager validation in addition to the capstone assessment.", type: "true_false",
         options: [["True", true], ["False", false]] },
+      { prompt: "What do you do first?", type: "scenario",
+        scenario: "It is 12:20 on a Saturday. Ticket times have climbed to nine minutes, two team members "
+          + "called out and a delivery driver is waiting on three orders at the counter.",
+        options: [["Reposition the line, move one person to expo and set a recovery target with the team", true],
+          ["Ask the delivery driver to wait and keep the current positions", false],
+          ["Start a new prep batch before addressing the line", false],
+          ["Send a team member on their break to reset the rotation", false]] },
     ],
   };
 
@@ -527,8 +556,16 @@ export async function seedDatabase(db: SqlClient): Promise<void> {
     bank.forEach((q, qi) => {
       const questionId = uuid();
       questionRows.push([questionId, assessmentId, qi + 1, q.type, q.prompt, 1,
-        "Correct — that matches the Wahlburgers standard.", "Not quite. Review the module and try again."]);
-      q.options.forEach((o, oi) => optionRows.push([uuid(), questionId, oi + 1, o[0], o[1]]));
+        "Correct — that matches the Wahlburgers standard.", "Not quite. Review the module and try again.",
+        q.scenario ?? null, q.image ?? null]);
+      if (q.type === "ordering" && q.sequence) {
+        // Stored in the correct sequence; the player shuffles them for the learner.
+        q.sequence.forEach((label, oi) => optionRows.push([uuid(), questionId, oi + 1, label, true, null]));
+      } else if (q.type === "matching" && q.matches) {
+        q.matches.forEach(([label, key], oi) => optionRows.push([uuid(), questionId, oi + 1, label, true, key]));
+      } else {
+        (q.options ?? []).forEach((o, oi) => optionRows.push([uuid(), questionId, oi + 1, o[0], o[1], null]));
+      }
     });
   }
   await insertMany(db, "assessments",
@@ -536,9 +573,11 @@ export async function seedDatabase(db: SqlClient): Promise<void> {
       "randomize_questions", "questions_per_attempt", "show_correct_answers", "retake_delay_hours", "status", "created_by"],
     assessmentRows);
   await insertMany(db, "questions",
-    ["id", "assessment_id", "position", "question_type", "prompt", "points", "feedback_correct", "feedback_incorrect"],
+    ["id", "assessment_id", "position", "question_type", "prompt", "points", "feedback_correct", "feedback_incorrect",
+      "scenario_text", "image_url"],
     questionRows);
-  await insertMany(db, "question_options", ["id", "question_id", "position", "label", "is_correct"], optionRows);
+  await insertMany(db, "question_options",
+    ["id", "question_id", "position", "label", "is_correct", "match_key"], optionRows);
   log(`${assessmentRows.length} assessments with ${questionRows.length} questions created`);
 
   // ---------------- Courses, versions and modules ----------------

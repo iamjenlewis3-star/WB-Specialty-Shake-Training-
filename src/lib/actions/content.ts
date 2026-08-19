@@ -118,6 +118,29 @@ export async function publishCourse(formData: FormData): Promise<void> {
     `select id, title, status, current_version from courses where id = $1`, [courseId]);
   if (!course) throw new Error("Course not found.");
 
+  // Scheduling defers the release: the version is stored as "scheduled" and the
+  // daily automation job publishes it when the date arrives.
+  const scheduledFor = String(formData.get("scheduled_for") ?? "").trim();
+  if (scheduledFor) {
+    const version = course.status === "published" ? course.current_version + 1 : course.current_version;
+    await query(
+      `insert into course_versions (course_id, version_number, status, change_notes, author_user_id,
+          requires_retraining, scheduled_for)
+       values ($1,$2,'scheduled',$3,$4,$5,$6::timestamptz)
+       on conflict (course_id, version_number) do update set status = 'scheduled',
+          scheduled_for = excluded.scheduled_for, change_notes = excluded.change_notes`,
+      [courseId, version, changeNotes, actor.id, retraining, new Date(scheduledFor).toISOString()]);
+    await query(`update courses set status = case when status = 'published' then 'published' else 'scheduled' end,
+                   updated_at = now() where id = $1`, [courseId]);
+    await logAudit(actor, {
+      action: "course.scheduled", entityType: "course", entityId: courseId, entityLabel: course.title,
+      newValue: { version, scheduledFor, retraining },
+    });
+    revalidatePath(`/admin/courses/${courseId}`);
+    redirect(`/admin/courses/${courseId}?toast=${encodeURIComponent(
+      `Version ${version} scheduled for ${new Date(scheduledFor).toLocaleDateString("en-US")}`)}`);
+  }
+
   const isFirstPublish = course.status !== "published";
   const nextVersion = isFirstPublish ? course.current_version : course.current_version + 1;
 

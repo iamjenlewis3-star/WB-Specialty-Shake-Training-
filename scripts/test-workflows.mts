@@ -259,14 +259,24 @@ group("Assessments");
   if (target) {
     const questions = await query<{ id: string; question_type: string }>(
       `select id, question_type from questions where assessment_id = $1 order by position`, [target.assessment_id]);
-    const options = await query<{ id: string; question_id: string; is_correct: boolean }>(
-      `select o.id, o.question_id, o.is_correct from question_options o
-         join questions q on q.id = o.question_id where q.assessment_id = $1`, [target.assessment_id]);
+    const options = await query<{ id: string; question_id: string; is_correct: boolean; position: number; match_key: string | null }>(
+      `select o.id, o.question_id, o.is_correct, o.position, o.match_key from question_options o
+         join questions q on q.id = o.question_id where q.assessment_id = $1 order by o.position`, [target.assessment_id]);
 
-    const wrongAnswers = questions.map((q) => ({
-      questionId: q.id,
-      optionIds: options.filter((o) => o.question_id === q.id && !o.is_correct).slice(0, 1).map((o) => o.id),
-    }));
+    const wrongAnswers = questions.map((q) => {
+      const opts = options.filter((o) => o.question_id === q.id);
+      if (q.question_type === "ordering") {
+        return { questionId: q.id, optionIds: [...opts].reverse().map((o) => o.id) };
+      }
+      if (q.question_type === "matching") {
+        const keys = opts.map((o) => o.match_key ?? "");
+        return {
+          questionId: q.id, optionIds: opts.map((o) => o.id),
+          matches: Object.fromEntries(opts.map((o, i) => [o.id, keys[(i + 1) % keys.length]])),
+        };
+      }
+      return { questionId: q.id, optionIds: opts.filter((o) => !o.is_correct).slice(0, 1).map((o) => o.id) };
+    });
     const failResult = await assessments.gradeAssessment({
       assessmentId: target.assessment_id, userId: target.user_id, answers: wrongAnswers,
       enrollmentId: target.enrollment_id, moduleId: target.module_id,
@@ -274,10 +284,19 @@ group("Assessments");
     check("wrong answers score below the passing mark", failResult.score < 80, `scored ${failResult.score}`);
     check("failing attempt does not pass", !failResult.passed);
 
-    const rightAnswers = questions.map((q) => ({
-      questionId: q.id,
-      optionIds: options.filter((o) => o.question_id === q.id && o.is_correct).map((o) => o.id),
-    }));
+    const rightAnswers = questions.map((q) => {
+      const opts = options.filter((o) => o.question_id === q.id);
+      if (q.question_type === "ordering") {
+        return { questionId: q.id, optionIds: [...opts].sort((a, b) => a.position - b.position).map((o) => o.id) };
+      }
+      if (q.question_type === "matching") {
+        return {
+          questionId: q.id, optionIds: opts.map((o) => o.id),
+          matches: Object.fromEntries(opts.map((o) => [o.id, o.match_key ?? ""])),
+        };
+      }
+      return { questionId: q.id, optionIds: opts.filter((o) => o.is_correct).map((o) => o.id) };
+    });
     const passResult = await assessments.gradeAssessment({
       assessmentId: target.assessment_id, userId: target.user_id, answers: rightAnswers,
       enrollmentId: target.enrollment_id, moduleId: target.module_id,
@@ -296,6 +315,81 @@ group("Assessments");
       `select count(*)::text as count from assessment_attempts where assessment_id = $1 and user_id = $2`,
       [target.assessment_id, target.user_id]);
     check("assessment history recorded", Number(attemptRows?.count) >= 2);
+  }
+}
+
+// ------------------------------------------------- 6b. the richer question types
+group("Question types");
+{
+  const kinds = await query<{ question_type: string; count: string }>(
+    `select question_type, count(*)::text as count from questions group by question_type`);
+  const has = (type: string) => kinds.some((k) => k.question_type === type && Number(k.count) > 0);
+  for (const type of ["single", "multiple", "true_false", "scenario", "ordering", "matching", "image"]) {
+    check(`demo data includes ${type} questions`, has(type));
+  }
+  check("scenario questions carry their situation text",
+    Number((await queryOne<{ count: string }>(
+      `select count(*)::text as count from questions where question_type = 'scenario' and scenario_text is not null`))?.count) > 0);
+  check("image questions carry a picture",
+    Number((await queryOne<{ count: string }>(
+      `select count(*)::text as count from questions where question_type = 'image' and image_url is not null`))?.count) > 0);
+
+  const ordering = await queryOne<{ id: string; assessment_id: string }>(
+    `select id, assessment_id from questions where question_type = 'ordering' limit 1`);
+  const matching = await queryOne<{ id: string; assessment_id: string }>(
+    `select id, assessment_id from questions where question_type = 'matching' limit 1`);
+  check("ordering and matching questions live on the same assessment",
+    Boolean(ordering && matching && ordering.assessment_id === matching.assessment_id));
+
+  if (ordering && matching) {
+    const learner = await queryOne<{ id: string }>(`select id from users where status = 'active' order by created_at limit 1`);
+    const opts = await query<{ id: string; question_id: string; position: number; match_key: string | null; is_correct: boolean }>(
+      `select o.id, o.question_id, o.position, o.match_key, o.is_correct from question_options o
+         join questions q on q.id = o.question_id where q.assessment_id = $1 order by o.position`, [ordering.assessment_id]);
+    const questions = await query<{ id: string; question_type: string }>(
+      `select id, question_type from questions where assessment_id = $1 order by position`, [ordering.assessment_id]);
+    const forQuestion = (id: string) => opts.filter((o) => o.question_id === id);
+
+    const orderOpts = forQuestion(ordering.id);
+    const matchOpts = forQuestion(matching.id);
+
+    const answerFor = (correct: boolean) => questions.map((q) => {
+      const list = forQuestion(q.id);
+      if (q.question_type === "ordering") {
+        const inOrder = [...list].sort((a, b) => a.position - b.position).map((o) => o.id);
+        return { questionId: q.id, optionIds: correct ? inOrder : [...inOrder].reverse() };
+      }
+      if (q.question_type === "matching") {
+        const keys = list.map((o) => o.match_key ?? "");
+        return {
+          questionId: q.id, optionIds: list.map((o) => o.id),
+          matches: Object.fromEntries(list.map((o, i) => [o.id, correct ? (o.match_key ?? "") : keys[(i + 1) % keys.length]])),
+        };
+      }
+      const right = list.filter((o) => o.is_correct).map((o) => o.id);
+      return { questionId: q.id, optionIds: correct ? right : list.filter((o) => !o.is_correct).slice(0, 1).map((o) => o.id) };
+    });
+
+    check("ordering question stores more than two steps", orderOpts.length > 2);
+    check("matching question stores a target for every item", matchOpts.every((o) => Boolean(o.match_key)));
+
+    const wrong = await assessments.gradeAssessment({
+      assessmentId: ordering.assessment_id, userId: learner!.id, answers: answerFor(false),
+    });
+    check("reversed sequence and shifted matches score below the passing mark", wrong.score < 80, `scored ${wrong.score}`);
+    check("ordering graded incorrect when reversed",
+      wrong.graded.find((g) => g.questionId === ordering.id)?.correct === false);
+    check("matching graded incorrect when shifted",
+      wrong.graded.find((g) => g.questionId === matching.id)?.correct === false);
+
+    const right = await assessments.gradeAssessment({
+      assessmentId: ordering.assessment_id, userId: learner!.id, answers: answerFor(true),
+    });
+    check("correct sequence and matches score 100", right.score === 100, `scored ${right.score}`);
+    check("ordering graded correct in sequence",
+      right.graded.find((g) => g.questionId === ordering.id)?.correct === true);
+    check("matching graded correct when every pair lines up",
+      right.graded.find((g) => g.questionId === matching.id)?.correct === true);
   }
 }
 
