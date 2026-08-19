@@ -139,6 +139,7 @@ export interface CourseModule {
   is_required: boolean;
   min_seconds: number;
   requires_manager_validation: boolean;
+  sequence_required: boolean;
   completion_rule: string;
 }
 
@@ -148,7 +149,7 @@ export async function courseModules(courseId: string, version: number): Promise<
     `select m.id, m.title, m.description, m.module_type, m.position, m.asset_id, a.name as asset_name,
             a.asset_type, a.file_name as asset_file_name, m.scorm_package_id, sp.scorm_version, sp.launch_file as scorm_launch,
             m.assessment_id, ass.title as assessment_title, m.passing_score::text as passing_score, m.attempt_limit,
-            m.content_text, m.external_url, m.is_required, m.min_seconds, m.requires_manager_validation, m.completion_rule
+            m.content_text, m.external_url, m.is_required, m.min_seconds, m.requires_manager_validation, m.sequence_required, m.completion_rule
        from course_modules m
        left join assets a on a.id = m.asset_id
        left join scorm_packages sp on sp.id = m.scorm_package_id

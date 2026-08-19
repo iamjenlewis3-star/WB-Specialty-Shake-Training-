@@ -62,23 +62,33 @@ export async function leaderboard(
   }
 
   const dimension = view === "locations" ? "p.location_name" : "p.franchise_group_name";
+  // Aggregate per person first, then roll up — keeps every column either grouped
+  // or aggregated (no correlated subqueries against ungrouped columns).
   const rows = await query<Record<string, string>>(`
-    with ${scopedPeopleCte(scope)}
-    select coalesce(${dimension}, 'Unassigned') as id, coalesce(${dimension}, 'Unassigned') as name,
-           (count(distinct p.user_id) || ' employees') as subtitle,
-           coalesce(round(100.0 * count(e.id) filter (where e.is_required and e.assignment_id is not null and e.status = 'completed')
-             / nullif(count(e.id) filter (where e.is_required and e.assignment_id is not null), 0)), 0)::text as completion,
-           (select count(*) from learning_path_enrollments lpe join v_people vp on vp.user_id = lpe.user_id
-             where lpe.status = 'completed' and coalesce(${dimension.replace("p.", "vp.")}, 'Unassigned') = coalesce(${dimension}, 'Unassigned'))::text as paths,
-           (select count(*) from user_certifications uc join v_people vp on vp.user_id = uc.user_id
-             where uc.expires_at > now() and coalesce(${dimension.replace("p.", "vp.")}, 'Unassigned') = coalesce(${dimension}, 'Unassigned'))::text as certifications,
-           (select count(*) from user_badges ub join v_people vp on vp.user_id = ub.user_id
-             where coalesce(${dimension.replace("p.", "vp.")}, 'Unassigned') = coalesce(${dimension}, 'Unassigned'))::text as badges,
-           (case when max(e.last_activity_at) > now() - interval '7 days' then 100 else 50 end)::text as engagement
-      from scoped_people p
-      left join enrollments e on e.user_id = p.user_id
-     where p.status = 'active'
-     group by coalesce(${dimension}, 'Unassigned')`);
+    with ${scopedPeopleCte(scope)},
+    person_stats as (
+      select p.user_id,
+             coalesce(${dimension}, 'Unassigned') as bucket,
+             count(e.id) filter (where e.is_required and e.assignment_id is not null) as required_total,
+             count(e.id) filter (where e.is_required and e.assignment_id is not null and e.status = 'completed') as required_done,
+             max(e.last_activity_at) as last_activity,
+             (select count(*) from learning_path_enrollments lpe where lpe.user_id = p.user_id and lpe.status = 'completed') as paths,
+             (select count(*) from user_certifications uc where uc.user_id = p.user_id and uc.expires_at > now()) as certifications,
+             (select count(*) from user_badges ub where ub.user_id = p.user_id) as badges
+        from scoped_people p
+        left join enrollments e on e.user_id = p.user_id
+       where p.status = 'active'
+       group by p.user_id, coalesce(${dimension}, 'Unassigned')
+    )
+    select bucket as id, bucket as name,
+           (count(*) || ' employees') as subtitle,
+           coalesce(round(100.0 * sum(required_done) / nullif(sum(required_total), 0)), 0)::text as completion,
+           sum(paths)::text as paths,
+           sum(certifications)::text as certifications,
+           sum(badges)::text as badges,
+           (case when max(last_activity) > now() - interval '7 days' then 100 else 50 end)::text as engagement
+      from person_stats
+     group by bucket`);
   return { rows: rank(rows, scoring, limit), scoring };
 }
 

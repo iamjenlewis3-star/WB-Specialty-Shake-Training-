@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "db:reset": "tsx scripts/reset-db.mts",
     "db:seed": "tsx scripts/seed.mts",
-    "test": "tsx scripts/test-workflows.mts"
+    "test": "tsx --conditions=react-server scripts/test-workflows.mts"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.5",
@@ -36,6 +36,7 @@
     "@types/node": "22.10.2",
     "@types/react": "19.2.0",
     "@types/react-dom": "19.2.0",
+    "server-only": "^0.0.1",
     "tailwindcss": "4.3.3",
     "tsx": "4.20.6",
     "typescript": "5.9.3"

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { query, queryOne } from "@/lib/db/client";
 import { assertUser } from "@/lib/auth/guard";
 import { ensureStarted, evaluateEnrollment, recordModuleProgress } from "@/lib/services/progress";
+import { gradeAssessment } from "@/lib/services/assessments";
 import { logAudit } from "@/lib/services/audit";
 import { isUuid } from "@/lib/rbac/scope";
 
@@ -89,18 +90,9 @@ export async function acknowledgeDocument(formData: FormData): Promise<void> {
   revalidatePath("/resources");
 }
 
-interface GradedAnswer {
-  questionId: string;
-  correct: boolean;
-  points: number;
-  earned: number;
-  selected: string[];
-}
-
 /**
- * Assessment grading. Answers are graded on the server against the stored
- * answer key — the client never sees which options are correct until the
- * attempt is submitted and the assessment allows it.
+ * Assessment submission. Answers are graded on the server by
+ * `gradeAssessment` — the client never sees the answer key.
  */
 export async function submitAssessment(formData: FormData): Promise<void> {
   const user = await assertUser();
@@ -110,92 +102,40 @@ export async function submitAssessment(formData: FormData): Promise<void> {
   const startedAt = String(formData.get("startedAt") ?? "");
   if (!isUuid(assessmentId)) throw new Error("Invalid assessment.");
 
-  const assessment = await queryOne<{ id: string; title: string; passing_score: string; attempt_limit: number | null; show_correct_answers: boolean }>(
-    `select id, title, passing_score::text as passing_score, attempt_limit, show_correct_answers from assessments where id = $1`,
-    [assessmentId]);
-  if (!assessment) throw new Error("Assessment not found.");
+  const questionIds = [...formData.keys()]
+    .filter((key) => key.startsWith("q_") && !key.includes("_", 2))
+    .map((key) => key.slice(2));
+  const answers = Array.from(new Set(questionIds)).map((questionId) => ({
+    questionId,
+    optionIds: formData.getAll(`q_${questionId}`).map(String).filter(Boolean),
+    matches: Object.fromEntries(
+      [...formData.entries()]
+        .filter(([key]) => key.startsWith(`q_${questionId}_`))
+        .map(([key, value]) => [key.replace(`q_${questionId}_`, ""), String(value)]),
+    ),
+  }));
 
-  const priorAttempts = await queryOne<{ count: string }>(
-    `select count(*)::text as count from assessment_attempts where assessment_id = $1 and user_id = $2`,
-    [assessmentId, user.id]);
-  const attemptNumber = Number(priorAttempts?.count ?? 0) + 1;
-  if (assessment.attempt_limit && attemptNumber > assessment.attempt_limit) {
+  const result = await gradeAssessment({
+    assessmentId,
+    userId: user.id,
+    answers,
+    enrollmentId: isUuid(enrollmentId) ? enrollmentId : null,
+    moduleId: isUuid(moduleId) ? moduleId : null,
+    startedAt: startedAt || null,
+  });
+
+  if (result.outOfAttempts) {
     redirect(`/learn/${enrollmentId}?toast=${encodeURIComponent("You have used all attempts for this assessment. Ask your manager to reset it.")}&tone=error`);
   }
 
-  const questions = await query<{ id: string; question_type: string; points: string; prompt: string }>(
-    `select id, question_type, points::text as points, prompt from questions where assessment_id = $1 order by position`,
-    [assessmentId]);
-  const options = await query<{ id: string; question_id: string; is_correct: boolean; position: number; match_key: string | null }>(
-    `select o.id, o.question_id, o.is_correct, o.position, o.match_key
-       from question_options o join questions q on q.id = o.question_id where q.assessment_id = $1`,
-    [assessmentId]);
-
-  const graded: GradedAnswer[] = [];
-  for (const question of questions) {
-    const opts = options.filter((o) => o.question_id === question.id);
-    const submitted = formData.getAll(`q_${question.id}`).map(String).filter(Boolean);
-    const points = Number(question.points) || 1;
-    let correct = false;
-
-    switch (question.question_type) {
-      case "multiple": {
-        const correctIds = opts.filter((o) => o.is_correct).map((o) => o.id).sort();
-        correct = submitted.length === correctIds.length && [...submitted].sort().every((id, i) => id === correctIds[i]);
-        break;
-      }
-      case "ordering": {
-        const expected = [...opts].sort((a, b) => a.position - b.position).map((o) => o.id);
-        correct = submitted.length === expected.length && submitted.every((id, i) => id === expected[i]);
-        break;
-      }
-      case "matching": {
-        correct = opts.every((o) => {
-          const answer = formData.get(`q_${question.id}_${o.id}`);
-          return answer !== null && String(answer) === (o.match_key ?? "");
-        });
-        break;
-      }
-      default: {
-        const answer = submitted[0];
-        correct = Boolean(answer) && opts.some((o) => o.id === answer && o.is_correct);
-      }
-    }
-    graded.push({ questionId: question.id, correct, points, earned: correct ? points : 0, selected: submitted });
-  }
-
-  const totalPoints = graded.reduce((sum, g) => sum + g.points, 0) || 1;
-  const earned = graded.reduce((sum, g) => sum + g.earned, 0);
-  const score = Math.round((earned / totalPoints) * 100);
-  const passing = Number(assessment.passing_score ?? 80);
-  const passed = score >= passing;
-  const startTime = startedAt ? new Date(startedAt) : null;
-  const duration = startTime ? Math.max(0, Math.round((Date.now() - startTime.getTime()) / 1000)) : 0;
-
-  const attempt = await queryOne<{ id: string }>(
-    `insert into assessment_attempts (assessment_id, assessment_title, user_id, enrollment_id, module_id,
-       attempt_number, score, passed, started_at, completed_at, duration_seconds, answers, source_system)
-     values ($1,$2,$3,$4,$5,$6,$7,$8,$9,now(),$10,$11::jsonb,'Wahlburgers Academy') returning id`,
-    [assessmentId, assessment.title, user.id, isUuid(enrollmentId) ? enrollmentId : null,
-      isUuid(moduleId) ? moduleId : null, attemptNumber, score, passed,
-      startTime ? startTime.toISOString() : new Date().toISOString(), duration,
-      JSON.stringify({ graded, score, passing })]);
-
-  if (isUuid(enrollmentId) && isUuid(moduleId)) {
-    await recordModuleProgress({
-      enrollmentId, moduleId, status: passed ? "completed" : "failed", score, secondsDelta: duration,
-      data: { lastAttemptId: attempt?.id, attemptNumber, passed },
-    });
-    await query(`update enrollments set attempts = attempts + 1 where id = $1`, [enrollmentId]);
-    await evaluateEnrollment(enrollmentId);
-  }
   await logAudit(user, {
-    action: passed ? "assessment.passed" : "assessment.failed",
-    entityType: "assessment", entityId: assessmentId, entityLabel: assessment.title, newValue: { score, attemptNumber },
+    action: result.passed ? "assessment.passed" : "assessment.failed",
+    entityType: "assessment", entityId: assessmentId,
+    newValue: { score: result.score, attemptNumber: result.attemptNumber },
   });
 
   revalidatePath(`/learn/${enrollmentId}`);
-  redirect(`/learn/${enrollmentId}?attempt=${attempt?.id ?? ""}`);
+  redirect(`/learn/${enrollmentId}?attempt=${result.attemptId ?? ""}`);
 }
 
 /** Enroll yourself in an optional catalog course. */

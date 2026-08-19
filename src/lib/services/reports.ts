@@ -224,7 +224,9 @@ export const REPORTS: ReportDefinition[] = [
       const { locationPerformance } = await import("./analytics");
       const rows = await locationPerformance(scope, filters);
       const needle = filters.q?.toLowerCase();
-      return rows.filter((r) => !needle || r.name.toLowerCase().includes(needle) || r.store_number.includes(needle));
+      return rows
+        .filter((r) => !needle || r.name.toLowerCase().includes(needle) || r.store_number.includes(needle))
+        .map((r) => ({ ...r })) as Array<Record<string, unknown>>;
     },
   },
   {
@@ -241,7 +243,8 @@ export const REPORTS: ReportDefinition[] = [
     ],
     run: async (scope, filters) => {
       const { completionByDimension } = await import("./analytics");
-      return completionByDimension(scope, "franchise_group", filters);
+      const rows = await completionByDimension(scope, "franchise_group", filters);
+      return rows.map((r) => ({ ...r })) as Array<Record<string, unknown>>;
     },
   },
   {
@@ -258,7 +261,8 @@ export const REPORTS: ReportDefinition[] = [
     ],
     run: async (scope, filters) => {
       const { completionByDimension } = await import("./analytics");
-      return completionByDimension(scope, "role", filters);
+      const rows = await completionByDimension(scope, "role", filters);
+      return rows.map((r) => ({ ...r })) as Array<Record<string, unknown>>;
     },
   },
   {

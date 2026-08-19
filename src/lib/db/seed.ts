@@ -65,7 +65,9 @@ async function insertMany(
   onConflict = "",
 ): Promise<void> {
   if (!rows.length) return;
-  const perChunk = Math.max(1, Math.floor(60000 / columns.length));
+  // Keep each statement small: very large multi-row INSERTs (tens of thousands of
+  // bind parameters) overflow the wire protocol buffer of the embedded engine.
+  const perChunk = Math.max(1, Math.min(400, Math.floor(6000 / columns.length)));
   for (let i = 0; i < rows.length; i += perChunk) {
     const chunk = rows.slice(i, i + perChunk);
     const params: unknown[] = [];
@@ -673,7 +675,10 @@ export async function seedDatabase(db: SqlClient): Promise<void> {
     "on conflict do nothing");
 
   const { resolveTargetPopulation } = await import("@/lib/assignments/targeting");
-  const targetExec = { query: (sql: string, params?: unknown[]) => db.query(sql, params) };
+  const targetExec = {
+    query: async <T,>(sql: string, params?: unknown[]) =>
+      (await db.query<T>(sql, params)) as { rows: T[] },
+  };
 
   interface AssignmentSeed {
     title: string; courseCode?: string; pathName?: string; targets: AssignmentTarget[];

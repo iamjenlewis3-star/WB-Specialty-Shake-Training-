@@ -115,10 +115,12 @@ export function parseManifest(xml: string): {
         itemTitle = node.title as string | undefined;
         const mastery = node.masteryscore ?? node["masteryscore"];
         if (mastery !== undefined) masteryScore = Number(mastery);
-        const minScore = (node as never as Record<string, Record<string, Record<string, string>>>)
-          ?.["sequencing"]?.["objectives"]?.["primaryObjective"];
-        if (!masteryScore && minScore && minScore["minNormalizedMeasure"]) {
-          masteryScore = Number(minScore["minNormalizedMeasure"]) * 100;
+        const sequencing = node.sequencing as
+          | { objectives?: { primaryObjective?: { minNormalizedMeasure?: string | number } } }
+          | undefined;
+        const minMeasure = sequencing?.objectives?.primaryObjective?.minNormalizedMeasure;
+        if (!masteryScore && minMeasure !== undefined) {
+          masteryScore = Number(minMeasure) * 100;
         }
         return;
       }
