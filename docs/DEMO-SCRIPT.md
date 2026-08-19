@@ -94,3 +94,13 @@ leaderboard (which deliberately rewards completion and certification, not time s
 
 **Operations (1 min).** Calendar → schedule an instructor-led session or a protected store training
 block; record attendance and watch it complete the linked course on the attendees' records.
+
+**Assessment depth (2 min).** Open **Specialty Shakes: Fruity Pebbles & Kit Kat** and start its
+knowledge check. It carries every question type the brief asks for: single answer, multiple answer,
+true/false, a scenario with situation text, an ordering question where the learner sequences the
+shake build, a matching question pairing each shake with its garnish, and an image question. Grading
+is server-side by question id, so randomization and question pools change nothing about the score.
+
+**Practical skill checks (1 min).** On a team member's profile, open **Manager validation**, record
+**Meets Standard / Needs Coaching / Reassessment Required**, and attach a photo of the finished build.
+The photo is stored privately and is only visible to someone signed in to the Academy.
