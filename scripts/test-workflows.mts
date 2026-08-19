@@ -395,6 +395,61 @@ group("Question types");
   }
 }
 
+// --------------------------------------------- authored ordering and matching
+group("Authoring the richer question types");
+{
+  const target = await queryOne<{ id: string }>(`select id from assessments limit 1`);
+  const learner = await queryOne<{ id: string }>(`select id from users where status = 'active' order by created_at limit 1`);
+  if (target && learner) {
+    // Mirrors what the admin question form posts, so the author path is covered
+    // and not only the seeded questions.
+    const authored = await queryOne<{ id: string }>(
+      `insert into assessments (organization_id, title, description, passing_score, attempt_limit, status)
+       values ($1, 'Authoring check', 'Created by the test suite', 80, null, 'active') returning id`, [orgId]);
+    const ordering = await queryOne<{ id: string }>(
+      `insert into questions (assessment_id, position, question_type, prompt, points)
+       values ($1, 1, 'ordering', 'Sequence the build', 1) returning id`, [authored!.id]);
+    for (const [i, label] of ["Chill the glass", "Add the base", "Blend", "Crown and garnish"].entries()) {
+      await query(`insert into question_options (question_id, position, label, is_correct, match_key)
+                   values ($1,$2,$3,true,null)`, [ordering!.id, i + 1, label]);
+    }
+    const matching = await queryOne<{ id: string }>(
+      `insert into questions (assessment_id, position, question_type, prompt, points)
+       values ($1, 2, 'matching', 'Pair each shake with its garnish', 1) returning id`, [authored!.id]);
+    for (const [i, pair] of ([["Fruity Pebbles", "Cereal rim"], ["Kit Kat", "Kit Kat bar"]] as Array<[string, string]>).entries()) {
+      await query(`insert into question_options (question_id, position, label, is_correct, match_key)
+                   values ($1,$2,$3,true,$4)`, [matching!.id, i + 1, pair[0], pair[1]]);
+    }
+
+    const opts = await query<{ id: string; question_id: string; position: number; match_key: string | null }>(
+      `select o.id, o.question_id, o.position, o.match_key from question_options o
+         join questions q on q.id = o.question_id where q.assessment_id = $1 order by o.position`, [authored!.id]);
+    const orderOpts = opts.filter((o) => o.question_id === ordering!.id);
+    const matchOpts = opts.filter((o) => o.question_id === matching!.id);
+
+    const right = await assessments.gradeAssessment({
+      assessmentId: authored!.id, userId: learner.id,
+      answers: [
+        { questionId: ordering!.id, optionIds: orderOpts.map((o) => o.id) },
+        { questionId: matching!.id, optionIds: matchOpts.map((o) => o.id),
+          matches: Object.fromEntries(matchOpts.map((o) => [o.id, o.match_key ?? ""])) },
+      ],
+    });
+    check("an authored ordering + matching assessment grades 100 when answered correctly", right.score === 100, `scored ${right.score}`);
+
+    const wrong = await assessments.gradeAssessment({
+      assessmentId: authored!.id, userId: learner.id,
+      answers: [
+        { questionId: ordering!.id, optionIds: [...orderOpts].reverse().map((o) => o.id) },
+        { questionId: matching!.id, optionIds: matchOpts.map((o) => o.id),
+          matches: Object.fromEntries(matchOpts.map((o, i) => [o.id, matchOpts[(i + 1) % matchOpts.length].match_key ?? ""])) },
+      ],
+    });
+    check("the same assessment scores zero when both are answered wrongly", wrong.score === 0, `scored ${wrong.score}`);
+    check("authored matching options keep their target", matchOpts.every((o) => Boolean(o.match_key)));
+  }
+}
+
 // ------------------------------------------------------- 6c. image uploads
 group("Image uploads");
 {

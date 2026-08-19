@@ -558,13 +558,24 @@ export async function addQuestion(formData: FormData): Promise<void> {
   const questionType = String(formData.get("question_type") ?? "single");
   if (!isUuid(assessmentId) || !prompt) return;
 
+  let imageUrl: string | null = null;
+  const picture = formData.get("image");
+  if (picture instanceof File && picture.size > 0) {
+    const saved = await saveImage(picture);
+    if (!saved.ok) {
+      redirect(`/admin/assessments/${assessmentId}?toast=${encodeURIComponent(saved.error ?? "That image could not be used.")}&tone=error`);
+    }
+    imageUrl = saved.url ?? null;
+  }
+
   const next = await queryOne<{ position: number }>(
     `select coalesce(max(position), 0) + 1 as position from questions where assessment_id = $1`, [assessmentId]);
   const question = await queryOne<{ id: string }>(
-    `insert into questions (assessment_id, position, question_type, prompt, scenario_text, points, feedback_correct, feedback_incorrect)
-     values ($1,$2,$3,$4,$5,$6,$7,$8) returning id`,
+    `insert into questions (assessment_id, position, question_type, prompt, scenario_text, image_url, points,
+        feedback_correct, feedback_incorrect)
+     values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning id`,
     [assessmentId, next?.position ?? 1, questionType, prompt, String(formData.get("scenario_text") ?? "") || null,
-      Number(formData.get("points") ?? 1), String(formData.get("feedback_correct") ?? "") || null,
+      imageUrl, Number(formData.get("points") ?? 1), String(formData.get("feedback_correct") ?? "") || null,
       String(formData.get("feedback_incorrect") ?? "") || null]);
   if (!question) return;
 
@@ -574,11 +585,17 @@ export async function addQuestion(formData: FormData): Promise<void> {
       [question.id, correct === "true", correct === "false"]);
   } else {
     const labels = formData.getAll("option_label").map(String);
+    const matches = formData.getAll("option_match").map(String);
     const correctIndexes = new Set(formData.getAll("option_correct").map(String));
     for (const [index, label] of labels.entries()) {
       if (!label.trim()) continue;
-      await query(`insert into question_options (question_id, position, label, is_correct) values ($1,$2,$3,$4)`,
-        [question.id, index + 1, label.trim(), correctIndexes.has(String(index))]);
+      // Ordering questions answer by sequence: the order the author typed the
+      // steps in is the key, so every option is part of the correct answer.
+      // Matching questions answer by pair: the target typed beside each item is.
+      const isCorrect = questionType === "ordering" ? true : correctIndexes.has(String(index));
+      const matchKey = questionType === "matching" ? (matches[index] ?? "").trim() || null : null;
+      await query(`insert into question_options (question_id, position, label, is_correct, match_key) values ($1,$2,$3,$4,$5)`,
+        [question.id, index + 1, label.trim(), isCorrect, matchKey]);
     }
   }
   await logAudit(actor, { action: "assessment.question_added", entityType: "assessment", entityId: assessmentId, entityLabel: prompt.slice(0, 80) });

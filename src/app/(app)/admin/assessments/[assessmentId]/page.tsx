@@ -96,6 +96,12 @@ export default async function AssessmentDetailPage({ params }: { params: Promise
                 <Field label="Points"><TextInput name="points" type="number" min={1} max={10} defaultValue={1} /></Field>
                 <Field label="Prompt" required className="sm:col-span-2"><TextArea name="prompt" rows={2} required placeholder="What is the correct hold temperature…" /></Field>
                 <Field label="Scenario text" className="sm:col-span-2" hint="Optional context shown above the question"><TextArea name="scenario_text" rows={2} /></Field>
+                <Field label="Question image" className="sm:col-span-2" hint="For image-based questions. PNG, JPEG, WEBP or GIF up to 5 MB.">
+                  <input
+                    type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif"
+                    className="w-full text-[12.5px] file:mr-2 file:rounded-lg file:border-0 file:bg-[var(--surface-3)] file:px-3 file:py-1.5 file:text-[12.5px] file:font-medium"
+                  />
+                </Field>
                 <Field label="True/false answer" hint="Only used for true/false questions">
                   <Select name="correct_tf" defaultValue="true"><option value="true">True</option><option value="false">False</option></Select>
                 </Field>
@@ -106,10 +112,16 @@ export default async function AssessmentDetailPage({ params }: { params: Promise
                       <div key={i} className="flex items-center gap-2">
                         <input type="checkbox" name="option_correct" value={String(i)} className="size-4 accent-[var(--accent)]" aria-label={`Option ${i + 1} is correct`} />
                         <TextInput name="option_label" placeholder={`Option ${i + 1}`} />
+                        <TextInput name="option_match" placeholder="Matches…" className="max-w-[180px]" />
                       </div>
                     ))}
                   </div>
-                  <p className="mt-1 text-[11.5px] text-[var(--muted)]">Tick every correct option. Leave unused options blank.</p>
+                  <p className="mt-1 text-[11.5px] text-[var(--muted)]">
+                    Tick every correct option and leave unused options blank. For an <strong>ordering</strong> question,
+                    type the steps in their correct sequence — the learner sees them shuffled. For a{" "}
+                    <strong>matching</strong> question, put each item on the left and the target it pairs with in
+                    &ldquo;Matches&rdquo;.
+                  </p>
                 </div>
                 <Field label="Feedback when correct"><TextInput name="feedback_correct" placeholder="Correct — that matches the standard." /></Field>
                 <Field label="Feedback when incorrect"><TextInput name="feedback_incorrect" placeholder="Not quite — review the module." /></Field>
