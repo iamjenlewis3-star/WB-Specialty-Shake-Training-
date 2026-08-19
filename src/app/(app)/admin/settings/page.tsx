@@ -3,16 +3,18 @@ import { requirePermission } from "@/lib/auth/guard";
 import { getSetting, DEFAULT_INACTIVITY, DEFAULT_THRESHOLDS, type InactivityRules, type RiskThresholds } from "@/lib/services/settings";
 import { query } from "@/lib/db/client";
 import { Card, CardBody, CardHeader, KpiTile, PageHeader } from "@/components/ui/primitives";
+import { formatRelative } from "@/lib/utils";
 import { Field, TextInput, Checkbox, SubmitButton } from "@/components/ui/interactive";
-import { saveBranding, saveInactivityRules, saveLeaderboardScoring, saveThresholds } from "@/lib/actions/settings";
+import { runAutomations, saveBranding, saveInactivityRules, saveLeaderboardScoring, saveThresholds } from "@/lib/actions/settings";
 import { runInactivitySweep } from "@/lib/actions/people";
+import { lastAutomationRun } from "@/lib/services/automation";
 
 export const metadata = { title: "Settings" };
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
   await requirePermission("settings.manage");
-  const [inactivity, thresholds, weights, scoring, branding, newHire, counts] = await Promise.all([
+  const [inactivity, thresholds, weights, scoring, branding, newHire, counts, lastRun] = await Promise.all([
     getSetting<InactivityRules>("inactivity_rules", DEFAULT_INACTIVITY),
     getSetting<RiskThresholds>("risk_thresholds", DEFAULT_THRESHOLDS),
     getSetting("health_score_weights", { requiredCompletion: 40, overdue: 25, certification: 20, activity: 10, newHire: 5 }),
@@ -23,6 +25,7 @@ export default async function SettingsPage() {
       select (select count(*)::text from users where flagged_inactive_at is not null) as flagged,
              (select count(*)::text from users where status = 'active' and (last_login_at is null or last_login_at < now() - interval '30 days')) as inactive,
              (select count(*)::text from users where status = 'deactivated') as deactivated`),
+    lastAutomationRun(),
   ]);
 
   return (
@@ -38,6 +41,25 @@ export default async function SettingsPage() {
         <KpiTile label="No sign-in 30+ days" value={Number(counts[0]?.inactive ?? 0).toLocaleString()} sublabel="Active accounts" tone="info" icon={<UserMinus size={16} />} />
         <KpiTile label="Deactivated accounts" value={Number(counts[0]?.deactivated ?? 0).toLocaleString()} sublabel="Training history preserved" tone="neutral" />
       </div>
+
+      <Card>
+        <CardHeader
+          title="Scheduled maintenance"
+          subtitle={lastRun ? `Last run ${formatRelative(lastRun)}` : "Never run in this environment"}
+          icon={<Play size={17} />}
+        />
+        <CardBody className="space-y-3">
+          <p className="text-[13.5px] text-[var(--muted)]">
+            One job does everything a nightly worker would: certification expiry reminders at the configured
+            intervals, due-soon and overdue nudges, the next cycle of recurring assignments, publishing course
+            versions that were scheduled, evaluating automation rules and running the inactivity sweep.
+            In production this is called on a schedule; here you can run it on demand.
+          </p>
+          <form action={runAutomations}>
+            <SubmitButton pendingLabel="Running automations…"><Play size={15} /> Run daily automations now</SubmitButton>
+          </form>
+        </CardBody>
+      </Card>
 
       <Card>
         <CardHeader title="Automatic deactivation" subtitle="Flag, notify and optionally deactivate accounts that stop signing in" icon={<UserMinus size={17} />} />

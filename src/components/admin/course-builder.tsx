@@ -118,6 +118,7 @@ export function CourseBuilder({
               onDragStart={() => setDragIndex(index)}
               onDragOver={(e) => e.preventDefault()}
               onDrop={() => onDrop(index)}
+              data-testid="course-module"
               className={cn(
                 "flex items-start gap-3 border-b border-[var(--border)] px-4 py-3 last:border-b-0",
                 dragIndex === index && "opacity-50",

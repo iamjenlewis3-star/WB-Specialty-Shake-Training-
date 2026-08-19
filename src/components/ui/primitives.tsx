@@ -209,7 +209,12 @@ export function KpiTile({
         {icon ? <span className={cn("rounded-lg p-1.5", TONE_STYLES[tone])}>{icon}</span> : null}
       </div>
       <div className="mt-2 flex items-baseline gap-2">
-        <span className="text-[26px] font-semibold leading-none tracking-tight tabular-nums">{value}</span>
+        <span
+          data-testid={`kpi-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+          className="text-[26px] font-semibold leading-none tracking-tight tabular-nums"
+        >
+          {value}
+        </span>
         {trend ? (
           <span className={cn("text-[12px] font-semibold", trend.value >= 0 ? "text-[var(--success)]" : "text-[var(--danger)]")}>
             {trend.value >= 0 ? "▲" : "▼"} {Math.abs(trend.value)}%{trend.label ? ` ${trend.label}` : ""}

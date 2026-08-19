@@ -75,8 +75,8 @@ await Promise.all([
   page.waitForURL(/toast=/, { timeout: 30000 }),
   page.getByRole("button", { name: /^Add module$/ }).last().click(),
 ]);
-await page.waitForTimeout(500);
-check("module appears in the builder", (await page.getByText("Shake build overview").count()) > 0);
+await page.waitForSelector('[data-testid="course-module"]', { timeout: 30000 }).catch(() => {});
+check("module appears in the builder", (await page.locator('[data-testid="course-module"]').count()) > 0);
 
 console.log("\n▸ Publish the course");
 await page.getByRole("button", { name: /Publish course/i }).click();
@@ -97,8 +97,15 @@ await page.selectOption('select[name="course_id"]', { label: new RegExp(COURSE_T
 await page.fill('input[name="title"]', `E2E assignment ${stamp}`);
 // Target the flagship restaurant so the assignment reaches the demo learner.
 await page.getByRole("checkbox", { name: /Boston Seaport/ }).check();
-await page.waitForTimeout(1200);
-const audience = await page.locator("p.text-\\[36px\\]").first().innerText().catch(() => "0");
+await page.waitForFunction(
+  () => {
+    const el = document.querySelector('[data-testid="audience-count"]');
+    return Boolean(el && /[1-9]/.test(el.textContent ?? ""));
+  },
+  undefined,
+  { timeout: 30000 },
+).catch(() => {});
+const audience = await page.locator('[data-testid="audience-count"]').innerText();
 check("audience estimate computed before publishing", Number(audience.replace(/[^0-9]/g, "")) > 0, `audience: ${audience}`);
 const dueDate = new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10);
 await page.fill('input[name="due_at"]', dueDate);
@@ -149,6 +156,41 @@ const legacyCount = await page.getByText("Legacy LMS").count();
 const academyCount = await page.getByText("Wahlburgers Academy").count();
 check("transcript shows migrated legacy records", legacyCount > 0, `${legacyCount} mentions`);
 check("transcript shows Academy records", academyCount > 0, `${academyCount} mentions`);
+
+console.log("\n▸ Data migration wizard");
+await page.goto(`${BASE}/admin/migration`, { waitUntil: "domcontentloaded" });
+await page.selectOption('select[name="data_type"]', "historical_training");
+await page.setInputFiles('input[type="file"]', "demo-data/legacy-historical-training.csv");
+await Promise.all([
+  page.waitForURL(/\/admin\/migration\/[0-9a-f-]{36}/, { timeout: 60000 }),
+  page.getByRole("button", { name: /Upload and preview/i }).click(),
+]);
+check("migration wizard opens with the uploaded file", page.url().includes("/admin/migration/"));
+check("columns auto-mapped", (await page.locator('select[name="map_employee_id"]').inputValue()) === "Employee ID");
+await page.getByRole("checkbox", { name: /Create courses that don't exist/i }).check();
+await Promise.all([
+  page.waitForURL(/step=validate/, { timeout: 90000 }),
+  page.getByRole("button", { name: /Validate/i }).click(),
+]);
+const errorsTile = await page.locator('[data-testid="kpi-errors"]').innerText().catch(() => "0");
+check("validation reports errors for the bad rows", Number(errorsTile.replace(/[^0-9]/g, "")) > 0, `errors: ${errorsTile}`);
+check("validation reports duplicates", (await page.getByText("Duplicates", { exact: true }).count()) > 0);
+await Promise.all([
+  page.waitForURL(/\/admin\/migration\/report\//, { timeout: 120000 }),
+  page.getByRole("button", { name: /Import .* records/i }).click(),
+]);
+const reportText = await page.locator("body").innerText();
+check("migration report shows imported records", /Imported/.test(reportText));
+check("migration report shows failed rows with reasons", /Unknown employee|Invalid date/.test(reportText));
+
+console.log("\n▸ Scheduled maintenance");
+await page.goto(`${BASE}/admin/settings`, { waitUntil: "domcontentloaded" });
+await Promise.all([
+  page.waitForURL(/toast=/, { timeout: 120000 }),
+  page.getByRole("button", { name: /Run daily automations now/i }).click(),
+]);
+check("daily automations run and report what they did", decodeURIComponent(page.url()).includes("Automations complete"),
+  decodeURIComponent(page.url()).split("toast=")[1]?.slice(0, 80));
 
 console.log("\n▸ Access control in the browser");
 const cookContext = await browser.newContext();

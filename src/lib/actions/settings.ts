@@ -92,3 +92,20 @@ export async function saveBranding(formData: FormData): Promise<void> {
   revalidatePath("/admin/settings");
   redirect(`/admin/settings?toast=${encodeURIComponent("Branding saved")}`);
 }
+
+/** Runs the nightly maintenance job on demand (Admin → Settings). */
+export async function runAutomations(): Promise<void> {
+  const actor = await assertPermission("settings.manage");
+  const { runDailyAutomations } = await import("@/lib/services/automation");
+  const result = await runDailyAutomations(actor.id);
+  const { logAudit } = await import("@/lib/services/audit");
+  await logAudit(actor, {
+    action: "automation.daily_run",
+    entityType: "settings",
+    entityLabel: `${result.certificationReminders} certification reminders · ${result.overdueReminders} overdue nudges · ${result.recurringCycles} recurring cycles`,
+    newValue: result,
+  });
+  revalidatePath("/admin/settings");
+  redirect(`/admin/settings?toast=${encodeURIComponent(
+    `Automations complete — ${result.certificationReminders} certification reminders, ${result.dueSoonReminders} due-soon, ${result.overdueReminders} overdue, ${result.recurringCycles} recurring cycles (${result.recurringEnrollments} records), ${result.coursesPublished} scheduled courses published, ${result.ruleEnrollments} rule assignments, ${result.inactivityFlagged} flagged inactive`)}`);
+}

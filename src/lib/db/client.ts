@@ -26,8 +26,53 @@ declare global {
   var __wbDb: Promise<PGlite> | undefined;
 }
 
-async function createClient(): Promise<PGlite> {
+/**
+ * Single-writer lock.
+ *
+ * The embedded engine owns its data directory exclusively — two processes
+ * opening it concurrently corrupts it. This refuses to start with a clear
+ * message instead, and releases the lock when the process exits.
+ */
+const LOCK_FILE = path.join(DATA_DIR, ".wb-process.lock");
+
+function isProcessAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function acquireLock() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
+  if (fs.existsSync(LOCK_FILE)) {
+    const owner = Number(fs.readFileSync(LOCK_FILE, "utf8").trim());
+    if (owner && owner !== process.pid && isProcessAlive(owner)) {
+      throw new Error(
+        `The Wahlburgers Academy database is already in use by process ${owner}. ` +
+          `The embedded PostgreSQL engine allows one process at a time — stop the running server ` +
+          `(or script) before starting another, or set WB_DATA_DIR to a different directory.`,
+      );
+    }
+  }
+  fs.writeFileSync(LOCK_FILE, String(process.pid));
+  const release = () => {
+    try {
+      if (fs.existsSync(LOCK_FILE) && Number(fs.readFileSync(LOCK_FILE, "utf8").trim()) === process.pid) {
+        fs.unlinkSync(LOCK_FILE);
+      }
+    } catch {
+      /* best effort */
+    }
+  };
+  process.once("exit", release);
+  process.once("SIGINT", () => { release(); process.exit(0); });
+  process.once("SIGTERM", () => { release(); process.exit(0); });
+}
+
+async function createClient(): Promise<PGlite> {
+  acquireLock();
   const db = new PGlite(DATA_DIR);
   await db.waitReady;
   await migrate(db);

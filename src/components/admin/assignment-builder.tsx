@@ -166,7 +166,7 @@ export function AssignmentBuilder({
         <Card>
           <CardHeader title="Audience" icon={<Users size={17} />} />
           <CardBody className="space-y-3 text-center">
-            <p className="text-[36px] font-semibold leading-none tabular-nums">
+            <p data-testid="audience-count" className="text-[36px] font-semibold leading-none tabular-nums">
               {estimating ? "…" : (estimate ?? 0).toLocaleString()}
             </p>
             <p className="text-[13px] text-[var(--muted)]">
