@@ -810,6 +810,40 @@ group("Learning path composition");
   }
 }
 
+// ------------------------------------------------------- module-level progress
+group("Module progress and SCORM reporting");
+{
+  const total = Number((await queryOne<{ count: string }>(`select count(*)::text as count from module_progress`))?.count);
+  check("demo data carries module-level progress", total > 1000, `${total} rows`);
+
+  const completedGap = await queryOne<{ count: string }>(`
+    select count(*)::text as count from enrollments e
+     where e.status = 'completed'
+       and exists (select 1 from course_modules m
+                    where m.course_id = e.course_id and m.course_version = e.course_version)
+       and exists (select 1 from course_modules m
+              left join module_progress mp on mp.module_id = m.id and mp.enrollment_id = e.id
+                   where m.course_id = e.course_id and m.course_version = e.course_version
+                     and coalesce(mp.status, 'not_started') <> 'completed')`);
+  check("every module of a completed course reads as complete", Number(completedGap?.count) === 0, `${completedGap?.count} enrollments`);
+
+  const partial = await queryOne<{ count: string }>(`
+    select count(*)::text as count from enrollments e
+     where e.status = 'in_progress'
+       and exists (select 1 from module_progress mp where mp.enrollment_id = e.id and mp.status = 'completed')
+       and exists (select 1 from module_progress mp where mp.enrollment_id = e.id and mp.status <> 'completed')`);
+  check("in-progress courses sit part way through their modules", Number(partial?.count) > 0);
+
+  const adminRow = await queryOne<{ user_id: string }>(`select user_id from v_people where email = 'admin@wahlburgers.test'`);
+  const adminScope = await resolveScope(adminRow!.user_id, orgId, "organization", null);
+  const scormRows = await reports.reportByKey("scorm_activity")!.run(adminScope, { limit: 50 });
+  check("the SCORM Activity report returns rows", scormRows.length > 0, `${scormRows.length} rows`);
+  check("SCORM rows carry a lesson status",
+    scormRows.every((r) => Boolean((r as Record<string, unknown>).lesson_status)));
+  check("SCORM rows carry session time",
+    scormRows.some((r) => Number((r as Record<string, unknown>).seconds_spent) > 0));
+}
+
 // ---------------------------------------------------------------- summary
 const seconds = ((Date.now() - started) / 1000).toFixed(1);
 console.log(`\n===================================`);

@@ -1113,6 +1113,42 @@ export async function seedDatabase(db: SqlClient): Promise<void> {
       "started_at", "completed_at", "duration_seconds", "answers", "source_system", "migration_batch_id"], attemptRows);
   log(`${attemptRows.length} assessment attempts created`);
 
+  // ---------------- Module-level progress ----------------
+  // Enrollments alone leave the course player and the SCORM Activity report
+  // empty. Generating progress in SQL keeps the seed fast at this row count.
+  await db.query(`
+    insert into module_progress (enrollment_id, module_id, status, score, seconds_spent, completed_at, data, updated_at)
+    select e.id, m.id,
+           case when e.status = 'completed' then 'completed'
+                when m.position <= greatest(1, (mods.total + 1) / 2) then 'completed'
+                when m.position = greatest(1, (mods.total + 1) / 2) + 1 then 'in_progress'
+                else 'not_started' end as status,
+           case when m.module_type in ('assessment','scorm')
+                then round((70 + (('x' || substr(md5(e.id::text || m.id::text), 1, 6))::bit(24)::int % 30))::numeric, 0)
+                else null end as score,
+           greatest(120, coalesce(m.min_seconds, 0) + 240 + (('x' || substr(md5(m.id::text), 1, 4))::bit(16)::int % 900)) as seconds_spent,
+           case when e.status = 'completed' then e.completed_at
+                when m.position <= greatest(1, (mods.total + 1) / 2) then e.started_at
+                else null end as completed_at,
+           case when m.module_type = 'scorm' then jsonb_build_object('scorm', jsonb_build_object(
+                  'lessonStatus', case when e.status = 'completed' then 'passed'
+                                       when m.position <= greatest(1, (mods.total + 1) / 2) then 'completed'
+                                       else 'incomplete' end,
+                  'location', 'page-' || m.position,
+                  'suspendData', 'seed'))
+                else '{}'::jsonb end as data,
+           coalesce(e.completed_at, e.started_at, e.assigned_at) as updated_at
+      from enrollments e
+      join course_modules m on m.course_id = e.course_id and m.course_version = e.course_version
+      join lateral (
+        select count(*)::int as total from course_modules cm
+         where cm.course_id = e.course_id and cm.course_version = e.course_version
+      ) mods on true
+     where e.status in ('completed', 'in_progress')
+    on conflict (enrollment_id, module_id) do nothing`);
+  const progressCount = await db.query<{ count: string }>(`select count(*)::text as count from module_progress`);
+  log(`${progressCount.rows[0]?.count ?? 0} module progress records created`);
+
   // ---------------- Calendar: live training, orientations, store blocks ----------------
   const eventRows: unknown[][] = [];
   const attendeeRows: unknown[][] = [];

@@ -50,7 +50,7 @@ restriction shown is genuinely enforced.
 | --- | --- |
 | `npm run dev` | Development server |
 | `npm run build` / `npm start` | Production build and server |
-| `npm test` | 187-assertion workflow suite against a fresh, isolated database |
+| `npm test` | 193-assertion workflow suite against a fresh, isolated database |
 | `npm run e2e` | Browser walkthrough of the full demo flow (start the server first) |
 | `npm run db:reset` | Rebuild the database and re-seed the demonstration data |
 | `npm run db:seed` | Create the database if missing and print row counts |
@@ -131,7 +131,7 @@ Requirement-by-requirement coverage: [`docs/FEATURE-COVERAGE.md`](./docs/FEATURE
 npm test
 ```
 
-Builds a fresh database and runs 187 assertions across authentication, role permissions,
+Builds a fresh database and runs 193 assertions across authentication, role permissions,
 location-based security, transcripts, SCORM ingestion and runtime, assessment grading and every
 question type, image uploads, the completion engine, assignments and automation rules, the employee
 lifecycle, data migration, reporting, exports, calendar, engagement and the learner experience.
