@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { assertPermission } from "@/lib/auth/guard";
 import { logAudit } from "@/lib/services/audit";
 import {
-  dataTypeDefinition, executeMigration, parseUpload, readUpload, suggestMapping,
+  dataTypeDefinition, executeMigration, parseUpload, readUpload,
   type DataType, type MatchOptions,
 } from "@/lib/services/migration";
 
@@ -113,11 +113,4 @@ export async function runMigration(formData: FormData): Promise<void> {
   redirect(`/admin/migration/report/${result.migrationId}`);
 }
 
-/** Re-suggests a mapping (used by the "auto-map" button in the wizard). */
-export async function autoMapColumns(uploadId: string, dataType: DataType): Promise<Record<string, string>> {
-  await assertPermission(["migration.run", "users.import"]);
-  const upload = readUpload(uploadId);
-  if (!upload) return {};
-  return suggestMapping(upload.headers, dataType);
-}
 

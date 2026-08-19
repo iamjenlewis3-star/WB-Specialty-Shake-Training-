@@ -28,10 +28,18 @@ async function loadOwnedModule(enrollmentId: string, moduleId: string, userId: s
     [enrollmentId, moduleId, userId]);
 }
 
+/**
+ * Records that the learner opened a module, so work in flight is visible to a
+ * manager rather than reading as "not started". Never downgrades a module that
+ * already carries progress.
+ */
 export async function startModule(enrollmentId: string, moduleId: string): Promise<void> {
   const user = await assertUser();
   const mod = await loadOwnedModule(enrollmentId, moduleId, user.id);
   if (!mod) throw new Error("Module not found for this enrollment.");
+  const existing = await queryOne<{ status: string }>(
+    `select status from module_progress where enrollment_id = $1 and module_id = $2`, [enrollmentId, moduleId]);
+  if (existing) return;
   await ensureStarted(enrollmentId, user.id);
   await recordModuleProgress({ enrollmentId, moduleId, status: "in_progress" });
   revalidatePath(`/learn/${enrollmentId}`);

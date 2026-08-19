@@ -115,4 +115,4 @@ is implemented and functional against the database — no decorative screens.
 | Strong TypeScript, modular features, typed services, central authorization, input validation, error handling, environment variables | Throughout; Zod validation in actions |
 | Performance: pagination, server-side filtering, indexes, aggregate SQL, lazy loading | Services and schema indexes |
 | Demo data: 30–50 locations, 4–8 franchise groups, 250+ employees, regions, roles, 20–30 courses, paths, certifications, assessments, thousands of historical completions, inactive/overdue/new hires/expiring certifications | `src/lib/db/seed.ts` — 45 locations, 7 franchise groups, 446 people, 28 courses, 9,486 enrollments (2,477 migrated), 16,403 module progress records |
-| Testing across the listed workflows | `npm test` — 196 assertions; `npm run e2e` — 35 browser assertions |
+| Testing across the listed workflows | `npm test` — 199 assertions; `npm run e2e` — 35 browser assertions |

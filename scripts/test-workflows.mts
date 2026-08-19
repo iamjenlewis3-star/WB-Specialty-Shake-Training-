@@ -867,6 +867,32 @@ group("Learning path composition");
   }
 }
 
+// ---------------------------------------------------- opening a module
+group("Opening a module");
+{
+  const target = await queryOne<{ enrollment_id: string; module_id: string; user_id: string }>(
+    `select e.id as enrollment_id, m.id as module_id, e.user_id
+       from enrollments e
+       join course_modules m on m.course_id = e.course_id and m.course_version = e.course_version
+      where e.status = 'not_started'
+        and not exists (select 1 from module_progress mp where mp.enrollment_id = e.id and mp.module_id = m.id)
+      limit 1`);
+  check("an untouched module exists to open", Boolean(target));
+  if (target) {
+    await progress.recordModuleProgress({ enrollmentId: target.enrollment_id, moduleId: target.module_id, status: "in_progress" });
+    const opened = await queryOne<{ status: string }>(
+      `select status from module_progress where enrollment_id = $1 and module_id = $2`,
+      [target.enrollment_id, target.module_id]);
+    check("opening a module records it as in progress", opened?.status === "in_progress");
+
+    await progress.recordModuleProgress({ enrollmentId: target.enrollment_id, moduleId: target.module_id, status: "completed", score: 100 });
+    const done = await queryOne<{ status: string }>(
+      `select status from module_progress where enrollment_id = $1 and module_id = $2`,
+      [target.enrollment_id, target.module_id]);
+    check("completing it afterwards replaces the in-progress state", done?.status === "completed");
+  }
+}
+
 // ------------------------------------------------------- module-level progress
 group("Module progress and SCORM reporting");
 {

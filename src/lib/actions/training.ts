@@ -6,7 +6,7 @@ import { z } from "zod";
 import { query, queryOne } from "@/lib/db/client";
 import { assertPermission, assertUser } from "@/lib/auth/guard";
 import { canAccessLocation, isUuid } from "@/lib/rbac/scope";
-import { notify, notifyMany } from "@/lib/services/notifications";
+import { notify } from "@/lib/services/notifications";
 import { logAudit } from "@/lib/services/audit";
 import { saveImage } from "@/lib/uploads/image";
 
@@ -35,23 +35,6 @@ export async function sendReminder(userId: string): Promise<void> {
   await notify({ userId, type: "manager_reminder", title: `Training reminder from ${actor.displayName}`, body, link: "/my-learning" });
   await logAudit(actor, { action: "training.reminder_sent", entityType: "user", entityId: userId, entityLabel: person.full_name });
   revalidatePath("/team");
-}
-
-export async function sendBulkReminders(formData: FormData): Promise<void> {
-  const actor = await assertPermission("notifications.send");
-  const ids = formData.getAll("userIds").map(String).filter(isUuid);
-  const inScope = await query<{ user_id: string }>(
-    `select user_id from v_people where user_id = any($1::uuid[])
-      and (${actor.scope.locationIds === "all" ? "true" : `primary_location_id = any($2::uuid[])`})`,
-    actor.scope.locationIds === "all" ? [ids] : [ids, actor.scope.locationIds]);
-  const count = await notifyMany(inScope.map((r) => r.user_id), {
-    type: "manager_reminder",
-    title: `Training reminder from ${actor.displayName}`,
-    body: "You have training assignments that need your attention.",
-    link: "/my-learning",
-  });
-  await logAudit(actor, { action: "training.bulk_reminder_sent", entityType: "user", entityLabel: `${count} employees` });
-  redirect(`/team?toast=${encodeURIComponent(`Reminder sent to ${count} team members`)}`);
 }
 
 const validationSchema = z.object({

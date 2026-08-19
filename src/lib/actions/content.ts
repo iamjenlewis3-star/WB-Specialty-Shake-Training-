@@ -297,27 +297,6 @@ export async function deleteModule(formData: FormData): Promise<void> {
   revalidatePath(`/admin/courses/${courseId}`);
 }
 
-export async function reorderModule(formData: FormData): Promise<void> {
-  await assertPermission("courses.edit");
-  const moduleId = String(formData.get("module_id") ?? "");
-  const courseId = String(formData.get("course_id") ?? "");
-  const direction = String(formData.get("direction") ?? "up");
-  if (!isUuid(moduleId) || !isUuid(courseId)) return;
-
-  const current = await queryOne<{ position: number; course_version: number }>(
-    `select position, course_version from course_modules where id = $1`, [moduleId]);
-  if (!current) return;
-  const neighbour = await queryOne<{ id: string; position: number }>(
-    `select id, position from course_modules
-      where course_id = $1 and course_version = $2 and position ${direction === "up" ? "<" : ">"} $3
-      order by position ${direction === "up" ? "desc" : "asc"} limit 1`,
-    [courseId, current.course_version, current.position]);
-  if (!neighbour) return;
-  await query(`update course_modules set position = $2 where id = $1`, [moduleId, neighbour.position]);
-  await query(`update course_modules set position = $2 where id = $1`, [neighbour.id, current.position]);
-  revalidatePath(`/admin/courses/${courseId}`);
-}
-
 /** SCORM package upload — validated and safely extracted before anything is stored. */
 export async function uploadScormPackage(formData: FormData): Promise<void> {
   const actor = await assertPermission("scorm.upload");

@@ -4,6 +4,7 @@ import { AlertTriangle, ArrowRight, CheckCircle2, Columns3, ShieldCheck } from "
 import { requirePermission } from "@/lib/auth/guard";
 import { dataTypeDefinition, readUpload, suggestMapping, validateRows, type DataType, type MatchOptions } from "@/lib/services/migration";
 import { Card, CardBody, CardHeader, KpiTile, PageHeader, Pill, Table, TableWrap, Td, Th, Tr } from "@/components/ui/primitives";
+import { LinkButton } from "@/components/ui/button";
 import { Field, Select, Checkbox, SubmitButton } from "@/components/ui/interactive";
 import { runMigration, validateMigration } from "@/lib/actions/migration";
 import { cn } from "@/lib/utils";
@@ -88,6 +89,11 @@ export default async function MigrationWizardPage({
               title="Map columns"
               subtitle="We matched your headers automatically — adjust anything that looks wrong"
               icon={<Columns3 size={17} />}
+              action={
+                <LinkButton href={`/admin/migration/${uploadId}?type=${dataType}`} variant="ghost" size="sm">
+                  Reset to suggested mapping
+                </LinkButton>
+              }
             />
             <CardBody className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {definition.fields.map((field) => (

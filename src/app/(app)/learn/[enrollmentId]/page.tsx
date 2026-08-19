@@ -19,6 +19,7 @@ import {
 } from "@/components/learn/module-views";
 import { CourseReviewForm } from "@/components/learn/review-form";
 import { formatDate, formatDuration, cn } from "@/lib/utils";
+import { MarkOpened } from "@/components/learn/mark-opened";
 
 export const dynamic = "force-dynamic";
 
@@ -195,6 +196,7 @@ export default async function LearnPage({
                 action={progress[active.id]?.status === "completed" ? <Pill tone="success" dot>Complete</Pill> : null}
               />
               <CardBody>
+                {progress[active.id]?.status ? null : <MarkOpened enrollmentId={enrollmentId} moduleId={active.id} />}
                 <ModuleRenderer
                   module={active}
                   enrollmentId={enrollmentId}
