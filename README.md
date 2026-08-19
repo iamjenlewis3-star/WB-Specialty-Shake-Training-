@@ -18,7 +18,7 @@ npm run dev          # http://localhost:3000
 ```
 
 The first boot creates the database, applies the schema and seeds a complete demonstration system
-(45 restaurants, 446 people, 28 courses, 8,000+ training records including 2,400+ migrated legacy
+(45 restaurants, 446 people, 28 courses, 9,000+ training records including 2,400+ migrated legacy
 records). It takes about ten seconds, once.
 
 **Run only one process against the database at a time** — the embedded PostgreSQL engine owns its

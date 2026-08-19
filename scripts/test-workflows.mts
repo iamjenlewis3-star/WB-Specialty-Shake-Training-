@@ -689,7 +689,9 @@ group("Reporting and exports");
 
   for (const definition of reports.REPORTS) {
     const rows = await definition.run(admin.scope, { limit: 5 });
-    check(`report "${definition.name}" runs`, Array.isArray(rows));
+    // Rows, not just a clean run: an empty report is a broken demo, and it is how
+    // the SCORM Activity report was found to be missing its underlying data.
+    check(`report "${definition.name}" returns rows`, Array.isArray(rows) && rows.length > 0, `${rows.length} rows`);
   }
 
   const metrics = await analytics.systemMetrics(admin.scope);

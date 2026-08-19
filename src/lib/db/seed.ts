@@ -789,6 +789,17 @@ export async function seedDatabase(db: SqlClient): Promise<void> {
       targets: [{ target_type: "department", target_id: deptId("BOH") }], due: daysAhead(45), assignedAt: daysAgo(80) },
     { title: "Server Certification Path", pathName: "Server Certification", required: false, priority: "normal",
       targets: [{ target_type: "department", target_id: deptId("FOH") }], due: daysAhead(50), assignedAt: daysAgo(80) },
+    { title: "Shift Leader Development Path", pathName: "Shift Leader Development", required: true, priority: "normal",
+      targets: [{ target_type: "role", target_id: roleId("shift_leader") }], due: daysAhead(60), assignedAt: daysAgo(70) },
+    { title: "Manager in Training Path", pathName: "Manager in Training", required: true, priority: "high",
+      targets: [{ target_type: "role", target_id: roleId("agm") }], due: daysAhead(75), assignedAt: daysAgo(90) },
+    { title: "General Manager Certification Path", pathName: "General Manager Certification", required: true, priority: "high",
+      targets: [{ target_type: "role", target_id: roleId("gm") }, { target_type: "role", target_id: roleId("training_manager") }],
+      due: daysAhead(90), assignedAt: daysAgo(100) },
+    { title: "Bartender Certification Path", pathName: "Bartender Certification", required: false, priority: "normal",
+      targets: [{ target_type: "department", target_id: deptId("BAR") }], due: daysAhead(55), assignedAt: daysAgo(70) },
+    { title: "Host Certification Path", pathName: "Host Certification", required: false, priority: "normal",
+      targets: [{ target_type: "role", target_id: roleId("hourly") }], due: daysAhead(65), assignedAt: daysAgo(70) },
   ];
 
   const performanceByLocation = new Map<string, number>();
