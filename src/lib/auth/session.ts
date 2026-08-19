@@ -21,6 +21,7 @@ export interface CurrentUser {
   fullName: string;
   initials: string;
   avatarColor: string;
+  avatarUrl: string | null;
   status: string;
   employeeId: string | null;
   positionTitle: string | null;
@@ -57,6 +58,7 @@ interface UserRow {
   full_name: string;
   status: string;
   avatar_color: string;
+  avatar_url: string | null;
   employee_id: string | null;
   position_title: string | null;
   hire_date: string | null;
@@ -228,6 +230,7 @@ async function loadUser(userId: string, sessionId: string, impersonatorName: str
     fullName: row.full_name,
     initials: `${first.charAt(0)}${row.last_name.charAt(0)}`.toUpperCase(),
     avatarColor: row.avatar_color || "#0e1f38",
+    avatarUrl: row.avatar_url ?? null,
     status: row.status,
     employeeId: row.employee_id,
     positionTitle: row.position_title,

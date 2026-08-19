@@ -62,6 +62,7 @@ const calendarService = await import("../src/lib/services/calendar");
 const feed = await import("../src/lib/services/feed");
 const leaderboard = await import("../src/lib/services/leaderboard");
 const search = await import("../src/lib/services/search");
+const uploads = await import("../src/lib/uploads/image");
 const { permissionsForRole } = await import("../src/lib/rbac/permissions");
 
 const started = Date.now();
@@ -390,6 +391,42 @@ group("Question types");
       right.graded.find((g) => g.questionId === ordering.id)?.correct === true);
     check("matching graded correct when every pair lines up",
       right.graded.find((g) => g.questionId === matching.id)?.correct === true);
+  }
+}
+
+// ------------------------------------------------------- 6c. image uploads
+group("Image uploads");
+{
+  const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13]);
+  const asFile = (bytes: Uint8Array, name: string, type: string) =>
+    new File([bytes as unknown as BlobPart], name, { type });
+
+  const good = await uploads.saveImage(asFile(PNG, "shake.png", "image/png"));
+  check("a real PNG is accepted", good.ok === true, good.error ?? "");
+  check("stored image is served through the media route", Boolean(good.url?.startsWith("/api/media/")));
+  if (good.url) {
+    const stored = good.url.replace("/api/media/", "");
+    check("stored file lands in private storage", Boolean(uploads.resolveMediaFile(stored)));
+    check("stored file is not in public/", !fs.existsSync(path.join(process.cwd(), "public", stored)));
+  }
+
+  const svg = await uploads.saveImage(asFile(new TextEncoder().encode('<svg onload="alert(1)"></svg>'), "x.svg", "image/svg+xml"));
+  check("SVG uploads are rejected", svg.ok === false);
+
+  const renamed = await uploads.saveImage(asFile(new TextEncoder().encode("<?php echo 1; ?>"), "shell.png", "image/png"));
+  check("a script renamed to .png is rejected by its bytes", renamed.ok === false);
+
+  const wrongExt = await uploads.saveImage(asFile(PNG, "payload.exe", "image/png"));
+  check("an executable extension is rejected", wrongExt.ok === false);
+
+  const oversize = await uploads.saveImage(asFile(new Uint8Array(uploads.MAX_IMAGE_BYTES + 1), "big.png", "image/png"));
+  check("oversized images are rejected", oversize.ok === false);
+
+  check("empty uploads are rejected", (await uploads.saveImage(asFile(new Uint8Array(0), "empty.png", "image/png"))).ok === false);
+  check("non-files are rejected", (await uploads.saveImage("not-a-file")).ok === false);
+
+  for (const attempt of ["../../etc/passwd", "..%2fsecret.png", "index.html", "abc.png", "../storage/images/x.png"]) {
+    check(`media path "${attempt}" is refused`, uploads.resolveMediaFile(attempt) === null);
   }
 }
 

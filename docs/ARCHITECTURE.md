@@ -190,6 +190,10 @@ behind a boundary:
 - Parameterized SQL everywhere; the few inlined identifiers (scope id lists) are UUID-validated first.
 - React escapes all rendered content; no `dangerouslySetInnerHTML` outside the theme bootstrap script.
 - Upload validation for SCORM archives and assets (type, extension, size, archive contents, path).
+- Image uploads (profile photos, course artwork, skill-check evidence) are checked three ways —
+  declared MIME type, extension and leading file bytes — and SVG is refused outright because it is a
+  script container. Stored images live in private storage and are served only to a signed-in session
+  through `/api/media`, under a `sandbox` content-security policy.
 - Untrusted package content is served from private storage through an authenticated handler and
   rendered in a sandboxed iframe.
 - Every privileged mutation writes an audit entry with actor, entity, before/after values and IP.

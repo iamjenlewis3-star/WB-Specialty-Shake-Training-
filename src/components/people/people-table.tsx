@@ -109,7 +109,7 @@ export function PeopleTable({
                 ) : null}
                 <Td>
                   <Link href={`/people/${p.user_id}`} className="flex items-center gap-2.5 hover:text-[var(--accent)]">
-                    <Avatar name={p.full_name} color={p.avatar_color} size={30} />
+                    <Avatar name={p.full_name} color={p.avatar_color} photoUrl={p.avatar_url} size={30} />
                     <span className="min-w-0">
                       <span className="block truncate font-medium">{p.full_name}</span>
                       <span className="block truncate text-[11.5px] text-[var(--muted)]">{p.position_title ?? p.role_name}</span>

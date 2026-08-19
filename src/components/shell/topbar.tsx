@@ -20,6 +20,7 @@ export interface TopbarUser {
   email: string;
   roleName: string;
   avatarColor: string;
+  avatarUrl: string | null;
   locationName: string | null;
   isImpersonating: boolean;
   impersonatorName: string | null;
@@ -141,7 +142,7 @@ export function Topbar({
           <Dropdown
             trigger={
               <span className="flex items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-[var(--surface-3)]">
-                <Avatar name={user.fullName} color={user.avatarColor} size={30} />
+                <Avatar name={user.fullName} color={user.avatarColor} photoUrl={user.avatarUrl} size={30} />
                 <span className="hidden text-left leading-tight sm:block">
                   <span className="block text-[13px] font-semibold">{user.displayName}</span>
                   <span className="block text-[11px] text-[var(--muted)]">{user.roleName}</span>

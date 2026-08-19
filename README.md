@@ -50,7 +50,7 @@ restriction shown is genuinely enforced.
 | --- | --- |
 | `npm run dev` | Development server |
 | `npm run build` / `npm start` | Production build and server |
-| `npm test` | 145-assertion workflow suite against a fresh, isolated database |
+| `npm test` | 178-assertion workflow suite against a fresh, isolated database |
 | `npm run e2e` | Browser walkthrough of the full demo flow (start the server first) |
 | `npm run db:reset` | Rebuild the database and re-seed the demonstration data |
 | `npm run db:seed` | Create the database if missing and print row counts |
@@ -131,14 +131,14 @@ Requirement-by-requirement coverage: [`docs/FEATURE-COVERAGE.md`](./docs/FEATURE
 npm test
 ```
 
-Builds a fresh database and runs 145 assertions across authentication, role permissions,
-location-based security, transcripts, SCORM ingestion and runtime, assessment grading, the
-completion engine, assignments and automation rules, the employee lifecycle, data migration,
-reporting, exports, calendar, engagement and the learner experience.
+Builds a fresh database and runs 178 assertions across authentication, role permissions,
+location-based security, transcripts, SCORM ingestion and runtime, assessment grading and every
+question type, image uploads, the completion engine, assignments and automation rules, the employee
+lifecycle, data migration, reporting, exports, calendar, engagement and the learner experience.
 
 Security behaviour covered by the suite includes zip-slip rejection, non-ZIP and manifest-less
-archive rejection, cross-learner SCORM writes, out-of-scope employee reads and out-of-scope
-transcript reads.
+archive rejection, cross-learner SCORM writes, out-of-scope employee reads, out-of-scope transcript
+reads, image uploads disguised by extension or MIME type, and media path traversal.
 
 ```bash
 npm start          # in one shell
@@ -147,7 +147,8 @@ npm run e2e        # in another
 
 `npm run e2e` drives a real browser through the leadership demo: sign in, create a course, add a
 module, publish it, assign it to a restaurant, sign in as a learner, complete the course, then check
-the transcript, the course completion report, access denials, dark mode and the mobile layout.
+the transcript, the course completion report, the migration wizard, the scheduled maintenance run,
+profile photo and course artwork uploads, access denials, dark mode and the mobile layout.
 
 ---
 

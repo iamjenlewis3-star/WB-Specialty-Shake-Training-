@@ -30,7 +30,7 @@ is implemented and functional against the database — no decorative screens.
 | Automatic deactivation rules with flagging, manager/admin notification, reactivation tracking | `/admin/settings`, `runInactivitySweep`, `users.deactivation_*` / `reactivated_*` |
 | Training records never deleted on status change | Verified by the test suite ("deactivation preserves every training record") |
 | Manager sign-off with meets standard / needs coaching / reassessment required | `recordManagerValidation`, `src/components/people/manager-validation.tsx` |
-| Practical skill checks | Checklist modules + manager validation modules |
+| Practical skill checks | Checklist modules + manager validation modules, with an optional evidence photo captured on the floor |
 | Permanent transcript with source system, printable and exportable | `/people/[userId]/transcript` |
 
 ## Content
@@ -38,7 +38,7 @@ is implemented and functional against the database — no decorative screens.
 | Requirement | Where |
 | --- | --- |
 | Academy Library with categories and the full filter set | `/library` |
-| Course page (thumbnail, objectives, prerequisites, modules, rating, version, progress, start/continue) | `/library/[courseId]` |
+| Course page (artwork, objectives, prerequisites, modules, rating, version, progress, start/continue) | `/library/[courseId]`; artwork uploaded on the course builder |
 | Drag-and-drop course builder with every module type and per-module rules | `/admin/courses/[courseId]`, `src/components/admin/course-builder.tsx` |
 | SCORM 1.2 and 2004: upload, validate, extract, manifest parse, launch config, versioning | `/admin/scorm`, `src/lib/scorm/package.ts` |
 | SCORM runtime: completion, success, score, progress, session/total time, bookmarks, suspend data, exit, resume | `src/components/learn/scorm-player.tsx`, `src/lib/services/scorm.ts` |
@@ -65,6 +65,7 @@ is implemented and functional against the database — no decorative screens.
 | Attendance updates applicable training records | `recordAttendance` → `evaluateEnrollment` |
 | Announcements with targeting, pinning, expiry and acknowledgment tracking | `/admin/announcements`, `/feed` |
 | Notifications centre with the full type list and email/SMS/push architecture | `/notifications`, `/admin/notifications`, `notifications.channel` |
+| Profile photos, course artwork and skill-check evidence photos | `/profile`, course builder, manager validation card — validated by `src/lib/uploads/image.ts`, served through `/api/media` |
 
 ## Dashboards and analytics
 
@@ -114,4 +115,4 @@ is implemented and functional against the database — no decorative screens.
 | Strong TypeScript, modular features, typed services, central authorization, input validation, error handling, environment variables | Throughout; Zod validation in actions |
 | Performance: pagination, server-side filtering, indexes, aggregate SQL, lazy loading | Services and schema indexes |
 | Demo data: 30–50 locations, 4–8 franchise groups, 250+ employees, regions, roles, 20–30 courses, paths, certifications, assessments, thousands of historical completions, inactive/overdue/new hires/expiring certifications | `src/lib/db/seed.ts` — 45 locations, 7 franchise groups, 446 people, 28 courses, 8,195 enrollments (2,465 migrated) |
-| Testing across the listed workflows | `npm test` — 145 assertions |
+| Testing across the listed workflows | `npm test` — 178 assertions; `npm run e2e` — 35 browser assertions |

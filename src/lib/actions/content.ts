@@ -12,6 +12,7 @@ import { isUuid } from "@/lib/rbac/scope";
 import { logAudit } from "@/lib/services/audit";
 import { extractScormPackage, ScormValidationError } from "@/lib/scorm/package";
 import { notifyMany } from "@/lib/services/notifications";
+import { saveImage } from "@/lib/uploads/image";
 
 /** Course authoring, SCORM ingestion, asset library and learning paths. */
 
@@ -82,21 +83,38 @@ export async function updateCourse(formData: FormData): Promise<void> {
     `select title, description, category_id, estimated_minutes, passing_score, certification_id from courses where id = $1`, [courseId]);
   const objectives = String(formData.get("objectives") ?? "").split("\n").map((o) => o.trim()).filter(Boolean);
 
+  // Course artwork is optional: an empty file input leaves the current image
+  // alone, and "Remove" falls the card back to its generated colour.
+  let thumbnailUrl: string | null | undefined;
+  const artwork = formData.get("thumbnail");
+  if (formData.get("remove_thumbnail") === "on") {
+    thumbnailUrl = null;
+  } else if (artwork instanceof File && artwork.size > 0) {
+    const saved = await saveImage(artwork);
+    if (!saved.ok) {
+      redirect(`/admin/courses/${courseId}?toast=${encodeURIComponent(saved.error ?? "That image could not be used.")}&tone=error`);
+    }
+    thumbnailUrl = saved.url ?? null;
+  }
+
   await query(
     `update courses set title = $2, description = $3, category_id = $4, estimated_minutes = $5,
             passing_score = $6, certification_id = $7, objectives = $8, course_type = $9,
-            is_required_default = $10, updated_at = now()
+            is_required_default = $10,
+            thumbnail_url = case when $12 then $11 else thumbnail_url end,
+            updated_at = now()
       where id = $1`,
     [courseId, formData.get("title"), formData.get("description") || null, formData.get("category_id") || null,
       Number(formData.get("estimated_minutes") ?? 30), Number(formData.get("passing_score") ?? 80),
       formData.get("certification_id") || null, objectives, formData.get("course_type") || "blended",
-      formData.get("is_required_default") === "on"]);
+      formData.get("is_required_default") === "on", thumbnailUrl ?? null, thumbnailUrl !== undefined]);
 
   await logAudit(actor, {
     action: "course.updated", entityType: "course", entityId: courseId,
     entityLabel: String(formData.get("title")), previousValue: before,
   });
   revalidatePath(`/admin/courses/${courseId}`);
+  revalidatePath("/library");
   redirect(`/admin/courses/${courseId}?toast=${encodeURIComponent("Course updated")}`);
 }
 

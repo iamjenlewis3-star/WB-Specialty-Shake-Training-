@@ -232,9 +232,20 @@ export function KpiTile({
 /* ------------------------------------------------------------------ */
 
 export function Avatar({
-  name, color, size = 36, className,
-}: { name: string; color?: string | null; size?: number; className?: string }) {
+  name, color, size = 36, className, photoUrl,
+}: { name: string; color?: string | null; size?: number; className?: string; photoUrl?: string | null }) {
   const initials = name.split(" ").filter(Boolean).slice(0, 2).map((p) => p[0]).join("").toUpperCase();
+  if (photoUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={photoUrl}
+        alt=""
+        className={cn("inline-block shrink-0 rounded-full object-cover", className)}
+        style={{ width: size, height: size }}
+      />
+    );
+  }
   return (
     <span
       className={cn("inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-white", className)}

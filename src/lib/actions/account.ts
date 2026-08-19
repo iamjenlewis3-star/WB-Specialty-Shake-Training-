@@ -8,6 +8,7 @@ import { assertUser } from "@/lib/auth/guard";
 import { notify } from "@/lib/services/notifications";
 import { logAudit } from "@/lib/services/audit";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
+import { saveImage } from "@/lib/uploads/image";
 
 /**
  * Password reset request. In this prototype the reset is routed to the account's
@@ -52,6 +53,27 @@ export async function updateProfile(formData: FormData): Promise<void> {
   await logAudit(user, { action: "user.profile_updated", entityType: "user", entityId: user.id, entityLabel: user.fullName });
   revalidatePath("/profile");
   redirect("/profile?toast=Profile+updated");
+}
+
+/**
+ * Profile photo. Stored in private storage and served through `/api/media`, so a
+ * photo is only ever visible to someone with an Academy session.
+ */
+export async function updateProfilePhoto(formData: FormData): Promise<void> {
+  const user = await assertUser();
+  if (formData.get("remove") === "1") {
+    await query(`update users set avatar_url = null, updated_at = now() where id = $1`, [user.id]);
+    await logAudit(user, { action: "user.photo_removed", entityType: "user", entityId: user.id, entityLabel: user.fullName });
+    revalidatePath("/profile");
+    redirect("/profile?toast=Photo+removed");
+  }
+  const saved = await saveImage(formData.get("photo"));
+  if (!saved.ok) redirect(`/profile?toast=${encodeURIComponent(saved.error ?? "That image could not be used.")}&tone=error`);
+  await query(`update users set avatar_url = $1, updated_at = now() where id = $2`, [saved.url, user.id]);
+  await logAudit(user, { action: "user.photo_updated", entityType: "user", entityId: user.id, entityLabel: user.fullName });
+  revalidatePath("/profile");
+  revalidatePath(`/people/${user.id}`);
+  redirect("/profile?toast=Photo+updated");
 }
 
 export async function updatePreferences(formData: FormData): Promise<void> {

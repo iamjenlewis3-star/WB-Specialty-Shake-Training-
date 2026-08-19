@@ -27,6 +27,7 @@ export interface PersonRow {
   last_login_at: string | null;
   hire_date: string | null;
   avatar_color: string;
+  avatar_url: string | null;
   required_total: string;
   required_complete: string;
   overdue_count: string;
@@ -84,7 +85,7 @@ const PERSON_METRICS = `
 const PERSON_SELECT = `
   select p.user_id, p.employee_id, p.full_name, p.email, p.status, p.role_name, p.role_code,
          p.position_title, p.department_name, p.location_name, p.store_number, p.primary_location_id,
-         p.franchise_group_name, p.region_name, p.last_login_at, p.hire_date, p.avatar_color,
+         p.franchise_group_name, p.region_name, p.last_login_at, p.hire_date, p.avatar_color, p.avatar_url,
          coalesce(m.required_total, 0)::text as required_total,
          coalesce(m.required_complete, 0)::text as required_complete,
          coalesce(m.overdue_count, 0)::text as overdue_count,

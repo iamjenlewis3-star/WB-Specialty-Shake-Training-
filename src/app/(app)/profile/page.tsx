@@ -7,7 +7,7 @@ import { queryOne } from "@/lib/db/client";
 import { Avatar, Card, CardBody, CardHeader, DescriptionList, KpiTile, PageHeader, Pill, ProgressRing } from "@/components/ui/primitives";
 import { LinkButton } from "@/components/ui/button";
 import { Field, TextInput, Select, Checkbox, SubmitButton } from "@/components/ui/interactive";
-import { changePassword, updatePreferences, updateProfile } from "@/lib/actions/account";
+import { changePassword, updatePreferences, updateProfile, updateProfilePhoto } from "@/lib/actions/account";
 import { formatDate, formatDuration, completionTone } from "@/lib/utils";
 
 export const metadata = { title: "My Profile" };
@@ -35,11 +35,30 @@ export default async function ProfilePage() {
         <div className="space-y-4">
           <Card>
             <CardBody className="flex flex-col items-center gap-3 text-center">
-              <Avatar name={user.fullName} color={user.avatarColor} size={76} />
+              <Avatar name={user.fullName} color={user.avatarColor} photoUrl={user.avatarUrl} size={76} />
               <div>
                 <p className="text-[17px] font-semibold">{user.fullName}</p>
                 <p className="text-[13px] text-[var(--muted)]">{user.positionTitle ?? user.roleName}</p>
               </div>
+              <form action={updateProfilePhoto} className="w-full space-y-2 text-left">
+                <Field label="Profile photo" hint="PNG, JPEG, WEBP or GIF up to 5 MB">
+                  <input
+                    type="file" name="photo" accept="image/png,image/jpeg,image/webp,image/gif"
+                    className="w-full text-[12.5px] file:mr-2 file:rounded-lg file:border-0 file:bg-[var(--surface-3)] file:px-3 file:py-1.5 file:text-[12.5px] file:font-medium"
+                  />
+                </Field>
+                <div className="flex items-center gap-2">
+                  <SubmitButton size="sm" variant="outline">Upload photo</SubmitButton>
+                  {user.avatarUrl ? (
+                    <button
+                      type="submit" name="remove" value="1"
+                      className="text-[12.5px] font-medium text-[var(--muted)] underline underline-offset-2 hover:text-[var(--fg)]"
+                    >
+                      Remove
+                    </button>
+                  ) : null}
+                </div>
+              </form>
               <Pill tone="info">{user.roleName}</Pill>
               <ProgressRing value={summary.completion_pct} tone={completionTone(summary.completion_pct)} size={112} sublabel="Required" />
             </CardBody>

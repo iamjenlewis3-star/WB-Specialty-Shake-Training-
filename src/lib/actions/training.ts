@@ -8,6 +8,7 @@ import { assertPermission, assertUser } from "@/lib/auth/guard";
 import { canAccessLocation, isUuid } from "@/lib/rbac/scope";
 import { notify, notifyMany } from "@/lib/services/notifications";
 import { logAudit } from "@/lib/services/audit";
+import { saveImage } from "@/lib/uploads/image";
 
 /** Manager-facing training operations: reminders, sign-off, training blocks. */
 
@@ -78,13 +79,24 @@ export async function recordManagerValidation(formData: FormData): Promise<void>
   if (!enrollment) throw new Error("Training record not found.");
   if (!canAccessLocation(actor.scope, enrollment.primary_location_id)) throw new Error("That record is outside your access.");
 
+  // An optional photo of the finished build or station is stored with the sign-off
+  // so a skill check carries evidence, not just a manager's word.
+  let evidenceUrl: string | null = null;
+  const evidence = formData.get("evidence");
+  if (evidence instanceof File && evidence.size > 0) {
+    const saved = await saveImage(evidence);
+    if (!saved.ok) throw new Error(saved.error ?? "That evidence photo could not be used.");
+    evidenceUrl = saved.url ?? null;
+  }
+
   await query(
     `update enrollments set manager_validation_status = $1, manager_validated_by = $2,
             manager_validated_at = now(), manager_notes = $3,
+            manager_evidence_url = coalesce($5, manager_evidence_url),
             status = case when $1 = 'meets_standard' and status <> 'completed' then 'completed' else status end,
             completed_at = case when $1 = 'meets_standard' and completed_at is null then now() else completed_at end
       where id = $4`,
-    [parsed.data.status, actor.id, parsed.data.notes ?? null, parsed.data.enrollmentId]);
+    [parsed.data.status, actor.id, parsed.data.notes ?? null, parsed.data.enrollmentId, evidenceUrl]);
 
   await notify({
     userId: enrollment.user_id,
@@ -100,7 +112,7 @@ export async function recordManagerValidation(formData: FormData): Promise<void>
     entityType: "enrollment",
     entityId: parsed.data.enrollmentId,
     entityLabel: `${enrollment.full_name} — ${enrollment.course_title}`,
-    newValue: { status: parsed.data.status },
+    newValue: { status: parsed.data.status, evidence: Boolean(evidenceUrl) },
   });
   revalidatePath(`/people/${enrollment.user_id}`);
   revalidatePath("/team");

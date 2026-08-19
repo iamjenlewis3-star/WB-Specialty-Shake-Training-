@@ -14,7 +14,7 @@ export function ManagerValidationCard({
   learnerName: string;
   items: Array<{
     enrollment_id: string; course_title: string; module_title: string; status: string | null;
-    notes: string | null; validated_at: string | null; validator: string | null;
+    notes: string | null; validated_at: string | null; validator: string | null; evidence_url: string | null;
   }>;
 }) {
   const [open, setOpen] = React.useState<string | null>(null);
@@ -46,6 +46,13 @@ export function ManagerValidationCard({
                 {item.validator} · {formatDate(item.validated_at)}{item.notes ? ` · "${item.notes}"` : ""}
               </p>
             ) : null}
+            {item.evidence_url ? (
+              <a href={item.evidence_url} target="_blank" rel="noreferrer" className="mt-2 inline-block">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={item.evidence_url} alt={`Skill check evidence for ${item.course_title}`}
+                  className="h-20 rounded-lg border border-[var(--border)] object-cover" />
+              </a>
+            ) : null}
             {open === item.enrollment_id ? (
               <form action={recordManagerValidation} className="mt-3 space-y-3 border-t border-[var(--border)] pt-3">
                 <input type="hidden" name="enrollmentId" value={item.enrollment_id} />
@@ -58,6 +65,12 @@ export function ManagerValidationCard({
                 </Field>
                 <Field label="Notes" hint="What you observed on the floor">
                   <TextArea name="notes" rows={3} placeholder="e.g. Held cook temps and build standard through a full rush." />
+                </Field>
+                <Field label="Evidence photo" hint="Optional — photograph the finished build or station. Up to 5 MB.">
+                  <input
+                    type="file" name="evidence" accept="image/png,image/jpeg,image/webp,image/gif" capture="environment"
+                    className="w-full text-[12.5px] file:mr-2 file:rounded-lg file:border-0 file:bg-[var(--surface-3)] file:px-3 file:py-1.5 file:text-[12.5px] file:font-medium"
+                  />
                 </Field>
                 <div className="flex gap-2">
                   <SubmitButton size="sm" pendingLabel="Recording…">Record validation</SubmitButton>

@@ -45,10 +45,10 @@ export default async function PersonPage({ params }: { params: Promise<{ userId:
       getPersonActivity(userId, 12),
       getTranscript(viewer.scope, userId),
       listMyLearning(userId, "all"),
-      query<{ enrollment_id: string; course_title: string; module_title: string; status: string | null; notes: string | null; validated_at: string | null; validator: string | null }>(
+      query<{ enrollment_id: string; course_title: string; module_title: string; status: string | null; notes: string | null; validated_at: string | null; validator: string | null; evidence_url: string | null }>(
         `select e.id as enrollment_id, coalesce(c.title, e.course_title) as course_title, m.title as module_title,
                 e.manager_validation_status as status, e.manager_notes as notes, e.manager_validated_at as validated_at,
-                v.full_name as validator
+                v.full_name as validator, e.manager_evidence_url as evidence_url
            from enrollments e
            join course_modules m on m.course_id = e.course_id and m.course_version = e.course_version
                 and m.module_type = 'manager_validation'
@@ -89,7 +89,7 @@ export default async function PersonPage({ params }: { params: Promise<{ userId:
         <div className="space-y-4">
           <Card>
             <CardBody className="flex flex-col items-center gap-3 text-center">
-              <Avatar name={person.full_name} color={person.avatar_color} size={72} />
+              <Avatar name={person.full_name} color={person.avatar_color} photoUrl={person.avatar_url} size={72} />
               <div>
                 <p className="text-[17px] font-semibold">{person.full_name}</p>
                 <p className="text-[13px] text-[var(--muted)]">{person.position_title ?? person.role_name}</p>

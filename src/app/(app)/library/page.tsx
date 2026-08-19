@@ -118,7 +118,12 @@ export default async function LibraryPage({
           {catalog.rows.map((course) => (
             <Link key={course.id} href={`/library/${course.id}`} className="group block">
               <Card className="flex h-full flex-col overflow-hidden transition-shadow hover:shadow-[0_6px_20px_rgba(13,21,38,0.10)]">
-                <div className="h-20" style={{ background: `linear-gradient(135deg, ${course.thumbnail_color}, ${course.category_color ?? "#0e1f38"})` }} />
+                {course.thumbnail_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={course.thumbnail_url} alt="" className="h-20 w-full object-cover" />
+                ) : (
+                  <div className="h-20" style={{ background: `linear-gradient(135deg, ${course.thumbnail_color}, ${course.category_color ?? "#0e1f38"})` }} />
+                )}
                 <div className="flex flex-1 flex-col p-4">
                   <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
                     {course.category_name ? <Pill tone="neutral">{course.category_name}</Pill> : null}

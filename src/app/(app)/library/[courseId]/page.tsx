@@ -41,7 +41,12 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
   return (
     <div className="mx-auto max-w-[1100px] space-y-5">
       <Card className="overflow-hidden">
-        <div className="h-24" style={{ background: `linear-gradient(135deg, ${course.thumbnail_color}, ${course.category_color ?? "#0e1f38"})` }} />
+        {course.thumbnail_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={course.thumbnail_url} alt="" className="h-24 w-full object-cover" />
+        ) : (
+          <div className="h-24" style={{ background: `linear-gradient(135deg, ${course.thumbnail_color}, ${course.category_color ?? "#0e1f38"})` }} />
+        )}
         <CardBody className="flex flex-wrap items-start justify-between gap-5">
           <div className="min-w-0 flex-1">
             <div className="mb-2 flex flex-wrap items-center gap-1.5">

@@ -314,6 +314,7 @@ create table if not exists courses (
   category_id uuid references course_categories(id),
   course_type text not null default 'blended',  -- scorm|video|document|blended|assessment|ilt
   thumbnail_color text default '#0e1f38',
+  thumbnail_url text,
   estimated_minutes int default 30,
   is_required_default boolean not null default false,
   passing_score numeric default 80,
@@ -536,6 +537,7 @@ create table if not exists enrollments (
   manager_validated_by uuid references users(id),
   manager_validated_at timestamptz,
   manager_notes text,
+  manager_evidence_url text,          -- photo captured during a practical skill check
   last_activity_at timestamptz,
   source_system text not null default 'Wahlburgers Academy',
   source_record_id text,
@@ -919,6 +921,7 @@ select
   u.status,
   u.last_login_at,
   u.avatar_color,
+  u.avatar_url,
   u.deactivated_at,
   u.source_system,
   e.id                as employee_row_id,

@@ -14,6 +14,7 @@ export interface CatalogCourse {
   category_color: string | null;
   course_type: string;
   thumbnail_color: string;
+  thumbnail_url: string | null;
   estimated_minutes: number;
   is_required_default: boolean;
   status: string;
@@ -50,7 +51,7 @@ export interface CatalogFilters {
 
 const CATALOG_SELECT = `
   select c.id, c.code, c.title, c.description, c.category_id, cat.name as category_name, cat.color as category_color,
-         c.course_type, c.thumbnail_color, c.estimated_minutes, c.is_required_default, c.status,
+         c.course_type, c.thumbnail_color, c.thumbnail_url, c.estimated_minutes, c.is_required_default, c.status,
          c.rating_avg::text as rating_avg, c.rating_count, c.completion_count, c.current_version,
          cert.name as certification_name, c.source_system, c.updated_at, own.full_name as owner_name,
          (select count(*) from course_modules m where m.course_id = c.id and m.course_version = c.current_version)::text as module_count,

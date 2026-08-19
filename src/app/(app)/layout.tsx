@@ -27,6 +27,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               email: user.email,
               roleName: user.roleName,
               avatarColor: user.avatarColor,
+              avatarUrl: user.avatarUrl,
               locationName: user.locationName,
               isImpersonating: user.isImpersonating,
               impersonatorName: user.impersonatorName,

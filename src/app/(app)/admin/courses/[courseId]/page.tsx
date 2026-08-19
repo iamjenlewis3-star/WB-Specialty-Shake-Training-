@@ -118,6 +118,21 @@ export default async function CourseBuilderPage({ params }: { params: Promise<{ 
                 <div className="flex items-end">
                   <Checkbox name="is_required_default" label="Required by default" defaultChecked={course.is_required_default} />
                 </div>
+                <Field label="Course artwork" className="sm:col-span-2" hint="Shown on library cards. PNG, JPEG, WEBP or GIF up to 5 MB — leave empty to keep the current image.">
+                  <div className="flex items-center gap-3">
+                    {course.thumbnail_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={course.thumbnail_url} alt="" className="h-14 w-24 shrink-0 rounded-lg border border-[var(--border)] object-cover" />
+                    ) : (
+                      <span className="h-14 w-24 shrink-0 rounded-lg border border-[var(--border)]" style={{ background: course.thumbnail_color ?? "#0e1f38" }} />
+                    )}
+                    <input
+                      type="file" name="thumbnail" accept="image/png,image/jpeg,image/webp,image/gif"
+                      className="w-full text-[12.5px] file:mr-2 file:rounded-lg file:border-0 file:bg-[var(--surface-3)] file:px-3 file:py-1.5 file:text-[12.5px] file:font-medium"
+                    />
+                    {course.thumbnail_url ? <Checkbox name="remove_thumbnail" label="Remove" /> : null}
+                  </div>
+                </Field>
                 <div className="sm:col-span-2"><SubmitButton pendingLabel="Saving…">Save course settings</SubmitButton></div>
               </form>
             </CardBody>

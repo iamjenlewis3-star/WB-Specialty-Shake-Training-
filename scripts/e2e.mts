@@ -192,6 +192,50 @@ await Promise.all([
 check("daily automations run and report what they did", decodeURIComponent(page.url()).includes("Automations complete"),
   decodeURIComponent(page.url()).split("toast=")[1]?.slice(0, 80));
 
+console.log("\n▸ Profile photo and course artwork");
+// A one-pixel PNG, built here so the test never depends on a checked-in binary.
+const ONE_PIXEL_PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+  "base64");
+await page.goto(`${BASE}/profile`, { waitUntil: "domcontentloaded" });
+await page.setInputFiles('input[name="photo"]', { name: "me.png", mimeType: "image/png", buffer: ONE_PIXEL_PNG });
+await Promise.all([
+  page.waitForURL(/toast=/, { timeout: 120000 }),
+  page.getByRole("button", { name: /Upload photo/i }).click(),
+]);
+const toastText = (url: string) => decodeURIComponent(url).replace(/\+/g, " ");
+check("profile photo uploads", toastText(page.url()).includes("Photo updated"), page.url());
+const photoSrc = await page.locator('img[src^="/api/media/"]').first().getAttribute("src").catch(() => null);
+check("profile photo renders from private media storage", Boolean(photoSrc), String(photoSrc));
+if (photoSrc) {
+  const authed = await page.request.get(`${BASE}${photoSrc}`);
+  check("a signed-in request can read the photo", authed.status() === 200, String(authed.status()));
+  const anon = await browser.newContext();
+  const anonRes = await anon.request.get(`${BASE}${photoSrc}`);
+  check("an anonymous request cannot read the photo", anonRes.status() === 401, String(anonRes.status()));
+  await anon.close();
+}
+
+await page.goto(`${BASE}/admin/courses/${courseId}`, { waitUntil: "domcontentloaded" });
+await page.setInputFiles('input[name="thumbnail"]', { name: "art.png", mimeType: "image/png", buffer: ONE_PIXEL_PNG });
+await Promise.all([
+  page.waitForURL(/toast=/, { timeout: 120000 }),
+  page.getByRole("button", { name: /Save course settings/i }).click(),
+]);
+check("course artwork uploads", toastText(page.url()).includes("Course updated"), page.url());
+check("course artwork is stored as media",
+  (await page.locator('img[src^="/api/media/"]').count()) > 0);
+
+// Back to a clean URL so the toast assertion below cannot match the previous one.
+await page.goto(`${BASE}/admin/courses/${courseId}`, { waitUntil: "domcontentloaded" });
+await page.setInputFiles('input[name="thumbnail"]', { name: "shell.png", mimeType: "image/png", buffer: Buffer.from("<?php echo 1; ?>") });
+await Promise.all([
+  page.waitForURL(/toast=/, { timeout: 120000 }),
+  page.getByRole("button", { name: /Save course settings/i }).click(),
+]);
+check("a script renamed to .png is refused by the upload",
+  toastText(page.url()).includes("not a readable image"), toastText(page.url()).slice(-80));
+
 console.log("\n▸ Access control in the browser");
 const cookContext = await browser.newContext();
 const cookPage = await cookContext.newPage();

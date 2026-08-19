@@ -67,6 +67,7 @@ export interface LearnerEnrollment {
   course_code: string | null;
   category_name: string | null;
   thumbnail_color: string | null;
+  thumbnail_url: string | null;
   estimated_minutes: number | null;
   status: string;
   is_required: boolean;
@@ -85,7 +86,7 @@ export interface LearnerEnrollment {
 
 const ENROLLMENT_SELECT = `
   select e.id, e.course_id, coalesce(c.title, e.course_title) as course_title, c.code as course_code,
-         cat.name as category_name, c.thumbnail_color, c.estimated_minutes, e.status, e.is_required,
+         cat.name as category_name, c.thumbnail_color, c.thumbnail_url, c.estimated_minutes, e.status, e.is_required,
          e.priority, e.due_at, e.completed_at, e.score, e.source_system, c.course_type,
          cert.name as certification_name, lp.name as learning_path_name,
          coalesce(mp.total, 0)::text as modules_total,
@@ -180,10 +181,10 @@ export async function myUpcomingEvents(userId: string, limit = 6) {
 
 export async function recommendedCourses(userId: string, limit = 4) {
   return query<{
-    id: string; title: string; description: string | null; estimated_minutes: number; thumbnail_color: string;
+    id: string; title: string; description: string | null; estimated_minutes: number; thumbnail_color: string; thumbnail_url: string | null;
     category_name: string | null; rating_avg: string; reason: string;
   }>(`
-    select c.id, c.title, c.description, c.estimated_minutes, c.thumbnail_color, cat.name as category_name,
+    select c.id, c.title, c.description, c.estimated_minutes, c.thumbnail_color, c.thumbnail_url, cat.name as category_name,
            c.rating_avg::text as rating_avg,
            case when c.category_id = (
                   select c2.category_id from enrollments e2 join courses c2 on c2.id = e2.course_id
